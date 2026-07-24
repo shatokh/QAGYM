@@ -1,0 +1,6 @@
+interface:
+  display_name: "Next Task Planner"
+  short_description: "Select and draft the next governed task"
+  default_prompt: "Use $next-task-planner to recommend and draft the next reviewable project task."
+policy:
+  allow_implicit_invocation: false

@@ -23,9 +23,16 @@ The task describes the goal, behavior type, scope, out of scope items, acceptanc
 
 Codex should inspect existing docs and code before drafting or changing a task. If the task affects API behavior, seed data, tests, public docs, internal contracts, or planned bugs, that impact must be named in the task.
 
+Tasks `0019` and later also declare Priority and Work Origin. Use
+`docs/conventions/task-priority-and-unplanned-work.md` for the exact values and
+schema-era compatibility rules.
+
 ## Review
 
 The human reviews the task before implementation. Codex may suggest tradeoffs, risks, and missing acceptance criteria, but must not implement until the task is approved.
+
+`P0 Critical` and `P1 High` tasks may receive expedited review, but urgency
+does not skip approval or unlock implementation.
 
 ## Lock
 
@@ -50,6 +57,17 @@ the approved scope. This does not permit unrelated tooling, runtime, or
 refactoring work inside the feature.
 
 New dependencies, tools, services, and runtime requirements must be named in the approved task. Codex should not add hidden dependencies while implementing another task type.
+
+### Unplanned Work Reconciliation
+
+If repository changes cannot be attributed to an approved task, Codex stops
+expanding them and preserves them untouched. It must not stage, commit, revert,
+or rewrite those changes while deciding what they are.
+
+Codex inventories affected paths and drafts an `Urgent Unplanned` task with an
+Unplanned Work Record. The human chooses whether to accept the work for
+verification, rework it, split it, or revert it through an explicit action.
+Reconciliation does not create retrospective approval.
 
 ## Verify
 
@@ -112,7 +130,9 @@ Task files should live in `docs/tasks/`. A practical task file should include:
 - Status.
 - Approval record.
 - Behavior type.
+- Priority and Work Origin for task `0019` and later.
 - Background.
+- Unplanned Work Record when Work Origin is `Urgent Unplanned`.
 - Scope.
 - Out of scope.
 - Acceptance criteria.
@@ -126,6 +146,14 @@ Task files should live in `docs/tasks/`. A practical task file should include:
 - Risks and open questions.
 
 Use `docs/tasks/TEMPLATE.md` for new tasks.
+
+The deterministic governance check is:
+
+```text
+node scripts/validate-task-governance.mjs
+```
+
+It reports metadata and progress inconsistencies but never edits files.
 
 Allowed behavior types:
 

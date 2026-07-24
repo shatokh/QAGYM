@@ -8,6 +8,15 @@ Phase 1 - Clean Comics Store core.
 
 None.
 
+## Priority Queue
+
+- P0 Critical: None.
+- P1 High: None.
+
+## Unplanned Work Reconciliation
+
+None.
+
 ## Done
 
 - Documentation and governance foundation established.
@@ -47,6 +56,9 @@ None.
 - Frontend catalog foundation completed with localized routes, i18next,
   same-origin API proxying, Zod response validation, TanStack Query, accessible
   route states, testability conventions, and frontend unit/component tests.
+- Next Task Planner and governance validator completed with explicit priority
+  metadata, urgent unplanned-work reconciliation, schema-era validation, and
+  dependency-free fixture tests.
 
 ## Blocked
 

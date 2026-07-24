@@ -33,6 +33,27 @@ Every meaningful change starts with a task document under `docs/tasks/`. Codex m
 
 Implementation must follow the approved task scope. If the implementation needs to exceed the approved scope, stop and request an amendment.
 
+## Priority and Unplanned Work
+
+- Tasks `0019` and later must declare Priority and Work Origin using
+  `docs/conventions/task-priority-and-unplanned-work.md`.
+- `P0 Critical` and `P1 High` change review order but never bypass task
+  approval.
+- If existing changes cannot be attributed to an approved task, do not expand,
+  revert, stage, or commit them. Preserve them, inventory affected paths, and
+  draft an Unplanned Work Reconciliation task for human disposition.
+- Do not describe already-performed work as retroactively approved.
+- Run `node scripts/validate-task-governance.mjs` after governance task or
+  progress changes.
+
+## Next Task Planner
+
+- Run `$next-task-planner` only when the human explicitly invokes it.
+- The skill may inspect bounded planning context and draft or update exactly
+  one task in `Ready for Review`.
+- The skill must stop for human approval and may not implement, install
+  dependencies, stage, commit, or push.
+
 ## Session Artifact Advisor
 
 - Run the repository `$session-artifact-advisor` skill only when the human
@@ -129,6 +150,10 @@ Classify a task by the primary intent of its observable change.
 
 Available test commands:
 
+- `node scripts/validate-task-governance.mjs`: validate task and progress
+  governance metadata without modifying files.
+- `node --test tests/task-governance/*.test.mjs`: run governance validator
+  fixture tests.
 - `pnpm test`: run all workspace unit and component tests.
 - `pnpm test:web`: run frontend Vitest unit and component tests.
 - `pnpm test:unit:api`: run backend Jest unit tests.
@@ -159,6 +184,7 @@ A task is ready for review when it includes:
 - Title.
 - Status.
 - Behavior type.
+- Priority and Work Origin for task `0019` and later.
 - Problem or goal.
 - Scope.
 - Out of scope.
