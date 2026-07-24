@@ -105,6 +105,30 @@ $env:PORT = "3101"
 corepack pnpm start:api
 ```
 
+## Prisma
+
+Prisma is configured for PostgreSQL, but no database service or product model
+exists yet.
+
+Define `DATABASE_URL` in the local environment or an untracked root `.env`
+file. `.env.example` contains the non-secret local connection template intended
+for the future Docker runtime.
+
+Validate the Prisma schema:
+
+```powershell
+corepack pnpm db:validate
+```
+
+Format the Prisma schema:
+
+```powershell
+corepack pnpm db:format
+```
+
+These commands currently validate and format configuration only. Migration,
+client generation, Studio, and seed commands are intentionally unavailable.
+
 ## Not Available Yet
 
 - Docker Compose and PostgreSQL.

@@ -16,8 +16,13 @@ exposes the platform health endpoint at `GET /health`. Both workspaces can run,
 typecheck, and build, but they do not contain store features or business logic
 yet.
 
-The database schema, Prisma setup, Docker runtime, seed data, formal API
-contracts, automated tests, and planned bug layer have not been created yet.
+The product database schema, Docker runtime, seed data, formal API contracts,
+automated tests, and planned bug layer have not been created yet.
+
+A Prisma 7 PostgreSQL configuration skeleton now exists at the repository root.
+It contains no product models, generated client, migrations, seed data, or
+database connection from the API. A running PostgreSQL service is still future
+scope.
 
 ## Development Workflow
 

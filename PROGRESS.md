@@ -21,6 +21,8 @@ None.
 - Frontend React, Vite, and TypeScript skeleton completed.
 - Backend NestJS and TypeScript skeleton completed with `GET /health`.
 - Git repository baseline and first project foundation commit completed.
+- Prisma PostgreSQL configuration skeleton completed without product models or
+  database runtime.
 
 ## Blocked
 
@@ -72,6 +74,13 @@ None.
   approval.
 - Git uses `main` as the initial branch.
 - Repository text files are normalized to LF through `.gitattributes`.
+- Prisma CLI is pinned to `7.9.0` with dotenv `17.4.2`.
+- Prisma remains root-level until generated client sharing justifies a dedicated
+  database workspace.
+- Prisma Client, PostgreSQL adapter, driver, product models, migrations, and
+  seeds remain deferred.
+- pnpm lifecycle scripts are allowed only for the pinned `prisma` and
+  `@prisma/engines` packages; unreviewed package scripts remain blocked.
 
 ## Decisions Still Pending
 

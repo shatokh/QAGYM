@@ -16,7 +16,8 @@ packages/
 docs/
 bug-registry/
 tests/
-prisma/                # planned
+prisma/                # PostgreSQL schema foundation exists
+prisma.config.ts       # Prisma CLI configuration exists
 ```
 
 Repository areas:
@@ -27,7 +28,26 @@ Repository areas:
 - `docs`: Project docs, ADRs, and task files.
 - `bug-registry`: Repository-backed planned bug definitions.
 - `tests`: Cross-application test assets when needed.
-- `prisma`: Prisma schema, migrations, and seed data after approved implementation tasks.
+- `prisma`: Prisma schema foundation, future migrations, and future seed data.
+
+## Current Database Foundation
+
+Prisma `7.9.0` is configured at the repository root with PostgreSQL as its
+datasource provider. The datasource URL is read from `DATABASE_URL` through
+`prisma.config.ts`.
+
+The current schema intentionally has:
+
+- No product models.
+- No Prisma Client generator.
+- No migrations.
+- No seed implementation.
+- No API database provider.
+
+Future migrations should live under `prisma/migrations/`. Future seed scenarios
+should live under `prisma/seed/` unless an approved task changes that structure.
+The first migration must represent a real product model rather than an
+infrastructure probe table.
 
 ## Clean Core + Bug Layer
 
@@ -73,5 +93,5 @@ The future local runtime should use Docker Compose for PostgreSQL and supporting
 services that are approved for MVP. The frontend and backend are currently
 runnable directly through documented pnpm commands.
 
-Docker, PostgreSQL, Prisma, migrations, and seed data remain future approved
-task scope.
+Docker, a running PostgreSQL service, Prisma Client integration, migrations, and
+seed data remain future approved task scope.
