@@ -19,6 +19,12 @@ Every meaningful change starts as a task document in `docs/tasks/`. This include
 
 Small docs-only clarifications may be made without a task only when the user explicitly requests them.
 
+An explicitly invoked `$session-artifact-advisor` run is a bounded exception:
+it may update local `.session-advisor/` state and proposal files, including the
+proposal index, under `docs/ai/session-advisor/proposals/`. The invocation alone
+does not authorize changes to advisor operating documentation or implementation;
+those changes remain governed by the normal rules above.
+
 The task describes the goal, behavior type, scope, out of scope items, acceptance criteria, and verification plan.
 
 Codex should inspect existing docs and code before drafting or changing a task. If the task affects API behavior, seed data, tests, public docs, internal contracts, or planned bugs, that impact must be named in the task.

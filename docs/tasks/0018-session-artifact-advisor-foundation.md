@@ -227,8 +227,8 @@ new or resumed trusted-project session after project-local hooks are available.
   frontmatter keys, skill name, explicit trigger text, absence of template
   TODOs, size, default prompt, and disabled implicit invocation pass in the
   Node test suite.
-- A live Codex checkpoint remains an activation check for a new or resumed
-  trusted-project session after these uncommitted changes are integrated.
+- A live Codex checkpoint remains an activation check after a new or resumed
+  trusted-project session loads commit `6730ed8`.
 
 ## Documentation Impact
 

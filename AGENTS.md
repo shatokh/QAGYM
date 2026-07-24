@@ -59,7 +59,8 @@ Implementation must follow the approved task scope. If the implementation needs 
 - Run the repository `$session-artifact-advisor` skill only when the human
   explicitly invokes it.
 - An explicit advisor run may update local `.session-advisor/` state and
-  `docs/ai/session-advisor/` proposal documentation without a separate task.
+  proposal files, including the proposal index, under
+  `docs/ai/session-advisor/proposals/` without a separate task.
 - The advisor may propose artifacts but must not implement them without the
   normal approved-task workflow.
 

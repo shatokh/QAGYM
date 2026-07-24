@@ -57,9 +57,10 @@ prepared -> ready -> finalized
 ```
 
 The skill marks a run `ready` only after tracked proposal updates succeed. The
-`Stop` hook then captures the advisor response and atomically advances the
-covered cursor. A prepared run that never becomes ready cannot silently advance
-the checkpoint.
+`Stop` hook then captures the advisor response, writes the covered cursor under
+the session lock, and marks the run finalized. A prepared run that never becomes
+ready cannot silently advance the checkpoint. An interrupted ready run remains
+recoverable.
 
 ## Privacy
 
@@ -74,6 +75,9 @@ Therefore:
   are not captured;
 - proposal documents contain summarized evidence, not raw chat;
 - captured state can be removed explicitly.
+
+Runtime state has no automatic expiration or size-based cleanup. It remains on
+the local machine until an explicit purge command removes it.
 
 Purge one session:
 
@@ -110,8 +114,10 @@ observations, but it must not claim exact incremental coverage.
 An explicit advisor invocation may update only:
 
 - local `.session-advisor/` state;
-- this advisor documentation;
-- `docs/ai/session-advisor/proposals/`.
+- proposal files, including the proposal index, under
+  `docs/ai/session-advisor/proposals/`.
 
-Creating or implementing the recommended rule, skill, hook, script, subagent,
-plugin, MCP integration, or product change requires the normal task lifecycle.
+The invocation itself does not authorize changes to advisor operating
+documentation. Creating or implementing a recommended rule, skill, hook,
+script, subagent, plugin, MCP integration, or product change requires the normal
+task lifecycle.
