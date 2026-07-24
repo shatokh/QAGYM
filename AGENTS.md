@@ -116,18 +116,22 @@ Classify a task by the primary intent of its observable change.
 - Do not include unrelated user changes in a commit.
 - Record the decision in the task file when practical.
 
-## Future Command Placeholders
+## Current and Future Commands
 
-These commands are placeholders until implementation tasks define them:
+Available test commands:
+
+- `pnpm test`: run backend Jest unit tests.
+- `pnpm test:api`: run backend Jest and Supertest in-memory API tests.
+
+These commands remain placeholders until future implementation tasks define
+them:
 
 - `pnpm lint`
 - `pnpm typecheck`
-- `pnpm test`
 - `pnpm test:e2e`
-- `pnpm test:api`
 - `pnpm test:k6:smoke`
 
-Do not create or assume these commands until package setup is approved.
+Do not create or assume placeholder commands until their setup is approved.
 
 ## Definition of Ready
 

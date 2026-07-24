@@ -35,6 +35,8 @@ None.
   normalized entities, stable mappings, indexes, and database integrity checks.
 - Deterministic clean catalog seed completed with ten fictional comics,
   complete EN/RU content, stable fixtures, eight local covers, and one fallback.
+- Backend test foundation completed with separate Jest unit and Supertest API
+  health suites, root commands, and CI gates.
 
 ## Blocked
 
@@ -141,13 +143,17 @@ None.
   archived.
 - Clean catalog media uses original generated 1024 by 1536 PNG assets stored in
   the frontend public directory.
+- Backend unit tests use Jest 29 with ts-jest 29.
+- Backend in-memory API tests use Jest and Supertest in a separate suite.
+- `pnpm test` and `pnpm test:api` are separate root commands and CI gates.
+- Initial health tests are database-independent and require no Docker runtime.
 
 ## Decisions Still Pending
 
 - UI kit.
 - Exact auth implementation details.
 - Deployment target.
-- Exact test command structure.
+- Frontend unit, Playwright E2E, contract, and k6 command structure.
 - Exact pagination limits, response shape, locale transport, API errors, search
   semantics, and filter query syntax.
 - Repository visibility and the spoiler threat model for registry content.

@@ -18,9 +18,13 @@ selectors, and documented training commands.
 
 Health tests confirm that the platform starts and basic infrastructure works. Planned bugs must not break health tests.
 
-Examples for future phases:
+Current health coverage:
 
-- API health endpoint responds.
+- The health controller returns the exact platform health result.
+- The in-memory API health endpoint responds with the expected HTTP contract.
+
+Future health coverage may include:
+
 - Frontend loads.
 - Database connection works.
 - Seed reset completes.
@@ -50,10 +54,11 @@ Where possible, they should verify both sides:
 
 API tests should confirm that backend behavior matches the public training Swagger/OpenAPI surface and the internal developer API contract.
 
-Supertest is planned for API behavior tests. Internal contracts should be
-created with the APIs they specify, and contract checks should be added as the
-supporting test foundation becomes available. Public Swagger publication may
-follow in Phase 5.
+Supertest is configured for in-memory API behavior tests. The initial API suite
+is database-independent and verifies `GET /health` without binding a fixed port.
+Internal contracts should be created with the APIs they specify, and contract
+checks should be added with each supporting feature. Public Swagger publication
+may follow in Phase 5.
 
 ## Playwright E2E
 
@@ -68,9 +73,19 @@ Playwright is planned for end-to-end UI workflows:
 
 Selectors should be stable enough for automation practice.
 
-## Vitest or Jest
+## Jest and Future Frontend Tests
 
-Vitest or Jest will be used for unit and integration tests depending on the app area and setup decisions. The exact command structure is pending.
+The NestJS backend uses Jest 29 with ts-jest 29. Backend unit tests are
+colocated under `apps/api/src/**/*.spec.ts`; in-memory HTTP API tests are kept
+under `apps/api/test/**/*.api-spec.ts` and use a separate Jest configuration.
+
+Current root commands:
+
+- `pnpm test`: backend unit tests.
+- `pnpm test:api`: backend in-memory API tests.
+
+The frontend unit test runner remains undecided. Vitest may be evaluated in a
+separate approved frontend test task.
 
 ## k6 Smoke Tests
 
@@ -88,17 +103,20 @@ to `main`. It verifies:
 - Frontend and backend builds.
 - Prisma schema validation.
 - Docker Compose configuration validation.
+- Backend unit tests.
+- Backend in-memory API tests.
 
-The baseline workflow does not start PostgreSQL or run product tests. Its
-purpose is to catch repository, static typing, build, and configuration
-regressions using checks that already exist.
+The baseline workflow does not start PostgreSQL or run database-backed product
+tests. Its purpose is to catch repository, static typing, build, configuration,
+and platform health regressions using checks that already exist.
 
 Future CI should add separate, clearly named gates for:
 
 - Linting.
-- Unit and integration tests.
-- API tests.
+- Frontend unit tests.
+- Database-backed integration and API tests.
 - E2E tests.
+- Contract tests.
 - Performance smoke tests.
 
 CI should make bug mode explicit instead of accidentally running clean core tests against enabled planned bugs.

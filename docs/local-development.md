@@ -3,7 +3,7 @@
 Local development is being introduced incrementally through approved
 infrastructure tasks. The frontend, backend, catalog database schema, initial
 migration, clean catalog seed, and local PostgreSQL runtime are currently
-available. Test commands will be added by later tasks.
+available. Backend unit and in-memory API test commands are also available.
 
 ## Prerequisites
 
@@ -44,6 +44,14 @@ the equivalent `pnpm` commands may be used.
 Do not disable TLS verification if package registry certificate validation
 fails. Configure the approved local CA through the operating system or
 `NODE_EXTRA_CA_CERTS`.
+
+On a supported Node.js version for Windows, pnpm can use the operating system
+certificate store for the current PowerShell session:
+
+```powershell
+$env:NODE_OPTIONS = "--use-system-ca"
+corepack pnpm install
+```
 
 ## Frontend
 
@@ -121,6 +129,29 @@ To use another valid numeric port in PowerShell:
 $env:PORT = "3101"
 corepack pnpm start:api
 ```
+
+## Backend Tests
+
+Run backend unit tests:
+
+```powershell
+corepack pnpm test
+```
+
+Run backend in-memory API tests:
+
+```powershell
+corepack pnpm test:api
+```
+
+Run backend unit tests in watch mode:
+
+```powershell
+corepack pnpm --filter @qa-comics-gym/api test:watch
+```
+
+The current API suite initializes Nest in memory and does not require Docker,
+PostgreSQL, Prisma Client, seed data, a fixed port, or external network access.
 
 ## Prisma
 
@@ -229,4 +260,5 @@ This preserves the named database volume.
 - Application containers and verified Podman support.
 - Prisma Client integration.
 - Lint command.
-- Unit, API, E2E, contract, and k6 test commands.
+- Frontend unit, database-backed integration, E2E, contract, and k6 test
+  commands.

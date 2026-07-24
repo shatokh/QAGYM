@@ -51,6 +51,12 @@ jobs:
       - name: Build backend
         run: pnpm build:api
 
+      - name: Run backend unit tests
+        run: pnpm test
+
+      - name: Run backend API tests
+        run: pnpm test:api
+
       - name: Validate Prisma schema
         run: pnpm db:validate
         env:
