@@ -6,6 +6,7 @@ export default defineConfig({
   schema: "prisma/schema.prisma",
   migrations: {
     path: "prisma/migrations",
+    seed: "prisma db execute --file prisma/seed/catalog.sql",
   },
   datasource: {
     url: env("DATABASE_URL"),

@@ -19,7 +19,8 @@
     "infra:status": "docker compose ps",
     "infra:logs": "docker compose logs -f postgres",
     "db:validate": "prisma validate",
-    "db:format": "prisma format"
+    "db:format": "prisma format",
+    "db:seed": "prisma db seed"
   },
   "devDependencies": {
     "dotenv": "17.4.2",

@@ -4,7 +4,7 @@
 
 This document defines the clean Phase 1 catalog behavior for QA Comics Gym.
 It is the product source for catalog terminology and business rules used by
-the Prisma schema and future seed data, API contract, tests, and UI.
+the Prisma schema, clean seed data, and future API contract, tests, and UI.
 
 The catalog must behave correctly without planned bugs. Planned defect
 behavior, including broken media, invalid prices, or inconsistent translations,
@@ -256,6 +256,11 @@ All comic titles, creator identities, descriptions, and cover artwork must be
 fictional and original or otherwise explicitly licensed for repository use. Do
 not copy real commercial comic covers or brand assets into the seed.
 
+The implemented assets are 1024 by 1536 PNG files under
+`apps/web/public/media/comics/`. Database paths use
+`media/comics/<slug>.png`. The deterministic clean fallback is
+`cover-fallback.png`.
+
 ## Catalog Read Rules
 
 The first read slice supports:
@@ -277,8 +282,8 @@ Phase 1 Clean Features but follow list/detail in separate tasks.
 
 ## Minimal Clean Seed
 
-Phase 1 should seed approximately 8-10 fictional comics. Scenarios may overlap,
-but the set must include:
+The implemented Phase 1 seed contains exactly ten fictional comics: eight
+published, one draft, and one archived. Scenarios overlap, and the set includes:
 
 - Normal published in-stock comic.
 - Published out-of-stock comic.
@@ -294,7 +299,7 @@ but the set must include:
 - Multiple writers or artists on at least one comic.
 - Draft and archived records that remain absent from public reads.
 
-The clean seed must:
+The clean seed:
 
 - Be deterministic and repeatable.
 - Use slug and SKU as stable upsert identity.
@@ -304,6 +309,9 @@ The clean seed must:
 - Contain no negative stock, invalid money, duplicate identity, broken media,
   or planned defect.
 - Support reset without depending on previously generated integer IDs.
+
+The exact fixture values and scenario map are documented in
+`docs/product/catalog-seed.md`.
 
 ## Integrity Expectations
 
@@ -361,6 +369,5 @@ Each task requires its own document and approval.
 - Search semantics and filter query syntax.
 - Genre response ordering.
 - Frontend router, query, form, i18n, and UI kit choices.
-- Exact cover dimensions and image formats.
 - Additional creator roles.
 - Additional currencies or multi-currency commerce.

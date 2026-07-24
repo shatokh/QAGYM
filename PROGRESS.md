@@ -33,6 +33,8 @@ None.
   contract, test, and implementation boundaries.
 - Clean catalog Prisma schema and initial PostgreSQL migration completed with
   normalized entities, stable mappings, indexes, and database integrity checks.
+- Deterministic clean catalog seed completed with ten fictional comics,
+  complete EN/RU content, stable fixtures, eight local covers, and one fallback.
 
 ## Blocked
 
@@ -131,6 +133,14 @@ None.
 - PostgreSQL check constraints enforce clean identity, money, stock,
   non-blank text, sort order, and series/issue invariants.
 - Prisma Client setup remains deferred until application database integration.
+- The initial catalog seed uses transactional SQL through explicit
+  `prisma db seed` and adds no runtime database dependency.
+- Catalog seed replacement truncates only the explicit catalog table set,
+  restarts identities, and does not use `CASCADE`.
+- The clean fixture contains exactly 10 comics: 8 published, 1 draft, and 1
+  archived.
+- Clean catalog media uses original generated 1024 by 1536 PNG assets stored in
+  the frontend public directory.
 
 ## Decisions Still Pending
 

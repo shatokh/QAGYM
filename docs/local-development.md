@@ -2,8 +2,8 @@
 
 Local development is being introduced incrementally through approved
 infrastructure tasks. The frontend, backend, catalog database schema, initial
-migration, and local PostgreSQL runtime are currently available. Seed and test
-commands will be added by later tasks.
+migration, clean catalog seed, and local PostgreSQL runtime are currently
+available. Test commands will be added by later tasks.
 
 ## Prerequisites
 
@@ -126,7 +126,7 @@ corepack pnpm start:api
 
 Prisma is configured for PostgreSQL, and Docker Compose provides the local
 database service. The clean catalog schema and initial migration are committed.
-Prisma Client and seed data are not configured yet.
+The clean catalog seed is configured; Prisma Client is not configured yet.
 
 Define `DATABASE_URL` in the local environment or an untracked root `.env`
 file. `.env.example` contains the non-secret local connection template.
@@ -162,8 +162,21 @@ corepack pnpm exec prisma migrate dev --name <migration-name> --create-only
 ```
 
 Review and edit the generated SQL before applying it with `prisma migrate dev`.
-Do not create a migration without an approved task. Client generation, Studio,
-and seed commands remain unavailable.
+Do not create a migration without an approved task. Client generation and
+Studio remain unavailable.
+
+Seed the clean catalog explicitly after applying migrations:
+
+```powershell
+corepack pnpm db:seed
+```
+
+The seed replaces all nine catalog tables in one transaction and restarts their
+identity sequences. It does not use `CASCADE` and does not reset the migration
+history. Do not run it against a database whose catalog data must be preserved.
+
+Prisma ORM 7 does not run this seed automatically during migration commands.
+The stable seed fixture reference is `docs/product/catalog-seed.md`.
 
 ## PostgreSQL
 
@@ -214,6 +227,6 @@ This preserves the named database volume.
 ## Not Available Yet
 
 - Application containers and verified Podman support.
-- Prisma Client integration and seed data.
+- Prisma Client integration.
 - Lint command.
 - Unit, API, E2E, contract, and k6 test commands.

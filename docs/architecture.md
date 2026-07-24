@@ -16,7 +16,7 @@ packages/
 docs/
 bug-registry/
 tests/
-prisma/                # catalog schema and migration history
+prisma/                # catalog schema, migrations, and clean seed
 prisma.config.ts       # Prisma CLI configuration exists
 compose.yaml           # local PostgreSQL runtime
 ```
@@ -29,7 +29,7 @@ Repository areas:
 - `docs`: Project docs, ADRs, and task files.
 - `bug-registry`: Repository-backed planned bug definitions.
 - `tests`: Cross-application test assets when needed.
-- `prisma`: Prisma schema, migration history, and future seed data.
+- `prisma`: Prisma schema, migration history, and clean catalog seed data.
 
 ## Current Database Foundation
 
@@ -41,16 +41,15 @@ The current database layer contains:
 
 - The clean catalog models and relations defined in `docs/product/catalog.md`.
 - One initial `catalog_foundation` migration.
+- One explicit transactional catalog seed configured through Prisma CLI.
 - Explicit snake_case database mappings.
 - PostgreSQL checks for clean catalog data invariants.
 - No Prisma Client generator.
-- No seed implementation.
 - No API database provider.
 
-Migrations live under `prisma/migrations/`. Future seed scenarios should live
-under `prisma/seed/` unless an approved task changes that structure. The first
-migration represents the real catalog product model rather than an
-infrastructure probe table.
+Migrations live under `prisma/migrations/`. The clean catalog seed lives at
+`prisma/seed/catalog.sql`. The first migration represents the real catalog
+product model rather than an infrastructure probe table.
 
 ## Catalog Foundation Direction
 
@@ -79,6 +78,15 @@ The implemented PostgreSQL boundary uses:
 - A read index on publication state, merchandising order, and comic ID.
 - Custom checks for identity formats, non-blank display text, valid money and
   stock, and consistent standalone versus series issues.
+
+The clean fixture contains ten fictional comics, three series, eight creators,
+six localized genres, and complete EN/RU catalog translations. It is replaced
+transactionally through explicit catalog-table truncation without `CASCADE`.
+Stable fixture identity comes from slug and SKU, not generated integer IDs.
+
+Eight comic cover files and one deterministic fallback are repository-owned
+PNG assets under `apps/web/public/media/comics/`. Clean catalog behavior does
+not depend on third-party media.
 
 The first read slice is paginated published list plus slug detail. Search and
 filters remain separate Phase 1 Clean Features after list/detail behavior is
@@ -145,8 +153,8 @@ volume mounted at `/var/lib/postgresql`. The database is published on a
 configurable host port and reports readiness through `pg_isready`.
 
 The frontend and backend continue to run directly through documented pnpm
-commands. Application containers, Prisma Client integration, and seed data
-remain future approved task scope.
+commands. Application containers and Prisma Client integration remain future
+approved task scope.
 
 Docker Compose is the primary supported runtime for the MVP. The Compose file
 avoids unnecessary Docker-specific configuration, but Podman compatibility is
