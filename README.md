@@ -27,6 +27,11 @@ database connection from the API.
 Docker Compose is the primary local container runtime for the MVP. Podman
 compatibility will be evaluated later through a separate infrastructure task.
 
+A minimal GitHub Actions quality workflow now checks frozen dependency
+installation, frontend and backend typechecks and builds, Prisma schema
+validation, and Docker Compose configuration. Linting and automated product
+tests remain future tasks.
+
 ## Development Workflow
 
 Development is document-first:

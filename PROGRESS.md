@@ -25,6 +25,8 @@ None.
   database runtime.
 - Docker Compose local runtime completed with a healthy PostgreSQL service,
   persistent named volume, and no product schema.
+- Minimal GitHub Actions quality gates completed for frozen install, frontend
+  and backend typechecks and builds, Prisma validation, and Compose validation.
 
 ## Blocked
 
@@ -85,6 +87,9 @@ None.
   seeds remain deferred.
 - pnpm lifecycle scripts are allowed only for the pinned `prisma` and
   `@prisma/engines` packages; unreviewed package scripts remain blocked.
+- The initial CI baseline uses one read-only `ubuntu-24.04` quality job.
+- GitHub Actions dependencies are pinned to immutable release commit SHAs.
+- CI lint and automated test gates remain deferred until real commands exist.
 
 ## Decisions Still Pending
 

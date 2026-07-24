@@ -67,10 +67,22 @@ k6 smoke tests are not production load tests.
 
 ## CI Expectations
 
-Future CI should separate:
+The current baseline GitHub Actions workflow runs for pull requests and pushes
+to `main`. It verifies:
+
+- Frozen dependency installation.
+- Frontend and backend type checking.
+- Frontend and backend builds.
+- Prisma schema validation.
+- Docker Compose configuration validation.
+
+The baseline workflow does not start PostgreSQL or run product tests. Its
+purpose is to catch repository, static typing, build, and configuration
+regressions using checks that already exist.
+
+Future CI should add separate, clearly named gates for:
 
 - Linting.
-- Type checking.
 - Unit and integration tests.
 - API tests.
 - E2E tests.
