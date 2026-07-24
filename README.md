@@ -39,7 +39,8 @@ Development is document-first:
 1. A meaningful change starts with a written task document.
 2. Codex prepares a plan and waits for human approval.
 3. Implementation follows the approved task scope.
-4. Clean features, planned bugs, bugfixes, refactors, docs-only tasks, and test-only tasks are tracked separately.
+4. Clean features, planned bugs, bugfixes, refactors, docs-only,
+   infrastructure, and test-only tasks are tracked separately.
 5. Docs, API contracts, seed data, tests, and the bug registry must stay consistent with the implemented behavior.
 
 See [AGENTS.md](AGENTS.md) and [docs/ways-of-working.md](docs/ways-of-working.md) for the working rules.

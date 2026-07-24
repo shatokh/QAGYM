@@ -1,8 +1,14 @@
 # Roadmap
 
-## Phase 0 - Documentation, Repository and Infrastructure Foundation
+Across product phases, internal behavior/API contracts, deterministic seed
+scenarios, and relevant clean tests evolve with the features they specify.
+Phase 5 publishes documentation, and Phase 8 expands automation breadth; those
+phases do not defer the first contract or test work.
 
-Goal: Establish project governance, working rules, architecture direction, and documentation structure before application code exists.
+## Phase 0 - Documentation and Governance Foundation
+
+Goal: Establish project governance, working rules, architecture direction, and
+documentation structure before application setup begins.
 
 Main deliverables:
 
@@ -18,7 +24,8 @@ Out of scope:
 - Dependency installation.
 - Runtime infrastructure.
 
-Acceptance signal: Future work has clear rules, accepted decisions, and a place to write tasks before implementation starts.
+Acceptance signal: Future work has clear rules, accepted decisions, and a place
+to write tasks before implementation starts.
 
 ## Phase 1 - Clean Comics Store Core
 
@@ -26,19 +33,26 @@ Goal: Build the first clean product behavior for the comics store without planne
 
 Main deliverables:
 
-- Initial frontend and backend app structure.
-- Clean catalog and product detail behavior.
+- Initial frontend, backend, database, local runtime, and CI foundation.
+- First comics catalog domain model and migration.
+- Minimal deterministic clean catalog seed and repeatable reset path.
+- Internal catalog behavior and API contracts maintained with implementation.
+- Clean catalog and product detail behavior with relevant tests.
 - Basic shared types where useful.
-- Initial health checks.
-- Product skeleton introduced through approved implementation tasks.
+- Platform and catalog health checks.
 
 Out of scope:
 
 - Planned bugs.
+- Authentication, roles, and demo accounts.
 - Admin area.
 - Checkout and orders.
+- Public documentation publication.
 
-Acceptance signal: A user can browse clean catalog data locally and health checks pass. Planned bugs are not implemented in this phase.
+Acceptance signal: A new local environment can apply the catalog migration,
+load deterministic clean catalog data, and browse catalog and product details
+through the application. Relevant health and clean behavior tests pass, and no
+planned bug is implemented.
 
 ## Phase 2 - Auth, Roles and Seeded Demo Scenarios
 
@@ -49,7 +63,9 @@ Main deliverables:
 - Auth flow.
 - Role model.
 - Demo accounts.
-- Seeded comics and users.
+- Seeded users and role-specific scenarios.
+- Expansion of the Phase 1 catalog seed where auth scenarios require it.
+- Repeatable reset behavior for account and role scenarios.
 
 Out of scope:
 
@@ -98,23 +114,28 @@ Out of scope:
 
 Acceptance signal: Admin users can access basic admin workflows while non-admin users cannot.
 
-## Phase 5 - Public/Internal Docs and API Contracts
+## Phase 5 - Public Docs and API Contract Publication
 
-Goal: Publish training-facing docs and maintain internal implementation-facing API contracts.
+Goal: Publish training-facing docs and consolidate the internal contracts that
+have evolved with clean feature implementation.
 
 Main deliverables:
 
 - Public documentation area.
 - Public training Swagger/OpenAPI.
-- Internal developer API contract.
+- Consolidated repository-backed internal developer API contract.
 - API behavior documentation rules.
+- Contract consistency checks for implemented clean APIs.
 
 Out of scope:
 
 - Bug spoilers in public docs.
 - Auto-generated challenge flows.
 
-Acceptance signal: Public and internal API documentation are separated and consistent with implemented clean behavior.
+Acceptance signal: Public and internal API documentation are separated,
+published in their intended forms, and consistent with implemented clean
+behavior. Internal contracts already used by earlier features remain the clean
+source of expected behavior.
 
 ## Phase 6 - Bug Registry and Bug Flag System
 
@@ -126,7 +147,7 @@ Main deliverables:
 - Bug ID rules.
 - Bug flag model.
 - Closed bug guide structure.
-- Repository-first internal API contract approach reflected in docs.
+- Registry-to-guide synchronization and spoiler boundary rules.
 
 Out of scope:
 
@@ -157,23 +178,26 @@ Acceptance signal: Each planned bug has a registry entry, implementation, verifi
 
 ## Phase 8 - Automation Readiness
 
-Goal: Make the product useful for automation practice.
+Goal: Expand the existing feature-level test foundation into a stable,
+documented automation practice surface.
 
 Main deliverables:
 
 - Stable selectors and API fixtures.
-- Playwright E2E coverage.
-- Supertest API coverage.
-- Jest or Vitest coverage.
+- Expanded Playwright E2E coverage.
+- Expanded Supertest API coverage.
+- Expanded Jest or Vitest coverage.
 - k6 smoke tests.
-- CI command structure.
+- Mature CI command structure for the supported test taxonomy.
 
 Out of scope:
 
 - Auto-grading.
 - Hosted runner infrastructure.
 
-Acceptance signal: QA users can build automation suites against stable local scenarios.
+Acceptance signal: QA users can build automation suites against stable local
+scenarios, while project CI clearly separates health, clean core, contract, bug
+verification, and performance smoke intent where those suites exist.
 
 ## Phase 9 - Local Demo Polish and Deployment Preparation
 
@@ -182,7 +206,7 @@ Goal: Improve local demo quality and prepare for optional deployment.
 Main deliverables:
 
 - Local demo polish.
-- Seed reset workflow.
+- End-to-end onboarding and reset workflow validation.
 - Deployment notes.
 - Documentation cleanup.
 

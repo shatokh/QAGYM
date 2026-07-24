@@ -4,6 +4,16 @@ QA Comics Gym needs a special test taxonomy because the product will contain int
 
 The goal is not to make every test pass against every bug mode. The goal is to make test intent explicit.
 
+## Incremental Coverage Rule
+
+Clean feature behavior should gain relevant tests with the feature once the
+required test foundation exists. The project must not build all clean product
+behavior first and defer its first tests until Phase 8.
+
+Infrastructure needed by the first test suite may be introduced through a
+separate approved task. Phase 8 expands automation breadth, stable fixtures,
+selectors, and documented training commands.
+
 ## Health Tests
 
 Health tests confirm that the platform starts and basic infrastructure works. Planned bugs must not break health tests.
@@ -40,7 +50,10 @@ Where possible, they should verify both sides:
 
 API tests should confirm that backend behavior matches the public training Swagger/OpenAPI surface and the internal developer API contract.
 
-Supertest is planned for API behavior tests. Contract checks should be added when API contracts exist.
+Supertest is planned for API behavior tests. Internal contracts should be
+created with the APIs they specify, and contract checks should be added as the
+supporting test foundation becomes available. Public Swagger publication may
+follow in Phase 5.
 
 ## Playwright E2E
 

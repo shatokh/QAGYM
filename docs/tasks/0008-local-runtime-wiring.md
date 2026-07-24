@@ -241,7 +241,8 @@ No project package dependency is added.
 
 ## Commit Decision
 
-Pending human decision.
+Committed as `21c7cc1 chore: add local PostgreSQL runtime` after explicit human
+approval.
 
 ## Implementation Notes
 

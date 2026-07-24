@@ -14,6 +14,14 @@ Allowed statuses:
 - Changes Requested
 - Done
 
+## Approval Record
+
+- Approved by: Pending.
+- Approval reference: Pending.
+- Approved scope notes: None.
+
+Do not start implementation while the approval record remains pending.
+
 ## Behavior Type
 
 Choose one:
@@ -25,6 +33,11 @@ Choose one:
 - Docs Only
 - Infrastructure
 - Test Only
+
+Choose the type by primary behavior intent. A Clean Feature may include its
+directly supporting schema migration or dependency only when that impact is
+explicitly approved. Standalone migration tooling, runtime wiring, and unrelated
+dependency work remain Infrastructure.
 
 ## Background
 

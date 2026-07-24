@@ -27,6 +27,8 @@ None.
   persistent named volume, and no product schema.
 - Minimal GitHub Actions quality gates completed for frozen install, frontend
   and backend typechecks and builds, Prisma validation, and Compose validation.
+- Documentation audit alignment completed across roadmap, architecture,
+  governance, testing, catalog direction, and planned bug conventions.
 
 ## Blocked
 
@@ -45,15 +47,25 @@ None.
 - Document-first workflow.
 - Clean Core + Bug Layer.
 - Keep Phase 0 as documentation foundation only.
+- Phase 1 includes a minimal deterministic clean catalog seed and repeatable
+  reset path.
+- Internal behavior/API contracts and relevant clean tests evolve with each
+  feature instead of waiting for Phase 5 or Phase 8.
 - Keep `docs/high-level-plan.md` as a strategic reference and promote accepted parts only when needed.
 - Frontend libraries beyond React + Vite are deferred until approved feature
   tasks require them.
 - Zod is the preferred backend DTO validation approach.
 - MVP includes minimum checkout address only; full profile editing is later scope.
 - MVP may include display-only discounted seed items, without promocodes.
+- RU/EN-ready catalog content should use normalized translation records.
+- Money should use integer minor units plus an ISO currency code.
+- Display-only discounted catalog items may use an optional comparison price
+  without introducing a discount engine.
+- Clean catalog media should use stable local assets with a deterministic
+  missing-media fallback.
 - No separate `ux/` bug registry folder at the start; use existing categories plus metadata.
 - Build a fully working clean app before planned bugs.
-- Planned bugs should start as flag-controlled.
+- Planned bugs should start as flag-controlled and disabled by default.
 - Closed bug guide should be hybrid: registry as source of truth, manual hints as guide content.
 - Internal API contract should be stored in the repository first, with a protected route later.
 - First planned bug pack target is 5-10 bugs.
@@ -78,6 +90,8 @@ None.
   implementation step.
 - Compatible completed steps may be grouped into one commit after human
   approval.
+- Task behavior type follows primary intent. A directly supporting product
+  migration may remain in an explicitly scoped Clean Feature task.
 - Git uses `main` as the initial branch.
 - Repository text files are normalized to LF through `.gitattributes`.
 - Prisma CLI is pinned to `7.9.0` with dotenv `17.4.2`.
@@ -90,6 +104,9 @@ None.
 - The initial CI baseline uses one read-only `ubuntu-24.04` quality job.
 - GitHub Actions dependencies are pinned to immutable release commit SHAs.
 - CI lint and automated test gates remain deferred until real commands exist.
+- An in-app protected bug guide does not hide repository-backed registry
+  spoilers from repository readers.
+- The next proposed task is `0011` - Phase 1 Catalog Foundation Plan.
 
 ## Decisions Still Pending
 
@@ -97,3 +114,6 @@ None.
 - Exact auth implementation details.
 - Deployment target.
 - Exact test command structure.
+- Catalog relationships, identifiers, slugs, publication and stock rules,
+  ordering, pagination, search, and filtering.
+- Repository visibility and the spoiler threat model for registry content.

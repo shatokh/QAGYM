@@ -213,7 +213,8 @@ No npm or pnpm package dependency is added.
 
 ## Commit Decision
 
-Pending human decision.
+Committed as `f556f95 ci: add baseline quality gates` after explicit human
+approval.
 
 ## Implementation Notes
 

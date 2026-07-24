@@ -50,7 +50,9 @@ Planned bugs can be:
 - Always-on: Present in a specific seeded training scenario.
 - Flag-controlled: Enabled or disabled through configuration or scenario flags.
 
-The first planned bugs should be flag-controlled. Always-on bugs or a default-on training pack can be selected later after the clean app, bug layer, and verification strategy are stable.
+The first planned bugs should be flag-controlled and disabled by default.
+Always-on bugs or a default-on training pack can be selected later after the
+clean app, bug layer, and verification strategy are stable.
 
 ## Safe Security Simulations
 
@@ -63,3 +65,8 @@ Security simulations should be scoped, documented, and reversible.
 Public docs can describe safe testing boundaries, available scenarios, and training goals. They must not leak spoiler details for planned bugs.
 
 The closed bug guide should use a hybrid model: registry files are the source of truth, and guide pages manually add hints, discovery paths, mentor notes, and verification context. Access to the closed guide should be restricted by privileged credentials or role in future implementation.
+
+Access control in the application does not hide repository-backed registry
+files from people who can read the source repository. Before public source
+publication or a public demo, the project must define repository visibility and
+the intended spoiler threat model.

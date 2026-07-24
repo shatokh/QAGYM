@@ -4,6 +4,15 @@ This document captures the current high-level product plan for QA Comics Gym and
 
 The existing accepted decisions remain in ADRs and `PROGRESS.md`. Items marked as open questions or proposed details still need explicit approval through task documents or ADR amendments before implementation.
 
+## Current Foundation Status
+
+The repository is no longer documentation-only. It currently contains pnpm
+workspaces, React/Vite and NestJS skeletons, Prisma PostgreSQL configuration, a
+Docker Compose PostgreSQL runtime, and baseline GitHub Actions quality gates.
+
+No product model, migration, seed implementation, catalog behavior, formal API
+contract, or automated product test suite exists yet.
+
 ## Product Concept
 
 QA Comics Gym is a QA training sandbox based on a realistic dummy comics e-commerce store.
@@ -20,7 +29,10 @@ Users should eventually be able to:
 - Use Swagger/OpenAPI documentation.
 - Search for functional, API, UI, security, accessibility, performance, localization, mobile, and reliability bugs.
 
-The MVP is not an LMS. It should not start with courses, progress tracking, scoring, answer checks, mentor review, or challenge building. The MVP is a controlled broken product for QA practice.
+The MVP is not an LMS. It should not start with courses, progress tracking,
+scoring, answer checks, mentor review, or challenge building. It should first be
+a correct clean product and later become a controlled training product with
+registered planned bugs.
 
 ## Core Architecture Idea
 
@@ -39,7 +51,9 @@ Planned bugs should be represented explicitly in code and documentation. The imp
 The proposed MVP mode model is intentionally simple:
 
 - Clean/dev mode: Used by developers and CI. Planned bugs are disabled where possible.
-- Training mode: Main user-facing mode. Planned bugs should initially be flag-controlled only. A later default-on training pack can be selected after the clean app and bug layer are stable.
+- Training mode: Main user-facing mode. Planned bugs should initially be
+  flag-controlled and disabled by default. A later default-on training pack can
+  be selected after the clean app and bug layer are stable.
 - Spoiler/admin mode: Does not change app behavior, but opens privileged bug documentation.
 
 The proposed technical direction is environment or configuration-based flags, for example:
@@ -89,14 +103,17 @@ Additional proposed testing details:
 - Playwright for E2E and UI regression.
 - k6 for performance smoke and small load scenarios.
 
-Additional proposed infrastructure details:
+Current infrastructure foundation:
 
 - Docker Compose.
 - PostgreSQL container.
-- Backend container.
-- Frontend container or local dev server.
-- Prisma migrations and seed data.
 - GitHub Actions for CI.
+- Frontend and backend run on the host during local development.
+
+Still-proposed infrastructure details:
+
+- Prisma product migrations and deterministic seed data.
+- Backend and frontend containers only if later deployment work requires them.
 
 ## Domain Modules
 
@@ -231,7 +248,7 @@ status: active
 activation:
   mode: flag
   flag: ENABLE_BUG_CART_DUPLICATE
-enabledByDefault: true
+enabledByDefault: false
 affectedRoles:
   - authorized_user
 surfaces:
@@ -273,6 +290,20 @@ Suggested first categories and examples:
 
 Seed scenarios are part of the product, not just setup data.
 
+Phase 1 should introduce the minimum deterministic clean catalog seed and its
+repeatable reset path. Phase 2 should extend seed behavior with users, roles,
+demo accounts, and auth-oriented scenarios.
+
+Accepted catalog data directions:
+
+- Localized catalog text should use normalized translation records.
+- Money should use integer minor units plus an ISO currency code.
+- Display-only discounted items may use an optional comparison price without a
+  promocode or discount engine.
+- Clean catalog covers should use stable local assets.
+- Missing cover data should use a deterministic clean fallback. A broken cover
+  URL is planned bug behavior and must not appear in the clean seed.
+
 Suggested demo users:
 
 - Guest, without credentials.
@@ -294,7 +325,6 @@ Suggested product data:
 - Cheap item.
 - Limited edition item.
 - Item with huge description.
-- Item with broken image URL for a planned bug.
 
 Suggested order data:
 
@@ -315,6 +345,10 @@ The planned test taxonomy remains:
 - Bug verification tests: Planned bugs reproduce in training mode or when flags are enabled.
 - Contract tests: Internal API contract, not public training Swagger.
 - Performance smoke tests: k6 scenarios for catalog, product details, login, add to cart, and checkout.
+
+Relevant internal contracts and clean behavior tests should be developed with
+each feature. Phase 8 expands automation coverage and training ergonomics; it
+does not introduce the first clean product tests.
 
 ## MVP Scope Summary
 
@@ -398,19 +432,21 @@ qa-comics-gym/
 
   prisma/
     schema.prisma
-    seed.ts
-    seed-scenarios/
+    migrations/
+    seed/
 
-  docker/
-  docker-compose.yml
+  compose.yaml
   README.md
 ```
 
-This structure is not implemented yet. It must be introduced through approved tasks.
+Parts of this structure are now implemented. `docs/architecture.md` is the
+source of truth for the current repository layout; this section remains a
+future direction and must not override implemented structure.
 
 ## Analysis Notes
 
-The high-level plan is mostly consistent with the existing documentation foundation. The strongest aligned decisions are:
+The high-level plan is mostly consistent with the current project direction.
+The strongest aligned decisions are:
 
 - QA Comics Gym as a dummy comics e-commerce sandbox.
 - Local-first MVP.
@@ -425,7 +461,9 @@ Potential conflicts or areas needing clarification:
 - Phase numbering conflict is resolved: existing `ROADMAP.md` keeps Phase 0 as documentation foundation only. Product skeleton work belongs to the next implementation phase.
 - Scope density: this plan's MVP includes a broad store, admin area, docs area, closed guide, API contracts, seed scenarios, tests, Playwright, k6, and bug infrastructure. It is coherent, but too large for a single MVP task. It should be split into phases.
 - Public Swagger intentional mismatches: useful for training, but risky if not strictly registry-driven. The internal contract must remain the source for clean expected behavior.
-- Always-on bugs are deferred. Planned bugs should start as flag-controlled only after the clean app exists. A default-on bug pack can be selected later.
+- Always-on bugs are deferred. Planned bugs should be introduced only after the
+  clean app exists, and should start as flag-controlled and disabled by default.
+  A default-on bug pack can be selected later.
 - Auth details: JWT plus refresh token flow is proposed, but exact token storage, expiry, invalidation, and logout behavior are still not decided.
 - Validation stack is resolved at planning level: use Zod as the primary backend DTO validation approach.
 - Admin user visibility: the plan says admin can view users, but this must be scoped carefully to avoid unsafe security examples or unnecessary privacy-like data.
@@ -448,6 +486,15 @@ Potential conflicts or areas needing clarification:
 10. Store the internal API contract in the repository first. A protected route can be added later.
 11. First planned bug pack should be small: 5-10 bugs.
 12. MVP should include deployment preparation only. Public demo comes after the local MVP is stable.
+13. Phase 1 includes a minimal deterministic clean catalog seed and reset path.
+14. Internal behavior/API contracts and clean feature tests evolve with each
+    feature. Phase 5 publishes docs, and Phase 8 expands automation readiness.
+15. RU/EN-ready catalog content should use normalized translation records.
+16. Money should use integer minor units plus an ISO currency code.
+17. Clean catalog media should use stable local assets with a deterministic
+    missing-media fallback.
+18. Task type follows primary behavior intent. A directly supporting product
+    migration may remain in an explicitly scoped Clean Feature task.
 
 ## Remaining Questions
 
@@ -456,3 +503,7 @@ Potential conflicts or areas needing clarification:
 - Exact frontend setup choices.
 - Exact test command structure.
 - Deployment target.
+- Catalog entity relationships, identifiers, slugs, publication and stock
+  rules, deterministic ordering, pagination, search, and filtering.
+- Repository visibility and the spoiler threat model for repository-backed bug
+  registry content.

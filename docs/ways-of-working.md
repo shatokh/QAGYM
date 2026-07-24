@@ -39,7 +39,15 @@ Implementation mode is for approved tasks only. Codex should keep changes small 
 
 Clean feature tasks and planned bug tasks must remain separate. A clean feature task should not add intentional defects. A planned bug task should not introduce unrelated product behavior.
 
-Infrastructure work is also implementation work. Package setup, Docker, CI, database migrations, runtime configuration, and dependency changes require approved Infrastructure tasks.
+Infrastructure work is also implementation work. Package setup, Docker, CI,
+standalone migration tooling or operational migrations, runtime configuration,
+and dependency changes require approved Infrastructure tasks.
+
+Task type follows the primary intent of the change. A product model and its
+directly supporting migration may remain one Clean Feature task when the
+migration, dependencies, verification, and documentation impact are explicit in
+the approved scope. This does not permit unrelated tooling, runtime, or
+refactoring work inside the feature.
 
 New dependencies, tools, services, and runtime requirements must be named in the approved task. Codex should not add hidden dependencies while implementing another task type.
 
@@ -102,6 +110,7 @@ Task files should live in `docs/tasks/`. A practical task file should include:
 
 - Title.
 - Status.
+- Approval record.
 - Behavior type.
 - Background.
 - Scope.
@@ -134,7 +143,9 @@ A planned bug is an intentional educational defect with a registry entry, ID, ca
 
 A real bug is accidental behavior that conflicts with the clean core, platform health, docs, contracts, or a planned bug specification. Real bugs are fixed through bugfix tasks, not added to the planned bug registry as a shortcut.
 
-Planned bugs must not be implemented before the corresponding clean feature exists and is verified. Initial planned bugs should be flag-controlled. Always-on bugs or default-on packs require later approval.
+Planned bugs must not be implemented before the corresponding clean feature
+exists and is verified. Initial planned bugs should be flag-controlled and
+disabled by default. Always-on bugs or default-on packs require later approval.
 
 ## API Contract Changes
 
@@ -147,6 +158,10 @@ Any API behavior change must consider:
 - Public docs spoiler risk.
 
 Intentional public API documentation mismatches are planned bugs and must be tied to bug registry entries.
+
+Internal behavior and API contracts should be created and maintained with the
+clean features they specify. The later documentation phase publishes and
+consolidates those contracts; it does not replace feature-local contract work.
 
 ## Small Reviewable Changes
 

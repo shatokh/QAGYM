@@ -42,6 +42,7 @@ Each planned bug should include:
 - Clean expected behavior.
 - Bugged behavior.
 - Trigger or flag.
+- Flag default state.
 - Affected feature.
 - Surface metadata, such as UI, API, UX, mobile, or docs.
 - Public docs impact.
@@ -77,6 +78,7 @@ difficulty: L2
 status: proposed
 affected_feature: cart
 trigger: BUG_FUNCTIONAL_001_CART_TOTAL_STALE
+enabled_by_default: false
 surface: UX
 clean_expected_behavior: Cart total updates immediately after quantity changes.
 bugged_behavior: Cart total remains stale until the page is refreshed.

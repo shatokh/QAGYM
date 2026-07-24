@@ -51,20 +51,37 @@ Only tasks in Approved status may be implemented.
 
 Each task must identify one behavior type:
 
-- Clean Feature: Implements correct expected product behavior.
+- Clean Feature: Implements correct expected product behavior. It may include a
+  directly supporting schema migration or dependency only when the approved
+  task names that impact explicitly.
 - Planned Bug: Introduces a registered educational bug through the controlled bug layer.
 - Bugfix: Fixes accidental behavior that is not part of the planned bug registry.
 - Refactor: Changes structure without intended behavior change.
 - Docs Only: Changes documentation only.
-- Infrastructure: Changes setup, tooling, CI, Docker, package management, database migrations, configuration, or runtime wiring.
+- Infrastructure: Changes setup, tooling, CI, Docker, package management,
+  standalone migration tooling or operational migrations, configuration, or
+  runtime wiring without introducing product behavior.
 - Test Only: Changes tests only.
+
+## Primary Behavior Intent
+
+Classify a task by the primary intent of its observable change.
+
+- A product model and the migration that directly represents it belong to the
+  same Clean Feature when both are explicitly approved.
+- Standalone migration tooling, database operations, runtime wiring, and
+  unrelated dependency work remain Infrastructure.
+- A supporting migration or dependency does not authorize unrelated
+  infrastructure changes inside a Clean Feature.
+- If the primary intent is unclear or the task mixes independent behavior
+  types, split the task before approval.
 
 ## Planned Bug Rules
 
 - Planned bugs must be registered before implementation.
 - Planned bugs need stable IDs.
 - Planned bug tasks must reference their registry entry.
-- Initial planned bugs should be flag-controlled.
+- Initial planned bugs should be flag-controlled and disabled by default.
 - Planned bug behavior must be distinguishable from clean core behavior.
 - Planned bugs must not break platform health.
 - Safe security simulations only.
@@ -73,6 +90,9 @@ Each task must identify one behavior type:
 ## API Contract Rules
 
 - Public training Swagger/OpenAPI and internal developer API contracts serve different audiences.
+- Internal behavior and API contracts must evolve with the clean features they
+  specify; do not defer the first internal contract until the documentation
+  publication phase.
 - Public API behavior changes must consider public docs, internal contracts, tests, and seed scenarios.
 - Intentional public API documentation mismatches are planned bugs and must be registry-driven.
 
@@ -123,6 +143,9 @@ A task is ready for review when it includes:
 - Acceptance criteria.
 - Verification plan.
 - Risks or open questions.
+
+Before implementation, the task must also preserve an approval record with the
+human approval reference and any approved scope notes.
 
 For planned bug tasks, it must also include:
 

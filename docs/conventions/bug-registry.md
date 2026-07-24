@@ -76,6 +76,9 @@ Avoid renaming IDs after implementation unless a migration note is added.
 
 Initial planned bugs should be flag-controlled.
 
+Initial bug flags must default to disabled. A default-enabled flag is part of a
+later default-on pack decision and requires separate approval.
+
 Always-on bugs and default-on training packs can be introduced later only through approved tasks after the clean app, bug layer, and verification strategy are stable.
 
 ## Public Docs
@@ -88,6 +91,10 @@ Public docs must not reveal spoiler details:
 - No closed guide hints.
 
 Public docs may describe safe testing boundaries, feature behavior, and general training areas.
+
+Repository-backed registry content remains visible to repository readers even
+when the in-app guide is role-protected. Do not describe application access
+control as repository-level secrecy.
 
 ## Closed Guide
 

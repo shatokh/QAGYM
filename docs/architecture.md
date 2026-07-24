@@ -50,6 +50,35 @@ should live under `prisma/seed/` unless an approved task changes that structure.
 The first migration must represent a real product model rather than an
 infrastructure probe table.
 
+## Catalog Foundation Direction
+
+The first catalog plan should follow these accepted directions:
+
+- Localized comic text uses normalized translation records with explicit locale
+  identity.
+- Money uses integer minor units and an ISO currency code.
+- Display-only discounted products may use an optional comparison price. No
+  promocode or discount engine belongs in the MVP foundation.
+- Clean catalog media uses stable local assets so local development and
+  automation do not depend on third-party image availability.
+- Missing media has a deterministic clean fallback. Broken image behavior is
+  reserved for a future registered planned bug.
+
+Task `0011` must still define entity relationships, identifier and slug rules,
+publication and stock behavior, deterministic ordering, pagination, search, and
+filtering before the Prisma model is implemented.
+
+## Incremental Contracts and Tests
+
+Internal behavior and API contracts should be written with the clean features
+they specify. Relevant clean behavior tests should be added when each feature
+is implemented and the required test foundation exists.
+
+Phase 5 publishes and consolidates public and internal API documentation. It
+does not postpone the first internal contract until after APIs exist. Phase 8
+expands automation coverage and training readiness; it does not postpone all
+product tests until the end of the clean application.
+
 ## Clean Core + Bug Layer
 
 The clean core is the correct comics store behavior. It should be implemented first and covered by tests.
