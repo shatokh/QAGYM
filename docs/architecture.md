@@ -18,6 +18,7 @@ bug-registry/
 tests/
 prisma/                # PostgreSQL schema foundation exists
 prisma.config.ts       # Prisma CLI configuration exists
+compose.yaml           # local PostgreSQL runtime
 ```
 
 Repository areas:
@@ -89,9 +90,15 @@ bugs are introduced.
 
 ## Local-First Runtime
 
-The future local runtime should use Docker Compose for PostgreSQL and supporting
-services that are approved for MVP. The frontend and backend are currently
-runnable directly through documented pnpm commands.
+The local runtime uses Docker Compose with one PostgreSQL service based on
+`postgres:18.4-alpine`. PostgreSQL data persists in a Compose-managed named
+volume mounted at `/var/lib/postgresql`. The database is published on a
+configurable host port and reports readiness through `pg_isready`.
 
-Docker, a running PostgreSQL service, Prisma Client integration, migrations, and
+The frontend and backend continue to run directly through documented pnpm
+commands. Application containers, Prisma Client integration, migrations, and
 seed data remain future approved task scope.
+
+Docker Compose is the primary supported runtime for the MVP. The Compose file
+avoids unnecessary Docker-specific configuration, but Podman compatibility is
+not yet supported or verified and requires a separate infrastructure task.

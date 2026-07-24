@@ -16,13 +16,16 @@ exposes the platform health endpoint at `GET /health`. Both workspaces can run,
 typecheck, and build, but they do not contain store features or business logic
 yet.
 
-The product database schema, Docker runtime, seed data, formal API contracts,
-automated tests, and planned bug layer have not been created yet.
+The local Docker Compose runtime provides PostgreSQL for future product work.
+The product database schema, seed data, formal API contracts, automated tests,
+and planned bug layer have not been created yet.
 
 A Prisma 7 PostgreSQL configuration skeleton now exists at the repository root.
 It contains no product models, generated client, migrations, seed data, or
-database connection from the API. A running PostgreSQL service is still future
-scope.
+database connection from the API.
+
+Docker Compose is the primary local container runtime for the MVP. Podman
+compatibility will be evaluated later through a separate infrastructure task.
 
 ## Development Workflow
 

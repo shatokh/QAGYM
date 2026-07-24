@@ -1,16 +1,33 @@
 # Local Development
 
 Local development is being introduced incrementally through approved
-infrastructure tasks. The frontend and backend skeletons are currently
-available; database, Docker, seed, and test commands will be added by later
-tasks.
+infrastructure tasks. The frontend, backend, Prisma configuration, and local
+PostgreSQL runtime are currently available. Seed and test commands will be
+added by later tasks.
 
 ## Prerequisites
 
 - Node.js `22.13.0` or newer.
 - Corepack, included with the currently selected Node.js toolchain.
+- Docker Engine or Docker Desktop with Docker Compose v2.
 
 The repository pins pnpm `11.17.0` through the root `packageManager` field.
+
+Docker Compose is the primary supported container runtime for the MVP. Podman
+compatibility is deferred and has not been verified.
+
+## Local Environment
+
+Create the ignored local environment file from the committed example:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+The example contains non-secret local demo credentials only. Do not reuse them
+for production or shared environments.
+
+If `POSTGRES_PORT` is changed, update the port in `DATABASE_URL` to match.
 
 ## Install Dependencies
 
@@ -107,8 +124,8 @@ corepack pnpm start:api
 
 ## Prisma
 
-Prisma is configured for PostgreSQL, but no database service or product model
-exists yet.
+Prisma is configured for PostgreSQL, and Docker Compose provides the local
+database service. No product model exists yet.
 
 Define `DATABASE_URL` in the local environment or an untracked root `.env`
 file. `.env.example` contains the non-secret local connection template intended
@@ -129,9 +146,38 @@ corepack pnpm db:format
 These commands currently validate and format configuration only. Migration,
 client generation, Studio, and seed commands are intentionally unavailable.
 
+## PostgreSQL
+
+Start PostgreSQL in the background:
+
+```powershell
+corepack pnpm infra:up
+```
+
+Inspect service and health status:
+
+```powershell
+corepack pnpm infra:status
+```
+
+Follow PostgreSQL logs:
+
+```powershell
+corepack pnpm infra:logs
+```
+
+Stop the service:
+
+```powershell
+corepack pnpm infra:down
+```
+
+Stopping the service does not delete the named data volume. No destructive
+database reset command is provided.
+
 ## Not Available Yet
 
-- Docker Compose and PostgreSQL.
+- Application containers and verified Podman support.
 - Prisma migrations and seed data.
 - Lint command.
 - Unit, API, E2E, contract, and k6 test commands.

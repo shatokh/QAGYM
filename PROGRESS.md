@@ -23,6 +23,8 @@ None.
 - Git repository baseline and first project foundation commit completed.
 - Prisma PostgreSQL configuration skeleton completed without product models or
   database runtime.
+- Docker Compose local runtime completed with a healthy PostgreSQL service,
+  persistent named volume, and no product schema.
 
 ## Blocked
 
@@ -34,6 +36,8 @@ None.
 - NestJS backend.
 - PostgreSQL + Prisma.
 - Docker Compose local-first.
+- Docker Compose is the primary MVP runtime; Podman compatibility will be
+  evaluated in a separate future infrastructure task.
 - pnpm workspaces preferred.
 - No Turborepo or Nx at start.
 - Document-first workflow.
