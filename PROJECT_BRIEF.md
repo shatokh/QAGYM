@@ -95,9 +95,15 @@ The clean catalog should start with these accepted data directions:
 - Treat a missing cover as a supported clean state with a deterministic
   fallback. Broken media behavior belongs to a future registered planned bug.
 
-Entity relationships, identifiers, publication rules, stock rules, ordering,
-pagination, search, and filtering remain to be defined in the catalog
-foundation plan.
+The approved foundation normalizes creators, genres, series, and translations.
+Catalog entities use integer internal IDs plus stable slugs and comic SKUs.
+Public reads expose only published comics, and the first read slice is
+paginated list plus slug detail. Search and filters follow as separate Phase 1
+features.
+
+Exact Prisma types, lengths, indexes, pagination shape, locale transport,
+errors, search semantics, and filter syntax remain implementation-contract
+decisions.
 
 ## Clean Core + Bug Layer
 

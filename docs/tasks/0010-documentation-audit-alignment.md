@@ -257,7 +257,8 @@ None.
 
 ## Commit Decision
 
-Pending human decision.
+Committed as `3c8a85f docs: align roadmap and governance after audit` after
+explicit human approval.
 
 ## Implementation Notes
 

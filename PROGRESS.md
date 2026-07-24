@@ -29,6 +29,8 @@ None.
   and backend typechecks and builds, Prisma validation, and Compose validation.
 - Documentation audit alignment completed across roadmap, architecture,
   governance, testing, catalog direction, and planned bug conventions.
+- Phase 1 clean catalog domain plan completed with entity, business rule, seed,
+  contract, test, and implementation boundaries.
 
 ## Blocked
 
@@ -63,6 +65,19 @@ None.
   without introducing a discount engine.
 - Clean catalog media should use stable local assets with a deterministic
   missing-media fallback.
+- A Comic represents one sellable issue or standalone volume.
+- Catalog creators, genres, series, and localized display text use normalized
+  relations.
+- Catalog entities use database-generated integer internal IDs, stable slugs,
+  and stable comic SKUs.
+- Standard clean catalog seed records include both EN and RU translations.
+- The initial clean catalog seed uses only `USD`.
+- Catalog publication states are `DRAFT`, `PUBLISHED`, and `ARCHIVED`; public
+  reads expose only published comics.
+- The first catalog read slice is paginated list plus slug detail. Search and
+  filters follow through separate Phase 1 tasks.
+- Clean seed titles, creators, descriptions, and covers are fictional and
+  original or explicitly licensed.
 - No separate `ux/` bug registry folder at the start; use existing categories plus metadata.
 - Build a fully working clean app before planned bugs.
 - Planned bugs should start as flag-controlled and disabled by default.
@@ -106,7 +121,8 @@ None.
 - CI lint and automated test gates remain deferred until real commands exist.
 - An in-app protected bug guide does not hide repository-backed registry
   spoilers from repository readers.
-- The next proposed task is `0011` - Phase 1 Catalog Foundation Plan.
+- The approved catalog implementation sequence starts with `0012` - Catalog
+  Domain Schema and Initial Migration.
 
 ## Decisions Still Pending
 
@@ -114,6 +130,7 @@ None.
 - Exact auth implementation details.
 - Deployment target.
 - Exact test command structure.
-- Catalog relationships, identifiers, slugs, publication and stock rules,
-  ordering, pagination, search, and filtering.
+- Exact pagination limits, response shape, locale transport, API errors, search
+  semantics, and filter query syntax.
+- Exact Prisma field types, lengths, indexes, and migration-level constraints.
 - Repository visibility and the spoiler threat model for registry content.

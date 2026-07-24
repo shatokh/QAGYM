@@ -52,21 +52,29 @@ infrastructure probe table.
 
 ## Catalog Foundation Direction
 
-The first catalog plan should follow these accepted directions:
+`docs/product/catalog.md` is the clean catalog domain source before schema and
+API implementation.
 
-- Localized comic text uses normalized translation records with explicit locale
-  identity.
-- Money uses integer minor units and an ISO currency code.
-- Display-only discounted products may use an optional comparison price. No
-  promocode or discount engine belongs in the MVP foundation.
-- Clean catalog media uses stable local assets so local development and
-  automation do not depend on third-party image availability.
-- Missing media has a deterministic clean fallback. Broken image behavior is
-  reserved for a future registered planned bug.
+The approved first model boundary contains:
 
-Task `0011` must still define entity relationships, identifier and slug rules,
-publication and stock behavior, deterministic ordering, pagination, search, and
-filtering before the Prisma model is implemented.
+- `Comic` as one sellable issue or standalone volume.
+- Normalized `ComicTranslation`, `Series`, `SeriesTranslation`, `Creator`,
+  `ComicCreator`, `Genre`, `GenreTranslation`, and `ComicGenre` records.
+- Database-generated integer internal IDs plus stable slugs and comic SKUs.
+- EN and RU translations for every standard clean seed item.
+- Integer minor-unit money with an ISO currency code and optional comparison
+  price.
+- Non-negative stock and explicit `DRAFT`, `PUBLISHED`, and `ARCHIVED` states.
+- Stable local cover assets and a deterministic missing-cover fallback.
+- Explicit merchandising order with an internal ID tie-breaker.
+
+The first read slice is paginated published list plus slug detail. Search and
+filters remain separate Phase 1 Clean Features after list/detail behavior is
+stable.
+
+The approved proposed sequence is schema and migration, clean seed and local
+media, backend test foundation, catalog API and internal contract, frontend
+foundation, then list/detail UI. Each step still requires its own approved task.
 
 ## Incremental Contracts and Tests
 

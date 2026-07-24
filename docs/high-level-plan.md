@@ -495,6 +495,14 @@ Potential conflicts or areas needing clarification:
     missing-media fallback.
 18. Task type follows primary behavior intent. A directly supporting product
     migration may remain in an explicitly scoped Clean Feature task.
+19. Normalize creators, genres, series, and catalog translations.
+20. Use integer internal catalog IDs plus stable slugs and comic SKUs.
+21. Use `DRAFT`, `PUBLISHED`, and `ARCHIVED` publication states, with public
+    reads limited to published comics.
+22. Start catalog reads with paginated list and slug detail. Add search and
+    filters through later Phase 1 tasks.
+23. Seed only `USD` initially and provide both EN and RU translations for every
+    standard clean catalog item.
 
 ## Remaining Questions
 
@@ -503,7 +511,8 @@ Potential conflicts or areas needing clarification:
 - Exact frontend setup choices.
 - Exact test command structure.
 - Deployment target.
-- Catalog entity relationships, identifiers, slugs, publication and stock
-  rules, deterministic ordering, pagination, search, and filtering.
+- Exact Prisma field types, lengths, indexes, and migration-level constraints.
+- Exact pagination limits, response shape, locale transport, API errors, search
+  semantics, and filter query syntax.
 - Repository visibility and the spoiler threat model for repository-backed bug
   registry content.
