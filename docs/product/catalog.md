@@ -274,8 +274,17 @@ Default list order is:
 1. Merchandising sort order ascending.
 2. Internal comic ID ascending as a stable tie-breaker.
 
-Pagination shape, limits, query parameter syntax, selected response fields,
-error envelope, and cache behavior belong to the internal API contract.
+The implemented internal API contract uses:
+
+- `GET /api/v1/comics` and `GET /api/v1/comics/:slug`.
+- Page-based pagination with defaults `page=1` and `pageSize=12`.
+- Maximum `pageSize=50`.
+- Query locale `en` or `ru`, defaulting to `en`.
+- Stable product DTOs that do not expose numeric database IDs.
+- Zod request validation and a stable JSON error envelope.
+
+Exact response and error shapes are defined in
+`docs/internal/api/catalog.md`. Cache behavior remains deferred.
 
 Search and filters for genre, creator, series, price, and availability remain
 Phase 1 Clean Features but follow list/detail in separate tasks.
@@ -334,16 +343,16 @@ visibility remain verification responsibilities of later implementation tasks.
 
 ## Contract Direction
 
-The repository-first internal catalog API contract should live at:
+The repository-first internal catalog API contract lives at:
 
 ```text
 docs/internal/api/catalog.md
 ```
 
-It must define clean list/detail behavior, pagination, locale selection,
-fallback behavior, response fields, money serialization, not-found behavior,
-and deterministic ordering before catalog API implementation is considered
-done.
+It defines clean list/detail behavior, pagination, locale selection, fallback
+behavior, response fields, money serialization, not-found behavior, and
+deterministic ordering. The implementation and database-backed contract tests
+must stay aligned with it.
 
 Public Swagger/OpenAPI publication remains Phase 5 scope.
 
@@ -363,11 +372,8 @@ Each task requires its own document and approval.
 
 ## Deferred Decisions
 
-- Prisma Client generator and output layout.
-- Pagination limits and response shape.
-- API locale transport and error envelope.
 - Search semantics and filter query syntax.
-- Genre response ordering.
+- Cache and ETag behavior.
 - Frontend router, query, form, i18n, and UI kit choices.
 - Additional creator roles.
 - Additional currencies or multi-currency commerce.

@@ -54,11 +54,14 @@ Where possible, they should verify both sides:
 
 API tests should confirm that backend behavior matches the public training Swagger/OpenAPI surface and the internal developer API contract.
 
-Supertest is configured for in-memory API behavior tests. The initial API suite
-is database-independent and verifies `GET /health` without binding a fixed port.
-Internal contracts should be created with the APIs they specify, and contract
-checks should be added with each supporting feature. Public Swagger publication
-may follow in Phase 5.
+Supertest initializes Nest in memory without binding a fixed application port.
+The API suite verifies `GET /health` and the catalog list/detail contract. The
+catalog tests run against a migrated, deterministically seeded PostgreSQL
+database and remain read-only after fixture preparation.
+
+The first internal contract is `docs/internal/api/catalog.md`. Contract checks
+should continue to be added with each supporting feature. Public Swagger
+publication may follow in Phase 5.
 
 ## Playwright E2E
 
@@ -76,13 +79,13 @@ Selectors should be stable enough for automation practice.
 ## Jest and Future Frontend Tests
 
 The NestJS backend uses Jest 29 with ts-jest 29. Backend unit tests are
-colocated under `apps/api/src/**/*.spec.ts`; in-memory HTTP API tests are kept
-under `apps/api/test/**/*.api-spec.ts` and use a separate Jest configuration.
+colocated under `apps/api/src/**/*.spec.ts`; HTTP API tests are kept under
+`apps/api/test/**/*.api-spec.ts` and use a separate Jest configuration.
 
 Current root commands:
 
 - `pnpm test`: backend unit tests.
-- `pnpm test:api`: backend in-memory API tests.
+- `pnpm test:api`: backend API tests against prepared PostgreSQL.
 
 The frontend unit test runner remains undecided. Vitest may be evaluated in a
 separate approved frontend test task.
@@ -104,19 +107,21 @@ to `main`. It verifies:
 - Prisma schema validation.
 - Docker Compose configuration validation.
 - Backend unit tests.
-- Backend in-memory API tests.
+- PostgreSQL service health.
+- Committed migration deployment.
+- Deterministic clean catalog seed.
+- Backend API and internal catalog contract tests.
 
-The baseline workflow does not start PostgreSQL or run database-backed product
-tests. Its purpose is to catch repository, static typing, build, configuration,
-and platform health regressions using checks that already exist.
+The quality workflow uses CI-local demo credentials and one PostgreSQL service.
+It prepares the database once, then keeps catalog tests read-only. It does not
+use an external or shared database.
 
 Future CI should add separate, clearly named gates for:
 
 - Linting.
 - Frontend unit tests.
-- Database-backed integration and API tests.
 - E2E tests.
-- Contract tests.
+- Additional contract tests for future API features.
 - Performance smoke tests.
 
 CI should make bug mode explicit instead of accidentally running clean core tests against enabled planned bugs.

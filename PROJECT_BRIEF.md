@@ -78,9 +78,11 @@ Technology direction and current selections:
 
 The platform foundation now exists: pnpm workspaces, React/Vite and NestJS
 application skeletons, Prisma configuration, a Docker Compose PostgreSQL
-runtime, and baseline CI quality gates. Product models, migrations, seed data,
-catalog behavior, API contracts, and automated product tests are not yet
-implemented.
+runtime, and baseline CI quality gates. The first clean backend product slice
+now includes the catalog schema, migration, deterministic seed, internal API
+contract, paginated EN/RU read endpoints, and automated unit and
+database-backed API tests. Frontend catalog behavior and the remaining MVP
+domains are not yet implemented.
 
 ## Catalog Foundation Direction
 
@@ -101,9 +103,9 @@ Public reads expose only published comics, and the first read slice is
 paginated list plus slug detail. Search and filters follow as separate Phase 1
 features.
 
-Exact Prisma types, lengths, indexes, pagination shape, locale transport,
-errors, search semantics, and filter syntax remain implementation-contract
-decisions.
+The first internal catalog API contract now fixes versioned list/detail routes,
+page-based pagination, query locale, stable response DTOs, and error envelopes.
+Search semantics and filter syntax remain later Phase 1 contract decisions.
 
 ## Clean Core + Bug Layer
 
@@ -144,10 +146,10 @@ Security bugs must be safe simulations only. They must not require attacking rea
 
 ## Local-First Development
 
-The frontend and backend skeletons already run locally, and Docker Compose
-provides PostgreSQL. Product migrations, deterministic seed data, database
-integration, and product test commands will be added through later approved
-tasks.
+The frontend and backend run locally, Docker Compose provides PostgreSQL, and
+the clean catalog has a committed migration, deterministic seed, Prisma Client
+integration, and database-backed API tests. Later product areas must extend
+this local-first setup through approved tasks.
 
 ## RU/EN Readiness
 

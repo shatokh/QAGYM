@@ -10,8 +10,11 @@ The repository is no longer documentation-only. It currently contains pnpm
 workspaces, React/Vite and NestJS skeletons, Prisma PostgreSQL configuration, a
 Docker Compose PostgreSQL runtime, and baseline GitHub Actions quality gates.
 
-No product model, migration, seed implementation, catalog behavior, formal API
-contract, or automated product test suite exists yet.
+The first clean backend product slice is implemented: catalog models and
+migration, deterministic EN/RU seed data, local cover assets, versioned
+published-comic read endpoints, an internal catalog API contract, and separate
+unit and database-backed API test suites. Frontend catalog behavior and the
+remaining MVP domains still require approved tasks.
 
 ## Product Concept
 
@@ -107,12 +110,13 @@ Current infrastructure foundation:
 
 - Docker Compose.
 - PostgreSQL container.
+- Prisma catalog migration, generated API client, and deterministic seed.
 - GitHub Actions for CI.
+- CI-local migrated and seeded PostgreSQL for backend API tests.
 - Frontend and backend run on the host during local development.
 
 Still-proposed infrastructure details:
 
-- Prisma product migrations and deterministic seed data.
 - Backend and frontend containers only if later deployment work requires them.
 
 ## Domain Modules
@@ -509,10 +513,9 @@ Potential conflicts or areas needing clarification:
 - Exact auth implementation details: token storage, expiry, refresh behavior, invalidation, and logout semantics.
 - UI kit.
 - Exact frontend setup choices.
-- Exact test command structure.
+- Exact frontend unit, Playwright E2E, contract expansion, and k6 command
+  structure.
 - Deployment target.
-- Exact Prisma field types, lengths, indexes, and migration-level constraints.
-- Exact pagination limits, response shape, locale transport, API errors, search
-  semantics, and filter query syntax.
+- Exact search semantics and filter query syntax.
 - Repository visibility and the spoiler threat model for repository-backed bug
   registry content.

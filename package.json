@@ -6,6 +6,7 @@
     "node": ">=22.13.0"
   },
   "scripts": {
+    "postinstall": "pnpm db:generate",
     "dev:web": "pnpm --filter @qa-comics-gym/web dev",
     "build:web": "pnpm --filter @qa-comics-gym/web build",
     "typecheck:web": "pnpm --filter @qa-comics-gym/web typecheck",
@@ -20,6 +21,7 @@
     "infra:down": "docker compose down",
     "infra:status": "docker compose ps",
     "infra:logs": "docker compose logs -f postgres",
+    "db:generate": "prisma generate",
     "db:validate": "prisma validate",
     "db:format": "prisma format",
     "db:seed": "prisma db seed"

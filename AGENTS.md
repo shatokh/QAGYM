@@ -121,7 +121,11 @@ Classify a task by the primary intent of its observable change.
 Available test commands:
 
 - `pnpm test`: run backend Jest unit tests.
-- `pnpm test:api`: run backend Jest and Supertest in-memory API tests.
+- `pnpm test:api`: run backend Jest and Supertest API tests against a migrated,
+  deterministically seeded PostgreSQL database.
+
+Prepare PostgreSQL with the committed migrations and clean seed before running
+`pnpm test:api`. API tests are read-only after preparation.
 
 These commands remain placeholders until future implementation tasks define
 them:

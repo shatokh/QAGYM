@@ -13,24 +13,28 @@ Store Core.
 A minimal React, Vite, and TypeScript frontend skeleton exists under `apps/web`.
 A minimal NestJS and TypeScript backend skeleton exists under `apps/api` and
 exposes the platform health endpoint at `GET /health`. Both workspaces can run,
-typecheck, and build, but they do not contain store features or business logic
-yet.
+typecheck, build, and participate in the repository quality gates.
 
-The local Docker Compose runtime provides PostgreSQL for future product work.
-The product database schema, seed data, formal API contracts, automated tests,
-and planned bug layer have not been created yet.
+The first clean product slice is implemented on the backend. PostgreSQL contains
+the catalog schema and deterministic EN/RU seed, and the API exposes paginated
+published-comic reads at `GET /api/v1/comics` and
+`GET /api/v1/comics/:slug`. The behavior is documented in the internal catalog
+API contract and covered by separate unit and database-backed API test suites.
 
-A Prisma 7 PostgreSQL configuration skeleton now exists at the repository root.
-It contains no product models, generated client, migrations, seed data, or
-database connection from the API.
+Prisma 7 owns the catalog schema, migration, generated API client, and seed
+workflow. The local Docker Compose runtime provides PostgreSQL with persistent
+storage. Docker Compose is the primary local container runtime for the MVP;
+Podman compatibility will be evaluated later through a separate infrastructure
+task.
 
-Docker Compose is the primary local container runtime for the MVP. Podman
-compatibility will be evaluated later through a separate infrastructure task.
+GitHub Actions checks frozen dependency installation, frontend and backend
+typechecks and builds, Prisma schema validation, Docker Compose configuration,
+backend unit tests, and database-backed API tests against migrated and seeded
+PostgreSQL.
 
-A minimal GitHub Actions quality workflow now checks frozen dependency
-installation, frontend and backend typechecks and builds, Prisma schema
-validation, and Docker Compose configuration. Linting and automated product
-tests remain future tasks.
+The frontend catalog experience, auth, cart, checkout, orders, admin area,
+public Swagger/OpenAPI, and controlled planned bug layer have not been
+implemented yet.
 
 ## Development Workflow
 

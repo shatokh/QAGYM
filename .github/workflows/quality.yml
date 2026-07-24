@@ -18,6 +18,23 @@ jobs:
     name: Quality
     runs-on: ubuntu-24.04
     timeout-minutes: 15
+    env:
+      DATABASE_URL: postgresql://qa_gym:qa_gym@localhost:5432/qa_comics_gym?schema=public
+
+    services:
+      postgres:
+        image: postgres:18.4-alpine
+        env:
+          POSTGRES_USER: qa_gym
+          POSTGRES_PASSWORD: qa_gym
+          POSTGRES_DB: qa_comics_gym
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U qa_gym -d qa_comics_gym"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
 
     steps:
       - name: Check out repository
@@ -54,13 +71,17 @@ jobs:
       - name: Run backend unit tests
         run: pnpm test
 
+      - name: Apply database migrations
+        run: pnpm exec prisma migrate deploy
+
+      - name: Seed clean catalog
+        run: pnpm db:seed
+
       - name: Run backend API tests
         run: pnpm test:api
 
       - name: Validate Prisma schema
         run: pnpm db:validate
-        env:
-          DATABASE_URL: postgresql://qa_gym:qa_gym@localhost:5432/qa_comics_gym?schema=public
 
       - name: Validate Docker Compose configuration
         run: docker compose --env-file .env.example config --quiet

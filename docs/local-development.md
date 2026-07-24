@@ -3,7 +3,8 @@
 Local development is being introduced incrementally through approved
 infrastructure tasks. The frontend, backend, catalog database schema, initial
 migration, clean catalog seed, and local PostgreSQL runtime are currently
-available. Backend unit and in-memory API test commands are also available.
+available. Prisma Client integration, clean catalog read endpoints, backend unit
+tests, and database-backed API tests are also available.
 
 ## Prerequisites
 
@@ -91,10 +92,15 @@ Start the backend development server:
 corepack pnpm dev:api
 ```
 
-The API uses port `3000` by default. Its current platform endpoint is:
+The backend requires a valid `DATABASE_URL`. Start PostgreSQL, apply committed
+migrations, and seed the clean catalog before the first catalog run.
+
+The API uses port `3000` by default. Available endpoints are:
 
 ```text
 GET http://localhost:3000/health
+GET http://localhost:3000/api/v1/comics
+GET http://localhost:3000/api/v1/comics/{slug}
 ```
 
 Expected response:
@@ -138,7 +144,15 @@ Run backend unit tests:
 corepack pnpm test
 ```
 
-Run backend in-memory API tests:
+Prepare the database before running API tests:
+
+```powershell
+corepack pnpm infra:up
+corepack pnpm exec prisma migrate deploy
+corepack pnpm db:seed
+```
+
+Run backend API tests:
 
 ```powershell
 corepack pnpm test:api
@@ -150,14 +164,15 @@ Run backend unit tests in watch mode:
 corepack pnpm --filter @qa-comics-gym/api test:watch
 ```
 
-The current API suite initializes Nest in memory and does not require Docker,
-PostgreSQL, Prisma Client, seed data, a fixed port, or external network access.
+The API suite initializes Nest without binding a fixed application port. It
+requires the migrated deterministic PostgreSQL fixture and is read-only after
+preparation. Unit tests remain database-independent.
 
 ## Prisma
 
 Prisma is configured for PostgreSQL, and Docker Compose provides the local
 database service. The clean catalog schema and initial migration are committed.
-The clean catalog seed is configured; Prisma Client is not configured yet.
+The clean catalog seed and Prisma Client are configured.
 
 Define `DATABASE_URL` in the local environment or an untracked root `.env`
 file. `.env.example` contains the non-secret local connection template.
@@ -167,6 +182,16 @@ Validate the Prisma schema:
 ```powershell
 corepack pnpm db:validate
 ```
+
+Generate Prisma Client explicitly:
+
+```powershell
+corepack pnpm db:generate
+```
+
+`corepack pnpm install` also generates the client through the approved root
+`postinstall` command. Generated files live under
+`apps/api/src/generated/prisma/`, are ignored by Git, and must not be edited.
 
 Format the Prisma schema:
 
@@ -183,7 +208,7 @@ corepack pnpm exec prisma migrate status
 Apply committed migrations in local development:
 
 ```powershell
-corepack pnpm exec prisma migrate dev
+corepack pnpm exec prisma migrate deploy
 ```
 
 When an approved task needs a custom migration, create it without applying it:
@@ -193,8 +218,8 @@ corepack pnpm exec prisma migrate dev --name <migration-name> --create-only
 ```
 
 Review and edit the generated SQL before applying it with `prisma migrate dev`.
-Do not create a migration without an approved task. Client generation and
-Studio remain unavailable.
+Do not create a migration without an approved task. Prisma Studio remains
+unavailable.
 
 Seed the clean catalog explicitly after applying migrations:
 
@@ -258,7 +283,7 @@ This preserves the named database volume.
 ## Not Available Yet
 
 - Application containers and verified Podman support.
-- Prisma Client integration.
 - Lint command.
-- Frontend unit, database-backed integration, E2E, contract, and k6 test
-  commands.
+- Frontend unit, E2E, and k6 test commands.
+- Public Swagger/OpenAPI.
+- Catalog search and filters.

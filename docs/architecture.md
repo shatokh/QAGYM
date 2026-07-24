@@ -44,12 +44,19 @@ The current database layer contains:
 - One explicit transactional catalog seed configured through Prisma CLI.
 - Explicit snake_case database mappings.
 - PostgreSQL checks for clean catalog data invariants.
-- No Prisma Client generator.
-- No API database provider.
+- Prisma ORM 7 `prisma-client` generator with API-owned ignored output.
+- Prisma PostgreSQL driver adapter and API-owned database provider.
+- Zod validation for `DATABASE_URL`.
 
 Migrations live under `prisma/migrations/`. The clean catalog seed lives at
 `prisma/seed/catalog.sql`. The first migration represents the real catalog
 product model rather than an infrastructure probe table.
+
+Generated Prisma Client code lives under
+`apps/api/src/generated/prisma/`. It is derived from the repository schema,
+ignored by Git, and regenerated during dependency installation or with
+`pnpm db:generate`. Database access remains owned by `apps/api`; generated
+database types are not exposed through `packages/shared`.
 
 ## Catalog Foundation Direction
 
@@ -88,19 +95,45 @@ Eight comic cover files and one deterministic fallback are repository-owned
 PNG assets under `apps/web/public/media/comics/`. Clean catalog behavior does
 not depend on third-party media.
 
-The first read slice is paginated published list plus slug detail. Search and
-filters remain separate Phase 1 Clean Features after list/detail behavior is
-stable.
+The first read slice implements paginated published list plus slug detail.
+Search and filters remain separate Phase 1 Clean Features after list/detail
+behavior is stable.
 
-The approved proposed sequence is schema and migration, clean seed and local
-media, backend test foundation, catalog API and internal contract, frontend
-foundation, then list/detail UI. Each step still requires its own approved task.
+The approved sequence is schema and migration, clean seed and local media,
+backend test foundation, catalog API and internal contract, frontend
+foundation, then list/detail UI. The first four steps are implemented.
+
+## Catalog API Boundary
+
+The clean catalog API is implemented inside `apps/api/src/catalog/`:
+
+- `GET /api/v1/comics`
+- `GET /api/v1/comics/:slug`
+
+`docs/internal/api/catalog.md` is the internal contract. The API:
+
+- Returns only published comics.
+- Uses page-based pagination.
+- Selects EN or RU content through an explicit query locale.
+- Uses EN as an observable per-entity fallback.
+- Maps Prisma results to stable product DTOs.
+- Preserves integer minor-unit money and nullable cover paths.
+- Applies deterministic comic, creator, and genre ordering.
+- Uses Zod request validation and a shared JSON error envelope.
+
+The public DTO boundary does not expose numeric database IDs, publication
+state, merchandising order, timestamps, or raw translation records. Public
+Swagger/OpenAPI remains Phase 5 scope.
+
+`apps/api/src/database/` owns Prisma Client construction and lifecycle. The
+PostgreSQL adapter reads the validated repository-local `DATABASE_URL` and
+disconnects when Nest closes.
 
 ## Incremental Contracts and Tests
 
-Internal behavior and API contracts should be written with the clean features
-they specify. Relevant clean behavior tests should be added when each feature
-is implemented and the required test foundation exists.
+Internal behavior and API contracts are written with the clean features they
+specify. The catalog contract is covered by service unit tests and read-only
+Supertest API tests against the deterministic PostgreSQL seed.
 
 Phase 5 publishes and consolidates public and internal API documentation. It
 does not postpone the first internal contract until after APIs exist. Phase 8
@@ -153,8 +186,8 @@ volume mounted at `/var/lib/postgresql`. The database is published on a
 configurable host port and reports readiness through `pg_isready`.
 
 The frontend and backend continue to run directly through documented pnpm
-commands. Application containers and Prisma Client integration remain future
-approved task scope.
+commands. The API owns the generated Prisma Client and PostgreSQL adapter
+integration. Application containers remain future approved task scope.
 
 Docker Compose is the primary supported runtime for the MVP. The Compose file
 avoids unnecessary Docker-specific configuration, but Podman compatibility is

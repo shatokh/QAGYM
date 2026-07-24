@@ -37,6 +37,9 @@ None.
   complete EN/RU content, stable fixtures, eight local covers, and one fallback.
 - Backend test foundation completed with separate Jest unit and Supertest API
   health suites, root commands, and CI gates.
+- Clean catalog read API and internal contract completed with versioned
+  list/detail routes, Prisma PostgreSQL integration, stable EN/RU DTOs, Zod
+  validation, shared errors, unit coverage, and database-backed API tests.
 
 ## Blocked
 
@@ -104,7 +107,7 @@ None.
 - Backend runtime uses NestJS `11.1.28` with the Express adapter.
 - Backend build foundation uses NestJS CLI `11.0.24` and TypeScript `5.9.3`.
 - Platform health endpoint is `GET /health` with `{ "status": "ok" }`.
-- Zod installation is deferred until request DTO validation is implemented.
+- Backend request validation uses Zod `4.4.3`.
 - Swagger dependencies remain deferred until public/internal API documentation
   work.
 - Git commits require an explicit human checkpoint after each completed task or
@@ -118,13 +121,14 @@ None.
 - Prisma CLI is pinned to `7.9.0` with dotenv `17.4.2`.
 - Prisma remains root-level until generated client sharing justifies a dedicated
   database workspace.
-- Prisma Client, PostgreSQL adapter, driver, and seeds remain deferred. The
-  clean catalog product schema and initial migration are implemented.
+- Prisma Client `7.9.0`, the PostgreSQL adapter, and `pg` are owned by the API;
+  generated client output remains ignored and schema-derived.
 - pnpm lifecycle scripts are allowed only for the pinned `prisma` and
   `@prisma/engines` packages; unreviewed package scripts remain blocked.
-- The initial CI baseline uses one read-only `ubuntu-24.04` quality job.
+- The CI quality job uses CI-local PostgreSQL, committed migrations, and the
+  deterministic clean catalog seed for read-only API tests.
 - GitHub Actions dependencies are pinned to immutable release commit SHAs.
-- CI lint and automated test gates remain deferred until real commands exist.
+- CI lint remains deferred; backend unit and API test gates are active.
 - An in-app protected bug guide does not hide repository-backed registry
   spoilers from repository readers.
 - The approved catalog implementation sequence starts with `0012` - Catalog
@@ -134,7 +138,8 @@ None.
 - Catalog timestamps use `timestamptz(3)`.
 - PostgreSQL check constraints enforce clean identity, money, stock,
   non-blank text, sort order, and series/issue invariants.
-- Prisma Client setup remains deferred until application database integration.
+- Prisma Client uses the Prisma 7 `prisma-client` generator with output under
+  `apps/api/src/generated/prisma`.
 - The initial catalog seed uses transactional SQL through explicit
   `prisma db seed` and adds no runtime database dependency.
 - Catalog seed replacement truncates only the explicit catalog table set,
@@ -144,9 +149,17 @@ None.
 - Clean catalog media uses original generated 1024 by 1536 PNG assets stored in
   the frontend public directory.
 - Backend unit tests use Jest 29 with ts-jest 29.
-- Backend in-memory API tests use Jest and Supertest in a separate suite.
+- Backend API tests use Jest and Supertest in a separate database-backed suite.
 - `pnpm test` and `pnpm test:api` are separate root commands and CI gates.
-- Initial health tests are database-independent and require no Docker runtime.
+- Backend unit tests remain database-independent.
+- The clean product API routes are `GET /api/v1/comics` and
+  `GET /api/v1/comics/:slug`; `GET /health` remains outside the product API.
+- Catalog reads use page-based pagination with defaults `1/12`, maximum page
+  size `50`, and an explicit `en|ru` query locale defaulting to `en`.
+- Catalog API responses use stable DTOs, integer minor-unit money, observable
+  locale fallback, deterministic relation ordering, and shared JSON errors.
+- Database-backed API tests use the migrated deterministic seed and remain
+  read-only after preparation.
 
 ## Decisions Still Pending
 
@@ -154,6 +167,5 @@ None.
 - Exact auth implementation details.
 - Deployment target.
 - Frontend unit, Playwright E2E, contract, and k6 command structure.
-- Exact pagination limits, response shape, locale transport, API errors, search
-  semantics, and filter query syntax.
+- Exact search semantics and filter query syntax.
 - Repository visibility and the spoiler threat model for registry content.
