@@ -74,21 +74,50 @@ Playwright is planned for end-to-end UI workflows:
 - Admin scenarios.
 - Selected planned bug discovery paths.
 
-Selectors should be stable enough for automation practice.
+Frontend testability rules are defined in
+`docs/conventions/frontend-testability.md`.
 
-## Jest and Future Frontend Tests
+The locator strategy is semantic-first:
+
+- Prefer roles, labels, alternative text, and user-visible contracts.
+- Add stable `data-testid` values only when semantic locators are insufficient
+  for localized, repeated, or domain-specific identity.
+- Never use database IDs, list indexes, styling classes, XPath, deep DOM
+  structure, planned bug IDs, or spoiler details as selector contracts.
+
+Loading, empty, error, disabled, and not-found states must be observable without
+fixed delays. EN/RU changes must not change automation identity.
+
+The first Playwright clean catalog smoke suite should follow completion of the
+catalog list/detail UI instead of waiting until Phase 8. It should run against
+the real frontend, backend, migrated database, and deterministic clean seed with
+planned bugs disabled. Phase 8 expands browser coverage, fixtures, scenarios,
+and CI maturity.
+
+Future write workflows need explicit data isolation or reset behavior.
+Authenticated parallel tests should not mutate shared demo-account state
+without an approved isolation strategy.
+
+## Jest and Frontend Tests
 
 The NestJS backend uses Jest 29 with ts-jest 29. Backend unit tests are
 colocated under `apps/api/src/**/*.spec.ts`; HTTP API tests are kept under
 `apps/api/test/**/*.api-spec.ts` and use a separate Jest configuration.
 
+The React frontend uses Vitest with Testing Library and jsdom. Current coverage
+includes localized routing, document language, runtime catalog contracts,
+same-origin request construction, cancellation, query identity, observable
+route states, and the application render-error boundary.
+
 Current root commands:
 
-- `pnpm test`: backend unit tests.
+- `pnpm test`: all workspace unit and component tests.
+- `pnpm test:web`: frontend unit and component tests.
+- `pnpm test:unit:api`: backend unit tests.
 - `pnpm test:api`: backend API tests against prepared PostgreSQL.
 
-The frontend unit test runner remains undecided. Vitest may be evaluated in a
-separate approved frontend test task.
+The explicit commands are separate CI gates. CI does not also run aggregate
+`pnpm test`, avoiding duplicate frontend/backend unit execution.
 
 ## k6 Smoke Tests
 
@@ -104,6 +133,7 @@ to `main`. It verifies:
 - Frozen dependency installation.
 - Frontend and backend type checking.
 - Frontend and backend builds.
+- Frontend unit and component tests.
 - Prisma schema validation.
 - Docker Compose configuration validation.
 - Backend unit tests.
@@ -119,7 +149,6 @@ use an external or shared database.
 Future CI should add separate, clearly named gates for:
 
 - Linting.
-- Frontend unit tests.
 - E2E tests.
 - Additional contract tests for future API features.
 - Performance smoke tests.

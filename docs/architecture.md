@@ -1,7 +1,7 @@
 # Architecture Notes
 
-The initial frontend and backend application skeletons now exist. This document
-records the current structure and the intended next architecture steps.
+The frontend and backend foundations now exist. This document records the
+current structure and the intended next architecture steps.
 
 ## Monorepo Structure
 
@@ -9,8 +9,8 @@ The project uses a lightweight monorepo:
 
 ```text
 apps/
-  web/                 # React/Vite skeleton exists
-  api/                 # NestJS skeleton exists
+  web/                 # React/Vite localized catalog foundation
+  api/                 # NestJS clean catalog API
 packages/
   shared/              # planned when justified
 docs/
@@ -101,7 +101,7 @@ behavior is stable.
 
 The approved sequence is schema and migration, clean seed and local media,
 backend test foundation, catalog API and internal contract, frontend
-foundation, then list/detail UI. The first four steps are implemented.
+foundation, then list/detail UI. The first five steps are implemented.
 
 ## Catalog API Boundary
 
@@ -129,11 +129,42 @@ Swagger/OpenAPI remains Phase 5 scope.
 PostgreSQL adapter reads the validated repository-local `DATABASE_URL` and
 disconnects when Nest closes.
 
+## Frontend Catalog Foundation
+
+The frontend uses explicit localized product routes:
+
+- `/en/comics`
+- `/ru/comics`
+- `/en/comics/:slug`
+- `/ru/comics/:slug`
+
+React Router owns navigation, route errors, root redirect, and not-found
+behavior. The active route locale controls i18next resources, document language,
+document title, and the API `locale` query. Unsupported locale prefixes do not
+silently fall back.
+
+TanStack Query owns catalog server state. One frontend API module uses
+same-origin `/api` requests, passes request cancellation to `fetch`, and maps
+network, HTTP, cancellation, and response-contract failures into explicit
+frontend errors. Vite proxies `/api` to the validated local
+`VITE_API_PROXY_TARGET`; production output assumes equivalent same-origin
+routing.
+
+Frontend-owned Zod schemas mirror the internal catalog DTO contract and reject
+incompatible successful responses before presentation components receive them.
+They do not import generated Prisma types or create a shared package.
+
+Frontend markup follows `docs/conventions/frontend-testability.md`.
+Accessibility semantics are the primary automation surface; limited stable
+test IDs identify only shell and asynchronous route states where needed.
+
 ## Incremental Contracts and Tests
 
 Internal behavior and API contracts are written with the clean features they
 specify. The catalog contract is covered by service unit tests and read-only
-Supertest API tests against the deterministic PostgreSQL seed.
+Supertest API tests against the deterministic PostgreSQL seed. Vitest and
+Testing Library cover frontend routes, locale synchronization, catalog
+contract parsing, request behavior, query identity, and safe error states.
 
 Phase 5 publishes and consolidates public and internal API documentation. It
 does not postpone the first internal contract until after APIs exist. Phase 8

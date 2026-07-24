@@ -4,7 +4,8 @@ Local development is being introduced incrementally through approved
 infrastructure tasks. The frontend, backend, catalog database schema, initial
 migration, clean catalog seed, and local PostgreSQL runtime are currently
 available. Prisma Client integration, clean catalog read endpoints, backend unit
-tests, and database-backed API tests are also available.
+tests, database-backed API tests, localized frontend routing, and frontend unit
+and component tests are also available.
 
 ## Prerequisites
 
@@ -29,6 +30,10 @@ The example contains non-secret local demo credentials only. Do not reuse them
 for production or shared environments.
 
 If `POSTGRES_PORT` is changed, update the port in `DATABASE_URL` to match.
+
+`VITE_API_PROXY_TARGET` configures the development and preview proxy target.
+The browser always requests same-origin `/api`; do not put credentials or
+secrets in this value.
 
 ## Install Dependencies
 
@@ -64,10 +69,28 @@ corepack pnpm dev:web
 
 The default local URL is `http://localhost:5173/`.
 
+Available frontend routes:
+
+```text
+http://localhost:5173/en/comics
+http://localhost:5173/ru/comics
+http://localhost:5173/en/comics/{slug}
+http://localhost:5173/ru/comics/{slug}
+```
+
+The root route redirects to `/en/comics`. Start the backend on the configured
+proxy target to load catalog data.
+
 Run the frontend typecheck:
 
 ```powershell
 corepack pnpm typecheck:web
+```
+
+Run frontend unit and component tests:
+
+```powershell
+corepack pnpm test:web
 ```
 
 Build the frontend:
@@ -136,12 +159,18 @@ $env:PORT = "3101"
 corepack pnpm start:api
 ```
 
-## Backend Tests
+## Tests
+
+Run all workspace unit and component tests:
+
+```powershell
+corepack pnpm test
+```
 
 Run backend unit tests:
 
 ```powershell
-corepack pnpm test
+corepack pnpm test:unit:api
 ```
 
 Prepare the database before running API tests:
@@ -284,6 +313,6 @@ This preserves the named database volume.
 
 - Application containers and verified Podman support.
 - Lint command.
-- Frontend unit, E2E, and k6 test commands.
+- Playwright E2E and k6 test commands.
 - Public Swagger/OpenAPI.
 - Catalog search and filters.

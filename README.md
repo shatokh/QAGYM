@@ -10,10 +10,15 @@ The documentation and governance foundation is complete enough to support
 document-first implementation. The project is now in Phase 1: Clean Comics
 Store Core.
 
-A minimal React, Vite, and TypeScript frontend skeleton exists under `apps/web`.
-A minimal NestJS and TypeScript backend skeleton exists under `apps/api` and
-exposes the platform health endpoint at `GET /health`. Both workspaces can run,
-typecheck, build, and participate in the repository quality gates.
+The React, Vite, and TypeScript frontend under `apps/web` now has localized
+`/en/...` and `/ru/...` routes, same-origin catalog API access, runtime response
+validation, server-state ownership, accessible route states, and Vitest
+coverage. The final catalog list and product-detail UI is the next clean
+feature task.
+
+The NestJS and TypeScript backend under `apps/api` exposes the platform health
+endpoint at `GET /health`. Both workspaces run, typecheck, build, test, and
+participate in the repository quality gates.
 
 The first clean product slice is implemented on the backend. PostgreSQL contains
 the catalog schema and deterministic EN/RU seed, and the API exposes paginated
@@ -29,12 +34,12 @@ task.
 
 GitHub Actions checks frozen dependency installation, frontend and backend
 typechecks and builds, Prisma schema validation, Docker Compose configuration,
-backend unit tests, and database-backed API tests against migrated and seeded
-PostgreSQL.
+frontend and backend unit tests, and database-backed API tests against migrated
+and seeded PostgreSQL.
 
-The frontend catalog experience, auth, cart, checkout, orders, admin area,
-public Swagger/OpenAPI, and controlled planned bug layer have not been
-implemented yet.
+The final frontend catalog experience, auth, cart, checkout, orders, admin
+area, public Swagger/OpenAPI, Playwright suite, and controlled planned bug layer
+have not been implemented yet.
 
 ## Development Workflow
 

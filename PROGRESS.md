@@ -40,6 +40,9 @@ None.
 - Clean catalog read API and internal contract completed with versioned
   list/detail routes, Prisma PostgreSQL integration, stable EN/RU DTOs, Zod
   validation, shared errors, unit coverage, and database-backed API tests.
+- Frontend catalog foundation completed with localized routes, i18next,
+  same-origin API proxying, Zod response validation, TanStack Query, accessible
+  route states, testability conventions, and frontend unit/component tests.
 
 ## Blocked
 
@@ -160,12 +163,31 @@ None.
   locale fallback, deterministic relation ordering, and shared JSON errors.
 - Database-backed API tests use the migrated deterministic seed and remain
   read-only after preparation.
+- Canonical frontend routes use explicit locale path prefixes, beginning with
+  `/en/...` and `/ru/...`.
+- Frontend and backend feature work must use production development practices
+  appropriate to the local MVP: strict boundaries, validated configuration,
+  deterministic errors, tests, and no development-only runtime shortcuts.
+- Frontend automation uses semantic-first locators with limited stable
+  `data-testid` contracts where accessible identity is insufficient.
+- Test IDs remain locale-independent, use stable public identity where needed,
+  stay in production output, and must not expose planned bug spoilers.
+- The first Playwright clean catalog smoke task follows the catalog UI task;
+  Phase 8 expands rather than introduces browser automation.
+- Frontend catalog server state uses TanStack Query and the platform `fetch`
+  API; frontend-owned Zod schemas validate the internal catalog DTO boundary.
+- Browser catalog requests use same-origin `/api`; Vite reads a validated local
+  proxy target while deployment routing remains a later decision.
+- Root `pnpm test` aggregates frontend and backend unit/component suites.
+  Explicit `test:web`, `test:unit:api`, and database-backed `test:api` commands
+  are separate CI gates.
 
 ## Decisions Still Pending
 
 - UI kit.
 - Exact auth implementation details.
 - Deployment target.
-- Frontend unit, Playwright E2E, contract, and k6 command structure.
+- Exact Playwright browser matrix, write-flow fixture isolation, expanded
+  contract-test commands, and k6 command structure.
 - Exact search semantics and filter query syntax.
 - Repository visibility and the spoiler threat model for registry content.

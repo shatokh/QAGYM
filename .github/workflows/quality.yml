@@ -68,8 +68,11 @@ jobs:
       - name: Build backend
         run: pnpm build:api
 
+      - name: Run frontend unit and component tests
+        run: pnpm test:web
+
       - name: Run backend unit tests
-        run: pnpm test
+        run: pnpm test:unit:api
 
       - name: Apply database migrations
         run: pnpm exec prisma migrate deploy

@@ -169,8 +169,10 @@ hyphenated ASCII comic SKUs.
   locale-independent.
 - Translation uniqueness is enforced per parent entity and locale.
 
-The frontend i18n library, locale persistence, URL strategy, and locale
-selection UI remain separate frontend decisions.
+The frontend uses i18next with explicit localized URL prefixes. Initial
+catalog routes are `/en/comics`, `/ru/comics`, and their slug-detail variants.
+The route locale controls UI messages, document language, and the API locale.
+No browser-language detection or locale persistence is used.
 
 ## Money Rules
 
@@ -286,6 +288,10 @@ The implemented internal API contract uses:
 Exact response and error shapes are defined in
 `docs/internal/api/catalog.md`. Cache behavior remains deferred.
 
+The frontend validates these response shapes with frontend-owned Zod schemas
+before exposing data to catalog UI code. TanStack Query owns list/detail server
+state and includes locale and request identity in query keys.
+
 Search and filters for genre, creator, series, price, and availability remain
 Phase 1 Clean Features but follow list/detail in separate tasks.
 
@@ -374,6 +380,6 @@ Each task requires its own document and approval.
 
 - Search semantics and filter query syntax.
 - Cache and ETag behavior.
-- Frontend router, query, form, i18n, and UI kit choices.
+- Frontend form and UI kit choices.
 - Additional creator roles.
 - Additional currencies or multi-currency commerce.
