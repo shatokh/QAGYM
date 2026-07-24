@@ -40,6 +40,10 @@ None.
 - Clean catalog read API and internal contract completed with versioned
   list/detail routes, Prisma PostgreSQL integration, stable EN/RU DTOs, Zod
   validation, shared errors, unit coverage, and database-backed API tests.
+- Session Artifact Advisor foundation completed with explicit skill invocation,
+  lifecycle capture hooks, local hash-chained event ledgers, incremental
+  checkpoints, proposal governance, redaction, recovery, and dependency-free
+  tests.
 - Frontend catalog foundation completed with localized routes, i18next,
   same-origin API proxying, Zod response validation, TanStack Query, accessible
   route states, testability conventions, and frontend unit/component tests.

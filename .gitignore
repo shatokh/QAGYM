@@ -3,6 +3,7 @@ node_modules/
 dist/
 *.tsbuildinfo
 apps/api/src/generated/prisma/
+.session-advisor/
 
 .env
 .env.*

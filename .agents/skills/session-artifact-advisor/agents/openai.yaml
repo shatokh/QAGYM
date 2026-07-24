@@ -1,0 +1,7 @@
+interface:
+  display_name: "Session Artifact Advisor"
+  short_description: "Analyze new session context into artifacts"
+  default_prompt: "Use $session-artifact-advisor to checkpoint and analyze only the new session context."
+
+policy:
+  allow_implicit_invocation: false

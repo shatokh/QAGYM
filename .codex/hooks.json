@@ -1,0 +1,74 @@
+{
+  "description": "Capture compact session events for the explicitly triggered Session Artifact Advisor.",
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node --input-type=module -e \"import { execFileSync } from 'node:child_process'; import path from 'node:path'; import { pathToFileURL } from 'node:url'; const root = execFileSync('git', ['rev-parse', '--show-toplevel'], { encoding: 'utf8' }).trim(); await import(pathToFileURL(path.join(root, '.codex', 'hooks', 'session-artifact-advisor-hook.mjs')).href);\"",
+            "timeout": 10,
+            "statusMessage": "Initializing session advisor capture"
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node --input-type=module -e \"import { execFileSync } from 'node:child_process'; import path from 'node:path'; import { pathToFileURL } from 'node:url'; const root = execFileSync('git', ['rev-parse', '--show-toplevel'], { encoding: 'utf8' }).trim(); await import(pathToFileURL(path.join(root, '.codex', 'hooks', 'session-artifact-advisor-hook.mjs')).href);\"",
+            "timeout": 3
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node --input-type=module -e \"import { execFileSync } from 'node:child_process'; import path from 'node:path'; import { pathToFileURL } from 'node:url'; const root = execFileSync('git', ['rev-parse', '--show-toplevel'], { encoding: 'utf8' }).trim(); await import(pathToFileURL(path.join(root, '.codex', 'hooks', 'session-artifact-advisor-hook.mjs')).href);\"",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node --input-type=module -e \"import { execFileSync } from 'node:child_process'; import path from 'node:path'; import { pathToFileURL } from 'node:url'; const root = execFileSync('git', ['rev-parse', '--show-toplevel'], { encoding: 'utf8' }).trim(); await import(pathToFileURL(path.join(root, '.codex', 'hooks', 'session-artifact-advisor-hook.mjs')).href);\"",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "matcher": "manual|auto",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node --input-type=module -e \"import { execFileSync } from 'node:child_process'; import path from 'node:path'; import { pathToFileURL } from 'node:url'; const root = execFileSync('git', ['rev-parse', '--show-toplevel'], { encoding: 'utf8' }).trim(); await import(pathToFileURL(path.join(root, '.codex', 'hooks', 'session-artifact-advisor-hook.mjs')).href);\"",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PostCompact": [
+      {
+        "matcher": "manual|auto",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node --input-type=module -e \"import { execFileSync } from 'node:child_process'; import path from 'node:path'; import { pathToFileURL } from 'node:url'; const root = execFileSync('git', ['rev-parse', '--show-toplevel'], { encoding: 'utf8' }).trim(); await import(pathToFileURL(path.join(root, '.codex', 'hooks', 'session-artifact-advisor-hook.mjs')).href);\"",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}
