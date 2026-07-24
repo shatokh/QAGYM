@@ -16,7 +16,7 @@ packages/
 docs/
 bug-registry/
 tests/
-prisma/                # PostgreSQL schema foundation exists
+prisma/                # catalog schema and migration history
 prisma.config.ts       # Prisma CLI configuration exists
 compose.yaml           # local PostgreSQL runtime
 ```
@@ -29,7 +29,7 @@ Repository areas:
 - `docs`: Project docs, ADRs, and task files.
 - `bug-registry`: Repository-backed planned bug definitions.
 - `tests`: Cross-application test assets when needed.
-- `prisma`: Prisma schema foundation, future migrations, and future seed data.
+- `prisma`: Prisma schema, migration history, and future seed data.
 
 ## Current Database Foundation
 
@@ -37,23 +37,25 @@ Prisma `7.9.0` is configured at the repository root with PostgreSQL as its
 datasource provider. The datasource URL is read from `DATABASE_URL` through
 `prisma.config.ts`.
 
-The current schema intentionally has:
+The current database layer contains:
 
-- No product models.
+- The clean catalog models and relations defined in `docs/product/catalog.md`.
+- One initial `catalog_foundation` migration.
+- Explicit snake_case database mappings.
+- PostgreSQL checks for clean catalog data invariants.
 - No Prisma Client generator.
-- No migrations.
 - No seed implementation.
 - No API database provider.
 
-Future migrations should live under `prisma/migrations/`. Future seed scenarios
-should live under `prisma/seed/` unless an approved task changes that structure.
-The first migration must represent a real product model rather than an
+Migrations live under `prisma/migrations/`. Future seed scenarios should live
+under `prisma/seed/` unless an approved task changes that structure. The first
+migration represents the real catalog product model rather than an
 infrastructure probe table.
 
 ## Catalog Foundation Direction
 
-`docs/product/catalog.md` is the clean catalog domain source before schema and
-API implementation.
+`docs/product/catalog.md` is the clean catalog domain source for schema, seed,
+API, and UI implementation.
 
 The approved first model boundary contains:
 
@@ -67,6 +69,16 @@ The approved first model boundary contains:
 - Non-negative stock and explicit `DRAFT`, `PUBLISHED`, and `ARCHIVED` states.
 - Stable local cover assets and a deterministic missing-cover fallback.
 - Explicit merchandising order with an internal ID tie-breaker.
+
+The implemented PostgreSQL boundary uses:
+
+- Closed `en` and `ru` locale values.
+- Composite primary keys for translations and catalog join records.
+- `timestamptz(3)` domain timestamps.
+- A unique series and issue-number pair.
+- A read index on publication state, merchandising order, and comic ID.
+- Custom checks for identity formats, non-blank display text, valid money and
+  stock, and consistent standalone versus series issues.
 
 The first read slice is paginated published list plus slug detail. Search and
 filters remain separate Phase 1 Clean Features after list/detail behavior is
@@ -133,8 +145,8 @@ volume mounted at `/var/lib/postgresql`. The database is published on a
 configurable host port and reports readiness through `pg_isready`.
 
 The frontend and backend continue to run directly through documented pnpm
-commands. Application containers, Prisma Client integration, migrations, and
-seed data remain future approved task scope.
+commands. Application containers, Prisma Client integration, and seed data
+remain future approved task scope.
 
 Docker Compose is the primary supported runtime for the MVP. The Compose file
 avoids unnecessary Docker-specific configuration, but Podman compatibility is

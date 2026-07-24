@@ -1,3 +1,138 @@
 datasource db {
   provider = "postgresql"
 }
+
+enum Locale {
+  en
+  ru
+
+  @@map("locale")
+}
+
+enum PublicationState {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+
+  @@map("publication_state")
+}
+
+enum CreatorRole {
+  WRITER
+  ARTIST
+
+  @@map("creator_role")
+}
+
+model Comic {
+  id                  Int                @id @default(autoincrement())
+  slug                String             @unique(map: "comics_slug_key") @db.VarChar(120)
+  sku                 String             @unique(map: "comics_sku_key") @db.VarChar(64)
+  seriesId            Int?               @map("series_id")
+  issueNumber         Int?               @map("issue_number")
+  priceMinor          Int                @map("price_minor")
+  compareAtPriceMinor Int?               @map("compare_at_price_minor")
+  currencyCode        String             @map("currency_code") @db.Char(3)
+  stockQuantity       Int                @map("stock_quantity")
+  publicationState    PublicationState   @default(DRAFT) @map("publication_state")
+  coverPath           String?            @map("cover_path") @db.VarChar(255)
+  sortOrder           Int                @default(0) @map("sort_order")
+  createdAt           DateTime           @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt           DateTime           @updatedAt @map("updated_at") @db.Timestamptz(3)
+  series              Series?            @relation(fields: [seriesId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  translations        ComicTranslation[]
+  creators            ComicCreator[]
+  genres              ComicGenre[]
+
+  @@unique([seriesId, issueNumber], map: "comics_series_id_issue_number_key")
+  @@index([publicationState, sortOrder, id], map: "comics_publication_state_sort_order_id_idx")
+  @@map("comics")
+}
+
+model ComicTranslation {
+  comicId     Int    @map("comic_id")
+  locale      Locale
+  title       String @db.VarChar(200)
+  description String @db.Text
+  comic       Comic  @relation(fields: [comicId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@id([comicId, locale], map: "comic_translations_pkey")
+  @@map("comic_translations")
+}
+
+model Series {
+  id           Int                 @id @default(autoincrement())
+  slug         String              @unique(map: "series_slug_key") @db.VarChar(120)
+  createdAt    DateTime            @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt    DateTime            @updatedAt @map("updated_at") @db.Timestamptz(3)
+  comics       Comic[]
+  translations SeriesTranslation[]
+
+  @@map("series")
+}
+
+model SeriesTranslation {
+  seriesId Int    @map("series_id")
+  locale   Locale
+  title    String @db.VarChar(160)
+  series   Series @relation(fields: [seriesId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@id([seriesId, locale], map: "series_translations_pkey")
+  @@map("series_translations")
+}
+
+model Creator {
+  id          Int            @id @default(autoincrement())
+  slug        String         @unique(map: "creators_slug_key") @db.VarChar(120)
+  displayName String         @map("display_name") @db.VarChar(160)
+  createdAt   DateTime       @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt   DateTime       @updatedAt @map("updated_at") @db.Timestamptz(3)
+  comics      ComicCreator[]
+
+  @@map("creators")
+}
+
+model ComicCreator {
+  comicId   Int         @map("comic_id")
+  creatorId Int         @map("creator_id")
+  role      CreatorRole
+  sortOrder Int         @default(0) @map("sort_order")
+  comic     Comic       @relation(fields: [comicId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  creator   Creator     @relation(fields: [creatorId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+
+  @@id([comicId, creatorId, role], map: "comic_creators_pkey")
+  @@index([creatorId], map: "comic_creators_creator_id_idx")
+  @@map("comic_creators")
+}
+
+model Genre {
+  id           Int                @id @default(autoincrement())
+  slug         String             @unique(map: "genres_slug_key") @db.VarChar(80)
+  createdAt    DateTime           @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt    DateTime           @updatedAt @map("updated_at") @db.Timestamptz(3)
+  comics       ComicGenre[]
+  translations GenreTranslation[]
+
+  @@map("genres")
+}
+
+model GenreTranslation {
+  genreId Int    @map("genre_id")
+  locale  Locale
+  name    String @db.VarChar(80)
+  genre   Genre  @relation(fields: [genreId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@id([genreId, locale], map: "genre_translations_pkey")
+  @@map("genre_translations")
+}
+
+model ComicGenre {
+  comicId Int   @map("comic_id")
+  genreId Int   @map("genre_id")
+  comic   Comic @relation(fields: [comicId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  genre   Genre @relation(fields: [genreId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+
+  @@id([comicId, genreId], map: "comic_genres_pkey")
+  @@index([genreId], map: "comic_genres_genre_id_idx")
+  @@map("comic_genres")
+}

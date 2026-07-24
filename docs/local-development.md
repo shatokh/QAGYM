@@ -1,9 +1,9 @@
 # Local Development
 
 Local development is being introduced incrementally through approved
-infrastructure tasks. The frontend, backend, Prisma configuration, and local
-PostgreSQL runtime are currently available. Seed and test commands will be
-added by later tasks.
+infrastructure tasks. The frontend, backend, catalog database schema, initial
+migration, and local PostgreSQL runtime are currently available. Seed and test
+commands will be added by later tasks.
 
 ## Prerequisites
 
@@ -125,11 +125,11 @@ corepack pnpm start:api
 ## Prisma
 
 Prisma is configured for PostgreSQL, and Docker Compose provides the local
-database service. No product model exists yet.
+database service. The clean catalog schema and initial migration are committed.
+Prisma Client and seed data are not configured yet.
 
 Define `DATABASE_URL` in the local environment or an untracked root `.env`
-file. `.env.example` contains the non-secret local connection template intended
-for the future Docker runtime.
+file. `.env.example` contains the non-secret local connection template.
 
 Validate the Prisma schema:
 
@@ -143,8 +143,27 @@ Format the Prisma schema:
 corepack pnpm db:format
 ```
 
-These commands currently validate and format configuration only. Migration,
-client generation, Studio, and seed commands are intentionally unavailable.
+Inspect migration state:
+
+```powershell
+corepack pnpm exec prisma migrate status
+```
+
+Apply committed migrations in local development:
+
+```powershell
+corepack pnpm exec prisma migrate dev
+```
+
+When an approved task needs a custom migration, create it without applying it:
+
+```powershell
+corepack pnpm exec prisma migrate dev --name <migration-name> --create-only
+```
+
+Review and edit the generated SQL before applying it with `prisma migrate dev`.
+Do not create a migration without an approved task. Client generation, Studio,
+and seed commands remain unavailable.
 
 ## PostgreSQL
 
@@ -175,9 +194,26 @@ corepack pnpm infra:down
 Stopping the service does not delete the named data volume. No destructive
 database reset command is provided.
 
+If another PostgreSQL instance already uses host port `5432`, choose a free
+port in the untracked `.env` file and use the same port in both values:
+
+```dotenv
+POSTGRES_PORT=55432
+DATABASE_URL="postgresql://qa_gym:qa_gym@localhost:55432/qa_comics_gym?schema=public"
+```
+
+Recreate only the Compose container after changing the port:
+
+```powershell
+corepack pnpm infra:down
+corepack pnpm infra:up
+```
+
+This preserves the named database volume.
+
 ## Not Available Yet
 
 - Application containers and verified Podman support.
-- Prisma migrations and seed data.
+- Prisma Client integration and seed data.
 - Lint command.
 - Unit, API, E2E, contract, and k6 test commands.

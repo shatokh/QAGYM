@@ -3,8 +3,8 @@
 ## Purpose
 
 This document defines the clean Phase 1 catalog behavior for QA Comics Gym.
-It is the product source for catalog terminology and business rules before the
-Prisma schema, seed data, API contract, tests, or UI are implemented.
+It is the product source for catalog terminology and business rules used by
+the Prisma schema and future seed data, API contract, tests, and UI.
 
 The catalog must behave correctly without planned bugs. Planned defect
 behavior, including broken media, invalid prices, or inconsistent translations,
@@ -148,8 +148,14 @@ The comic and genre combination is unique.
 - Slugs and SKUs do not change when the active locale changes.
 - Seed and automation references prefer slug or SKU over a generated ID.
 
-Exact slug and SKU length limits belong to the schema task, but they must be
-bounded and validated consistently.
+Implemented schema limits are:
+
+- Comic, series, and creator slug: 120 characters.
+- Genre slug: 80 characters.
+- Comic SKU: 64 characters.
+
+PostgreSQL checks enforce lowercase hyphenated ASCII slugs and uppercase
+hyphenated ASCII comic SKUs.
 
 ## Localization Rules
 
@@ -180,7 +186,8 @@ selection UI remain separate frontend decisions.
   floating-point conversion.
 - UI formatting may vary by locale, but the stored amount and currency do not.
 
-Database checks should enforce numeric invariants where practical. Application
+The initial migration enforces non-negative price, a greater comparison price
+when present, and a three-uppercase-letter currency code. Application
 validation and seed integrity checks must enforce the same rules.
 
 ## Stock Rules
@@ -210,11 +217,12 @@ contract.
 - Series relationship is optional.
 - A standalone Comic has no series and no issue number.
 - A series Comic has a positive issue number.
-- The same issue number should not repeat within one series in the clean seed.
+- The same issue number cannot repeat within one series.
 - Series order is not inferred from database ID.
 
-The schema task must decide whether series issue uniqueness is enforced as a
-database constraint or through validated clean product behavior.
+The database enforces that series and issue number are either both absent or
+both present, that issue number is positive, and that the series/issue pair is
+unique.
 
 ## Creator Rules
 
@@ -311,7 +319,10 @@ Schema and seed verification should cover:
 - Stable seed reruns.
 - No missing referenced local asset.
 
-Exact automated checks belong to implementation tasks and the test taxonomy.
+The initial migration enforces structural uniqueness, numeric invariants,
+identity formats, non-blank display text, and series/issue consistency. EN/RU
+seed completeness, asset existence, repeatable seed behavior, and public
+visibility remain verification responsibilities of later implementation tasks.
 
 ## Contract Direction
 
@@ -344,8 +355,7 @@ Each task requires its own document and approval.
 
 ## Deferred Decisions
 
-- Exact Prisma field types, lengths, indexes, and generated client layout.
-- Exact migration-level check constraints.
+- Prisma Client generator and output layout.
 - Pagination limits and response shape.
 - API locale transport and error envelope.
 - Search semantics and filter query syntax.

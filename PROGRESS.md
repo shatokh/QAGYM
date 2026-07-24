@@ -31,6 +31,8 @@ None.
   governance, testing, catalog direction, and planned bug conventions.
 - Phase 1 clean catalog domain plan completed with entity, business rule, seed,
   contract, test, and implementation boundaries.
+- Clean catalog Prisma schema and initial PostgreSQL migration completed with
+  normalized entities, stable mappings, indexes, and database integrity checks.
 
 ## Blocked
 
@@ -112,8 +114,8 @@ None.
 - Prisma CLI is pinned to `7.9.0` with dotenv `17.4.2`.
 - Prisma remains root-level until generated client sharing justifies a dedicated
   database workspace.
-- Prisma Client, PostgreSQL adapter, driver, product models, migrations, and
-  seeds remain deferred.
+- Prisma Client, PostgreSQL adapter, driver, and seeds remain deferred. The
+  clean catalog product schema and initial migration are implemented.
 - pnpm lifecycle scripts are allowed only for the pinned `prisma` and
   `@prisma/engines` packages; unreviewed package scripts remain blocked.
 - The initial CI baseline uses one read-only `ubuntu-24.04` quality job.
@@ -123,6 +125,12 @@ None.
   spoilers from repository readers.
 - The approved catalog implementation sequence starts with `0012` - Catalog
   Domain Schema and Initial Migration.
+- Catalog translations and join records use composite primary keys.
+- Catalog database names use explicit snake_case mappings.
+- Catalog timestamps use `timestamptz(3)`.
+- PostgreSQL check constraints enforce clean identity, money, stock,
+  non-blank text, sort order, and series/issue invariants.
+- Prisma Client setup remains deferred until application database integration.
 
 ## Decisions Still Pending
 
@@ -132,5 +140,4 @@ None.
 - Exact test command structure.
 - Exact pagination limits, response shape, locale transport, API errors, search
   semantics, and filter query syntax.
-- Exact Prisma field types, lengths, indexes, and migration-level constraints.
 - Repository visibility and the spoiler threat model for registry content.
