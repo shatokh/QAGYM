@@ -292,6 +292,31 @@ The frontend validates these response shapes with frontend-owned Zod schemas
 before exposing data to catalog UI code. TanStack Query owns list/detail server
 state and includes locale and request identity in query keys.
 
+## Implemented Catalog UI
+
+Task `0017` adds the clean localized list and detail experience on top of the
+read contract:
+
+- `/en/comics` and `/ru/comics` render a deterministic grid of six items per
+  frontend page, so the eight published seed items exercise a second page.
+- Pagination is represented by `?page=<positive integer>`. Missing or invalid
+  values are canonicalized to page one without sending an invalid API request.
+- Cards link by stable slug and show cover, title, series/issue or standalone
+  status, creators, genres, current/comparison price, and exact stock state.
+- Detail pages show the localized title, cover, series/issue or standalone
+  status, money, stock, SKU, description, creators with roles, and genres.
+- Money is formatted from integer minor units with `Intl.NumberFormat`; the
+  comparison price is display-only and does not introduce discount logic.
+- Local cover paths use a stable two-to-three presentation ratio and fall back
+  to the committed local fallback when the value is absent or the image fails.
+- Loading, API error, retry, empty catalog, empty page, and populated states
+  remain distinct and accessible. Locale switching preserves the catalog/detail
+  route identity.
+
+The UI uses project-owned React and CSS only. Stable automation IDs are limited
+to the approved catalog grid, card, pagination, detail, and route-state
+contracts; browser E2E setup is a separate task.
+
 Search and filters for genre, creator, series, price, and availability remain
 Phase 1 Clean Features but follow list/detail in separate tasks.
 
@@ -372,7 +397,8 @@ The approved proposed sequence is:
 4. `0015` - Catalog Read API and Internal Contract.
 5. `0016` - Frontend Catalog Foundation.
 6. `0017` - Catalog List and Product Detail UI.
-7. Later Phase 1 tasks - catalog search, filters, and expanded automation.
+7. `0020` - First Clean Catalog Playwright Smoke.
+8. Later Phase 1 tasks - catalog search, filters, and expanded automation.
 
 Each task requires its own document and approval.
 

@@ -124,6 +124,247 @@ a:focus-visible {
   padding-block: 72px;
 }
 
+.catalog-page__header {
+  max-width: 760px;
+}
+
+.catalog-grid {
+  display: grid;
+  margin: 48px 0 0;
+  padding: 0;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+  list-style: none;
+}
+
+.catalog-grid > li {
+  min-width: 0;
+}
+
+.comic-card {
+  height: 100%;
+  overflow: hidden;
+  border: 1px solid #d8ddd7;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.comic-card__link {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  color: inherit;
+  text-decoration: none;
+}
+
+.comic-card__link:hover {
+  box-shadow: 0 8px 24px rgb(24 32 29 / 12%);
+}
+
+.catalog-cover {
+  overflow: hidden;
+  aspect-ratio: 2 / 3;
+  background: #e8ece8;
+}
+
+.catalog-cover img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.catalog-cover--detail {
+  width: min(100%, 360px);
+}
+
+.comic-card__body {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  gap: 10px;
+  padding: 18px;
+}
+
+.comic-card h2 {
+  min-height: 2.8em;
+  margin: 0;
+  font-size: 1.12rem;
+  line-height: 1.4;
+}
+
+.comic-card__series,
+.comic-card__metadata,
+.comic-detail__series,
+.comic-detail__sku {
+  margin: 0;
+  color: #52605a;
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+.comic-card__metadata {
+  overflow-wrap: anywhere;
+}
+
+.price-display {
+  display: flex;
+  margin-top: auto;
+  align-items: baseline;
+  gap: 10px;
+  color: #18201d;
+}
+
+.price-display strong {
+  font-size: 1.15rem;
+}
+
+.price-display del {
+  color: #68736d;
+  font-size: 0.88rem;
+}
+
+.stock-status {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.stock-status--available {
+  color: #23724c;
+}
+
+.stock-status--empty {
+  color: #a43f37;
+}
+
+.catalog-pagination {
+  display: flex;
+  margin: 40px 0 0;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+.catalog-pagination a,
+.catalog-pagination span {
+  min-height: 44px;
+  padding: 10px 14px;
+  border: 1px solid #b8c1ba;
+  background: #ffffff;
+  color: #0b5cad;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.catalog-pagination a:hover {
+  border-color: #0b5cad;
+}
+
+.catalog-pagination__status {
+  border-color: transparent !important;
+  background: transparent !important;
+  color: #52605a !important;
+  font-size: 0.9rem;
+  font-weight: 600 !important;
+}
+
+.pagination-disabled {
+  color: #9aa39d !important;
+}
+
+.catalog-empty {
+  align-items: flex-start;
+  flex-direction: column;
+}
+
+.comic-route,
+.comic-detail {
+  width: 100%;
+}
+
+.back-link {
+  display: inline-block;
+  margin-bottom: 32px;
+  color: #0b5cad;
+  font-weight: 700;
+}
+
+.comic-detail__hero {
+  display: grid;
+  grid-template-columns: minmax(220px, 360px) minmax(0, 1fr);
+  gap: clamp(32px, 6vw, 80px);
+  align-items: start;
+}
+
+.comic-detail__summary {
+  padding-top: 18px;
+}
+
+.comic-detail__summary h1 {
+  max-width: 720px;
+}
+
+.comic-detail__summary .price-display {
+  margin-top: 32px;
+}
+
+.comic-detail__sku {
+  margin-top: 22px;
+}
+
+.comic-detail__sku span {
+  color: #18201d;
+  font-weight: 700;
+}
+
+.comic-detail__sections {
+  display: grid;
+  margin-top: 64px;
+  grid-template-columns: minmax(0, 1.4fr) repeat(2, minmax(0, 1fr));
+  gap: 32px;
+  border-top: 1px solid #d8ddd7;
+  padding-top: 32px;
+}
+
+.comic-detail__sections h2 {
+  margin: 0 0 14px;
+  font-size: 1.05rem;
+}
+
+.comic-detail__description {
+  margin: 0;
+  color: #52605a;
+  line-height: 1.7;
+}
+
+.comic-detail__list {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.comic-detail__list li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+  line-height: 1.45;
+}
+
+.comic-detail__list--inline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+}
+
+.comic-detail__secondary {
+  color: #68736d;
+  font-size: 0.88rem;
+}
+
 .route-placeholder,
 .route-state {
   max-width: 760px;
@@ -217,10 +458,48 @@ h1 {
     font-size: 2.55rem;
   }
 
+  .catalog-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .catalog-pagination {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .catalog-pagination__status {
+    order: -1;
+    width: 100%;
+    text-align: center;
+  }
+
+  .comic-detail__hero,
+  .comic-detail__sections {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .catalog-cover--detail {
+    width: min(100%, 300px);
+  }
+
+  .comic-detail__summary {
+    padding-top: 0;
+  }
+
   .app-footer {
     align-items: flex-start;
     flex-direction: column;
     justify-content: center;
     gap: 4px;
+  }
+}
+
+@media (min-width: 641px) and (max-width: 900px) {
+  .catalog-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .comic-detail__sections {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }

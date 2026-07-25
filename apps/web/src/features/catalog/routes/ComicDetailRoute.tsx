@@ -4,11 +4,11 @@ import { isAppLocale } from "../../../i18n/locales";
 import { useRouteTitle } from "../../../routing/useRouteTitle";
 import { isCatalogApiError } from "../api/catalog.errors";
 import { useComicDetailQuery } from "../api/catalog.queries";
+import { ComicDetailContent } from "../components/ComicDetailContent";
 
 export function ComicDetailRoute() {
   const { locale, slug } = useParams();
   const { t } = useTranslation();
-  useRouteTitle("comic.title");
 
   if (!isAppLocale(locale) || !slug) {
     throw new Error("Comic route rendered without valid route parameters.");
@@ -18,6 +18,7 @@ export function ComicDetailRoute() {
     locale,
     slug,
   });
+  useRouteTitle("comic.title", comicQuery.data?.data.title);
 
   const isNotFound =
     comicQuery.isError &&
@@ -26,14 +27,10 @@ export function ComicDetailRoute() {
 
   return (
     <section
-      className="route-placeholder"
-      aria-labelledby="comic-title"
-      aria-busy={comicQuery.isPending}
+      className="comic-route"
+      aria-labelledby="comic-route-title"
+      aria-busy={comicQuery.isPending || comicQuery.isFetching}
     >
-      <p className="eyebrow">{t("comic.eyebrow")}</p>
-      <h1 id="comic-title">{t("comic.title")}</h1>
-      <p className="intro">{t("comic.introduction")}</p>
-
       {comicQuery.isPending ? (
         <p className="route-status" data-testid="comic-loading" role="status">
           {t("comic.loading")}
@@ -41,11 +38,7 @@ export function ComicDetailRoute() {
       ) : null}
 
       {isNotFound ? (
-        <div
-          className="route-status route-status--error"
-          data-testid="comic-not-found"
-          role="alert"
-        >
+        <div className="route-status route-status--error" data-testid="comic-not-found" role="alert">
           <strong>{t("comic.notFoundTitle")}</strong>
           <span>{t("comic.notFoundMessage")}</span>
           <Link className="text-link" to={`/${locale}/comics`}>
@@ -55,11 +48,7 @@ export function ComicDetailRoute() {
       ) : null}
 
       {comicQuery.isError && !isNotFound ? (
-        <div
-          className="route-status route-status--error"
-          data-testid="comic-error"
-          role="alert"
-        >
+        <div className="route-status route-status--error" data-testid="comic-error" role="alert">
           <strong>{t("comic.errorTitle")}</strong>
           <span>{t("comic.errorMessage")}</span>
           <button type="button" onClick={() => void comicQuery.refetch()}>
@@ -69,11 +58,7 @@ export function ComicDetailRoute() {
       ) : null}
 
       {comicQuery.data ? (
-        <p className="route-status" data-testid="comic-ready" role="status">
-          {t("comic.ready", {
-            title: comicQuery.data.data.title,
-          })}
-        </p>
+        <ComicDetailContent comic={comicQuery.data.data} locale={locale} />
       ) : null}
     </section>
   );

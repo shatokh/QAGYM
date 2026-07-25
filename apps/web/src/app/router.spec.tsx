@@ -92,7 +92,7 @@ describe("application routing", () => {
     const user = userEvent.setup();
     const { router } = renderPath("/en/comics");
 
-    await screen.findByTestId("catalog-ready");
+    await screen.findByTestId("catalog-grid");
     await user.click(
       screen.getByRole("link", {
         name: "RU",
@@ -123,7 +123,7 @@ describe("application routing", () => {
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
-  it("exposes deterministic loading and ready states", async () => {
+  it("exposes deterministic loading and populated grid states", async () => {
     vi.stubGlobal(
       "fetch",
       vi
@@ -133,7 +133,7 @@ describe("application routing", () => {
     renderPath("/en/comics");
 
     expect(screen.getByTestId("catalog-loading")).toHaveRole("status");
-    expect(await screen.findByTestId("catalog-ready")).toHaveRole("status");
+    expect(await screen.findByTestId("catalog-grid")).toBeVisible();
     expect(screen.queryByTestId("catalog-loading")).not.toBeInTheDocument();
   });
 
