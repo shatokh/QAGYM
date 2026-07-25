@@ -61,6 +61,14 @@ describe("Catalog read API", () => {
     expect(
       body.data.some((comic) => comic.slug === "ember-archive-1"),
     ).toBe(false);
+    expect(
+      body.data.every(
+        (comic) =>
+          !("id" in comic) &&
+          !("publicationState" in comic) &&
+          !("sortOrder" in comic),
+      ),
+    ).toBe(true);
   });
 
   it("applies page-based pagination", async () => {
@@ -195,6 +203,7 @@ describe("Catalog read API", () => {
       .get(
         "/api/v1/comics?page=0&pageSize=51&locale=fr&extra=value",
       )
+      .expect("Content-Type", /json/)
       .expect(400)
       .expect({
         error: {
@@ -239,6 +248,7 @@ describe("Catalog read API", () => {
 
     await request(httpServer())
       .get("/api/v1/comics?locale=en&locale=ru")
+      .expect("Content-Type", /json/)
       .expect(400)
       .expect({
         error: {
@@ -252,6 +262,25 @@ describe("Catalog read API", () => {
           ],
         },
       });
+
+    for (const query of [
+      "?page=1&page=2",
+      "?pageSize=3&pageSize=4",
+    ]) {
+      const response = await request(httpServer())
+        .get(`/api/v1/comics${query}`)
+        .expect("Content-Type", /json/)
+        .expect(400);
+
+      expect(Object.keys(response.body)).toEqual(["error"]);
+      expect(Object.keys(response.body.error)).toEqual([
+        "code",
+        "message",
+        "details",
+      ]);
+      expect(response.body.error.code).toBe("INVALID_REQUEST");
+      expect(response.body.error.details.length).toBeGreaterThan(0);
+    }
   });
 
   it("does not expose unexpected internal errors", async () => {

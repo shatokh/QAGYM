@@ -7,6 +7,9 @@ available. Prisma Client integration, clean catalog read endpoints, backend unit
 tests, database-backed API tests, localized frontend routing, and frontend unit
 and component tests are also available.
 
+For the complete command-by-command Windows PowerShell sequence, use
+[`docs/local-runbook.md`](local-runbook.md).
+
 ## Prerequisites
 
 - Node.js `22.13.0` or newer.
@@ -187,6 +190,20 @@ Run backend API tests:
 corepack pnpm test:api
 ```
 
+Run the first clean browser smoke suite after PostgreSQL, migrations, and seed
+preparation:
+
+```powershell
+corepack pnpm exec playwright install chromium
+corepack pnpm test:e2e
+```
+
+The Playwright configuration starts the API and Vite development servers for
+the test run, reusing already running local servers outside CI. The suite is
+read-only, uses the clean catalog seed, and keeps planned bugs disabled.
+Browser reports and failure artifacts are written to ignored directories:
+`playwright-report/` and `test-results/`.
+
 Run backend unit tests in watch mode:
 
 ```powershell
@@ -313,6 +330,6 @@ This preserves the named database volume.
 
 - Application containers and verified Podman support.
 - Lint command.
-- Playwright E2E and k6 test commands.
+- Expanded Playwright browser matrix and write-flow E2E coverage.
 - Public Swagger/OpenAPI.
 - Catalog search and filters.

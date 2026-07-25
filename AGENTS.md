@@ -160,6 +160,8 @@ Available test commands:
 - `pnpm test:unit:api`: run backend Jest unit tests.
 - `pnpm test:api`: run backend Jest and Supertest API tests against a migrated,
   deterministically seeded PostgreSQL database.
+- `pnpm test:e2e`: run the read-only clean catalog Playwright smoke suite against
+  the prepared local runtime.
 
 Prepare PostgreSQL with the committed migrations and clean seed before running
 `pnpm test:api`. API tests are read-only after preparation.
@@ -173,7 +175,6 @@ them:
 
 - `pnpm lint`
 - `pnpm typecheck`
-- `pnpm test:e2e`
 - `pnpm test:k6:smoke`
 
 Do not create or assume placeholder commands until their setup is approved.

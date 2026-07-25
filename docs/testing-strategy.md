@@ -57,7 +57,10 @@ API tests should confirm that backend behavior matches the public training Swagg
 Supertest initializes Nest in memory without binding a fixed application port.
 The API suite verifies `GET /health` and the catalog list/detail contract. The
 catalog tests run against a migrated, deterministically seeded PostgreSQL
-database and remain read-only after fixture preparation.
+database and remain read-only after fixture preparation. The clean catalog API
+matrix also checks published visibility, not-found parity for
+draft/archived/unknown slugs, invalid and repeated query values, JSON error
+envelopes, and the absence of internal database fields from DTOs.
 
 The first internal contract is `docs/internal/api/catalog.md`. Contract checks
 should continue to be added with each supporting feature. Public Swagger
@@ -88,11 +91,14 @@ The locator strategy is semantic-first:
 Loading, empty, error, disabled, and not-found states must be observable without
 fixed delays. EN/RU changes must not change automation identity.
 
-The first Playwright clean catalog smoke suite should follow completion of the
-catalog list/detail UI instead of waiting until Phase 8. It should run against
-the real frontend, backend, migrated database, and deterministic clean seed with
-planned bugs disabled. Phase 8 expands browser coverage, fixtures, scenarios,
-and CI maturity.
+The first clean catalog smoke suite is implemented in `e2e/` and runs through
+`pnpm test:e2e` against the real frontend, backend, migrated database, and
+deterministic clean seed with planned bugs disabled. It covers EN/RU routes,
+page navigation, detail navigation, invalid-page canonicalization, expected
+catalog request parameters, a 390 px viewport overflow check, and one routed API
+failure state. It uses one Chromium project and no visual snapshots or axe
+dependency. Phase 8 expands browser coverage, fixtures, scenarios, and CI
+maturity.
 
 Future write workflows need explicit data isolation or reset behavior.
 Authenticated parallel tests should not mutate shared demo-account state
@@ -107,7 +113,16 @@ colocated under `apps/api/src/**/*.spec.ts`; HTTP API tests are kept under
 The React frontend uses Vitest with Testing Library and jsdom. Current coverage
 includes localized routing, document language, runtime catalog contracts,
 same-origin request construction, cancellation, query identity, observable
-route states, and the application render-error boundary.
+route states, the application render-error boundary, catalog page query
+canonicalization, catalog cards, detail fields, money formatting, stock states,
+and local cover fallback behavior. Component tests mock the existing fetch/query
+boundary and do not replace the production data path with a second client.
+
+The clean catalog UI tests also verify stable slug links, EN/RU route behavior,
+series versus standalone presentation, creator roles, genres, comparison prices,
+and the approved stable test IDs. Playwright browser coverage remains a separate
+approved task so the first browser suite can establish fixture isolation and
+responsive checks without adding E2E setup to the UI implementation task.
 
 Current root commands:
 
@@ -115,6 +130,7 @@ Current root commands:
 - `pnpm test:web`: frontend unit and component tests.
 - `pnpm test:unit:api`: backend unit tests.
 - `pnpm test:api`: backend API tests against prepared PostgreSQL.
+- `pnpm test:e2e`: first clean catalog Playwright browser smoke suite.
 
 The explicit commands are separate CI gates. CI does not also run aggregate
 `pnpm test`, avoiding duplicate frontend/backend unit execution.

@@ -4,6 +4,8 @@ dist/
 *.tsbuildinfo
 apps/api/src/generated/prisma/
 .session-advisor/
+test-results/
+playwright-report/
 
 .env
 .env.*

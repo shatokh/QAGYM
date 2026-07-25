@@ -17,6 +17,7 @@
     "typecheck:api": "pnpm --filter @qa-comics-gym/api typecheck",
     "start:api": "pnpm --filter @qa-comics-gym/api start",
     "test": "pnpm -r --if-present test",
+    "test:e2e": "playwright test",
     "test:unit:api": "pnpm --filter @qa-comics-gym/api test",
     "test:api": "pnpm --filter @qa-comics-gym/api test:api",
     "infra:up": "docker compose up -d",
@@ -29,6 +30,7 @@
     "db:seed": "prisma db seed"
   },
   "devDependencies": {
+    "@playwright/test": "1.61.1",
     "dotenv": "17.4.2",
     "prisma": "7.9.0"
   }
