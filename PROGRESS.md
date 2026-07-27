@@ -6,8 +6,7 @@ Phase 1 - Clean Comics Store core.
 
 ## Active Tasks
 
-- `0020` - First Clean Catalog Playwright Smoke (`P2 Normal`, `Roadmap`,
-  In Review).
+None.
 
 ## Priority Queue
 
@@ -62,6 +61,8 @@ None.
   dependency-free fixture tests.
 - Clean catalog list and product detail UI completed with localized pagination,
   detail fields, fallback media, responsive styling, and 33 frontend tests.
+- First clean catalog Playwright smoke completed with 7 browser tests, prepared
+  PostgreSQL verification, and expanded Supertest API boundary coverage.
 
 ## Blocked
 

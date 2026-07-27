@@ -2,7 +2,7 @@
 
 ## Status
 
-In Review
+Done
 
 ## Approval Record
 
@@ -184,16 +184,14 @@ None.
 - API unit Jest passed: 3 suites and 7 tests.
 - Frontend production build passed through the local Vite binary.
 - API test compilation completed, and the health API test passed.
-- Database-backed catalog API tests and full Playwright runtime tests are
-  blocked in this environment because the Docker daemon is unavailable and no
-  migrated PostgreSQL service is running. The test command reports the missing
-  database as a runtime prerequisite; no application workaround was added.
-- Playwright test discovery passed: 7 tests in 1 Chromium project.
+- Docker Compose PostgreSQL reached healthy state; committed migrations had no
+  pending changes and the deterministic clean seed executed successfully.
+- Database-backed API suite passed: 2 suites and 11 tests.
+- Playwright runtime suite passed: 7 tests in 1 Chromium project.
 - Governance validation and `git diff --check` passed after the implementation
   and documentation updates.
 
-The implementation is ready for human review once the local PostgreSQL runtime
-is available for the remaining database-backed and browser verification.
+The approved scope is implemented and verified.
 
 ## Dependencies
 
@@ -205,7 +203,7 @@ is available for the remaining database-backed and browser verification.
 
 ## Commit Decision
 
-Group with task 0017.
+Committed as `6acfa18`.
 
 ## Risks and Open Questions
 
