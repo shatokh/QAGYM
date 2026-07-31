@@ -2,7 +2,7 @@
 
 ## Current Phase
 
-Phase 1 - Clean Comics Store core.
+Phase 2 - Auth, Roles and Seeded Demo Scenarios planning.
 
 ## Active Tasks
 
@@ -66,6 +66,7 @@ None.
 - Catalog search and filters completed with title/SKU search, genre/series/
   availability filters, localized filter options, URL state, API coverage,
   component coverage, and Playwright discovery scenarios.
+- Phase 2 auth, roles, and demo scenarios planning completed.
 
 ## Blocked
 
@@ -206,6 +207,9 @@ None.
   are separate CI gates.
 - Catalog discovery uses trimmed case-insensitive title/SKU substring search,
   single genre/series/availability filters, and published-data filter options.
+- Phase 2 auth planning recommends database-backed opaque sessions with
+  HTTP-only SameSite cookies, guest as unauthenticated state, one role per
+  account, and two initial enabled demo accounts.
 
 ## Decisions Still Pending
 
