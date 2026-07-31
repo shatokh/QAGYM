@@ -1,6 +1,8 @@
 BEGIN;
 
 TRUNCATE TABLE
+    "sessions",
+    "users",
     "comic_genres",
     "comic_creators",
     "comic_translations",
@@ -11,6 +13,35 @@ TRUNCATE TABLE
     "genres",
     "series"
 RESTART IDENTITY;
+
+INSERT INTO "users" (
+    "public_id",
+    "email",
+    "password_hash",
+    "display_name",
+    "role",
+    "enabled",
+    "updated_at"
+)
+VALUES
+    (
+        'usr_demo_user',
+        'user@qacomics.local',
+        '$argon2id$v=19$m=19456,t=2,p=1$cWNnX3VzZXJfc2VlZF91c2Vy$26EK5qJtWDuSdeFbkxsheZAULJxDkPBH3fsgwAIpDLY',
+        'Demo User',
+        'USER',
+        TRUE,
+        CURRENT_TIMESTAMP
+    ),
+    (
+        'usr_demo_admin',
+        'admin@qacomics.local',
+        '$argon2id$v=19$m=19456,t=2,p=1$cWNnX2FkbWluX3NlZWRfYWRtaW4$SO2qXp3eUbNjn69DHKsX8mtYIRw/xQRlhYL9xVvFAIc',
+        'Demo Admin',
+        'ADMIN',
+        TRUE,
+        CURRENT_TIMESTAMP
+    );
 
 INSERT INTO "series" ("slug", "updated_at")
 VALUES
@@ -445,6 +476,57 @@ JOIN "genres" ON "genres"."slug" = "seed"."genre_slug";
 
 DO $$
 BEGIN
+    IF (SELECT COUNT(*) FROM "users") <> 2 THEN
+        RAISE EXCEPTION 'Auth seed must contain exactly 2 users';
+    END IF;
+
+    IF (SELECT COUNT(*) FROM "sessions") <> 0 THEN
+        RAISE EXCEPTION 'Auth seed must not create sessions';
+    END IF;
+
+    IF NOT EXISTS (
+        SELECT 1
+        FROM "users"
+        WHERE "public_id" = 'usr_demo_user'
+          AND "email" = 'user@qacomics.local'
+          AND "display_name" = 'Demo User'
+          AND "role" = 'USER'
+          AND "enabled" = TRUE
+    ) THEN
+        RAISE EXCEPTION 'Demo user account is invalid';
+    END IF;
+
+    IF NOT EXISTS (
+        SELECT 1
+        FROM "users"
+        WHERE "public_id" = 'usr_demo_admin'
+          AND "email" = 'admin@qacomics.local'
+          AND "display_name" = 'Demo Admin'
+          AND "role" = 'ADMIN'
+          AND "enabled" = TRUE
+    ) THEN
+        RAISE EXCEPTION 'Demo admin account is invalid';
+    END IF;
+
+    IF EXISTS (
+        SELECT 1
+        FROM "users"
+        WHERE "password_hash" IN (
+            'DemoUserPassphrase2026!',
+            'DemoAdminPassphrase2026!'
+        )
+    ) THEN
+        RAISE EXCEPTION 'Demo account plaintext passwords must not be stored';
+    END IF;
+
+    IF EXISTS (
+        SELECT 1
+        FROM "users"
+        WHERE "password_hash" !~ '^\$argon2id\$v=19\$m=19456,t=2,p=1\$[A-Za-z0-9+/]+\$[A-Za-z0-9+/]+$'
+    ) THEN
+        RAISE EXCEPTION 'Demo account password hashes must use the approved Argon2id PHC parameters';
+    END IF;
+
     IF (SELECT COUNT(*) FROM "comics") <> 10 THEN
         RAISE EXCEPTION 'Catalog seed must contain exactly 10 comics';
     END IF;

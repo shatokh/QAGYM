@@ -19,12 +19,12 @@ Accepted for planning now:
 - Seed data for accounts must be deterministic and resettable.
 - Auth decisions must preserve RU/EN localized routes and production-style
   engineering boundaries for the local MVP.
+- The internal auth API contract is planned in
+  `docs/internal/api/auth.md`.
 
 Still requiring implementation-task approval:
 
-- Exact database models and migration SQL.
 - Exact auth dependency choices.
-- Exact API request and response DTOs.
 - Exact frontend route names and UI copy.
 - Exact Playwright and API test cases.
 - Any protected in-app bug guide route.
@@ -89,8 +89,8 @@ Recommended demo accounts:
 
 | Scenario | Email | Password | Role | Purpose |
 | --- | --- | --- | --- | --- |
-| User | `user@qacomics.local` | `DemoUser123!` | `USER` | Normal authenticated buyer scenario |
-| Admin | `admin@qacomics.local` | `DemoAdmin123!` | `ADMIN` | Admin-only access scenario |
+| User | `user@qacomics.local` | `DemoUserPassphrase2026!` | `USER` | Normal authenticated buyer scenario |
+| Admin | `admin@qacomics.local` | `DemoAdminPassphrase2026!` | `ADMIN` | Admin-only access scenario |
 
 These credentials are deliberately public demo fixtures. Documentation may list
 them because they are not secrets and must not grant access to real systems.
@@ -100,6 +100,7 @@ Seed rules:
 - Store password hashes, not plaintext passwords.
 - Keep plaintext demo passwords only in docs and seed comments where needed for
   local usage.
+- Seeded single-factor demo passwords must be at least `15` characters.
 - Resetting seed data must restore the same demo accounts.
 - Account IDs may be database-generated, but tests and docs should reference
   stable email addresses.
@@ -155,11 +156,26 @@ Tradeoffs:
 Recommended MVP decision to carry into implementation planning:
 
 - Use a database-backed opaque session token.
+- Generate session tokens with a cryptographically secure random number
+  generator and at least `128` bits of entropy.
 - Store only a hashed session token server-side.
 - Send the session identifier in an HTTP-only, SameSite cookie.
 - Use short, clear expiration behavior suitable for local training.
 - Add CSRF protection before authenticated state-changing browser APIs expand
   beyond login/logout.
+
+Accepted internal contract direction from task `0023`:
+
+- Local MVP cookie name: `qcg_session`.
+- Future HTTPS deployment cookie name: `__Host-qcg_session`.
+- SameSite mode: `Lax`.
+- Recommended initial absolute timeout: `8` hours.
+- Recommended initial idle timeout: `30` minutes.
+- Local HTTP keeps `Secure=false`; future HTTPS deployment should use
+  `Secure=true`.
+- Logout is idempotent and clears the cookie even when the session is missing
+  or invalid.
+- Raw session tokens are never stored in the database or returned in JSON.
 
 ## Password Storage Direction
 
@@ -169,8 +185,12 @@ Recommended direction:
 
 - Prefer Argon2id if the dependency behaves reliably on the supported local
   Windows setup.
+- Use Argon2id with at least `19 MiB` memory, `2` iterations, and parallelism
+  `1`, unless implementation benchmarking justifies stronger parameters.
 - Use bcrypt as the fallback recommendation if Argon2 native installation adds
   too much local setup friction.
+- If bcrypt is selected, use a work factor of at least `10` and account for the
+  common `72` byte password input limit.
 - Do not use plain SHA hashing.
 - Do not store plaintext passwords in the database.
 - Do not treat seeded demo passwords as secrets.
@@ -180,22 +200,39 @@ and why those parameters are appropriate for local MVP training.
 
 ## Backend Surface Planning
 
-Likely internal API routes:
+Planned internal API routes:
 
 - `POST /api/v1/auth/login`
 - `POST /api/v1/auth/logout`
 - `GET /api/v1/auth/me`
 
-Likely clean behavior:
+Planned clean behavior:
 
 - Login accepts email and password.
 - Successful login creates a session and returns the current user DTO.
 - Failed login returns the same stable error for unknown email and wrong
   password.
+- Disabled or locked account states also return the same generic login failure
+  response.
+- Login attempts require a local-friendly throttling or delay strategy.
 - Logout is idempotent for missing or expired sessions.
 - `GET /me` returns the authenticated user when a valid session exists.
-- `GET /me` returns a stable unauthenticated error or anonymous envelope. The
-  exact shape belongs in the internal API contract task.
+- `GET /me` returns a stable unauthenticated error when there is no valid
+  session.
+
+Accepted internal API direction from task `0023`:
+
+- Login success returns HTTP `200`, sets `qcg_session`, and returns
+  `{ data: { user } }`.
+- Logout success returns HTTP `204` with an empty body.
+- Current-user success returns HTTP `200` with `{ data: { user } }`.
+- Missing, expired, revoked, malformed, or unknown sessions return
+  `UNAUTHENTICATED`.
+- Unknown email, wrong password, disabled account, and locked account states
+  return the same `INVALID_CREDENTIALS` response from login.
+- Excessive login attempts return `AUTH_RATE_LIMITED` without bucket details.
+- Protected-route role failures return `FORBIDDEN`; unauthenticated protected
+  requests return `UNAUTHENTICATED`.
 
 User DTO should expose:
 
@@ -235,15 +272,16 @@ Recommendation:
 
 ## Database Planning
 
-Likely models:
+Implemented by task `0024`:
 
 - `User`
 - `Session`
+- `UserRole`
 
-Likely `User` fields:
+Implemented `User` fields:
 
 - Database-generated internal ID.
-- Stable public ID or stable email for local references.
+- Stable public ID for local references.
 - Email, unique and normalized.
 - Password hash.
 - Display name.
@@ -251,12 +289,13 @@ Likely `User` fields:
 - Enabled/disabled status.
 - Created and updated timestamps.
 
-Likely `Session` fields:
+Implemented `Session` fields:
 
 - Database-generated internal ID.
 - User relationship.
 - Hashed session token.
 - Expiration timestamp.
+- Last-seen timestamp for idle timeout enforcement later.
 - Created timestamp.
 - Optional revoked timestamp.
 
@@ -267,17 +306,28 @@ Schema rules to consider:
 - Role must be constrained to accepted values.
 - Expired or revoked sessions must not authenticate.
 - Seed reset must not rely on unstable generated IDs.
+- Session token hashes are unique.
+- Session expiration must be after creation.
+- Session last-seen timestamp cannot be after expiration.
+- Session revoked timestamp must be absent or not before creation.
 
 ## Seed Scenario Planning
 
 Phase 2 seed should add deterministic account fixtures without changing clean
 catalog behavior.
 
-Minimum useful seed:
+Implemented minimum seed:
 
 - One enabled user account.
 - One enabled admin account.
 - No preexisting sessions.
+
+Accepted public fixture IDs:
+
+| Scenario | Email | Password | Role | Public ID |
+| --- | --- | --- | --- | --- |
+| User | `user@qacomics.local` | `DemoUserPassphrase2026!` | `USER` | `usr_demo_user` |
+| Admin | `admin@qacomics.local` | `DemoAdminPassphrase2026!` | `ADMIN` | `usr_demo_admin` |
 
 Optional later seed:
 
@@ -287,7 +337,7 @@ Optional later seed:
 
 Recommendation:
 
-- Start with exactly two enabled accounts.
+- Keep exactly two enabled accounts until a later approved task requires more.
 - Add disabled/edge-case accounts only when a specific clean feature or planned
   bug needs them.
 
@@ -301,7 +351,9 @@ Health tests:
 Clean core behavior tests:
 
 - Valid login succeeds for seeded user and admin accounts.
-- Invalid login fails without revealing whether email or password was wrong.
+- Invalid login fails without revealing whether email, password, disabled
+  status, or locked status caused the failure.
+- Login throttling or delay behavior is covered by focused API tests.
 - Logout clears the session.
 - Session expiration/revocation behavior is covered where implemented.
 - Guest catalog browsing continues to work.
@@ -345,24 +397,19 @@ They must not expose planned bug spoilers or closed guide hints.
 
 Recommended next tasks:
 
-1. `0023-auth-internal-contract-and-architecture.md`
-   - Decide exact session strategy, route contract, DTOs, error envelopes,
-     cookie rules, and dependency list.
-   - No implementation unless explicitly scoped.
-
-2. `0024-auth-database-schema-and-demo-seed.md`
+1. `0024-auth-database-schema-and-demo-seed.md`
    - Add user/session schema, migration, and two deterministic demo accounts.
    - Include seed verification.
 
-3. `0025-backend-clean-auth-api.md`
+2. `0025-backend-clean-auth-api.md`
    - Implement login, logout, and current-user API using the approved contract.
    - Add unit and Supertest coverage.
 
-4. `0026-frontend-auth-shell-and-login.md`
+3. `0026-frontend-auth-shell-and-login.md`
    - Add localized login route, auth state loading, logout, and role-aware shell.
    - Add frontend unit/component tests.
 
-5. `0027-auth-playwright-smoke.md`
+4. `0027-auth-playwright-smoke.md`
    - Add browser smoke for user/admin login and logout while preserving guest
      catalog behavior.
 
@@ -373,9 +420,9 @@ selection.
 ## Decisions Recommended for Approval Later
 
 - Use database-backed opaque sessions with HTTP-only SameSite cookies.
+- Generate opaque session tokens with CSPRNG and at least `128` bits of entropy.
 - Model guest as unauthenticated state, not as a database role.
 - Start with one role per account: `USER` or `ADMIN`.
 - Seed exactly two enabled demo accounts first.
 - Keep profile editing, registration, password reset, admin area, checkout,
   orders, and closed bug guide access out of the first auth implementation.
-

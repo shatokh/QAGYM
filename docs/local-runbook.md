@@ -44,7 +44,7 @@ corepack pnpm infra:up
 corepack pnpm infra:status
 ```
 
-Apply committed migrations and load the deterministic clean catalog seed:
+Apply committed migrations and load the deterministic clean seed:
 
 ```powershell
 corepack pnpm exec prisma migrate deploy
@@ -52,8 +52,18 @@ corepack pnpm db:seed
 ```
 
 Verify the database container is healthy before starting the API. The seed is
-repeatable and replaces the catalog fixture; do not run it against data that
-must be preserved.
+repeatable and replaces the catalog/auth fixture; do not run it against data
+that must be preserved.
+
+The seed creates these public local demo accounts without preexisting sessions:
+
+| Scenario | Email | Password | Role |
+| --- | --- | --- | --- |
+| User | `user@qacomics.local` | `DemoUserPassphrase2026!` | `USER` |
+| Admin | `admin@qacomics.local` | `DemoAdminPassphrase2026!` | `ADMIN` |
+
+Auth API and login UI are not implemented yet; these accounts are persistence
+fixtures for the upcoming Phase 2 tasks.
 
 ## 3. Start the Application
 

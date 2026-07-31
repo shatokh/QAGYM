@@ -68,6 +68,22 @@ now includes title/SKU search, single-value genre/series/availability filters,
 and the localized filter-options response. Public Swagger publication may
 follow in Phase 5.
 
+The planned auth internal contract is `docs/internal/api/auth.md`. Future auth
+contract tests should cover login, logout, current-user state, invalid
+credentials parity across unknown email, wrong password, disabled account, and
+locked account states, unauthenticated state, forbidden role access, cookie
+behavior, session timeout behavior, throttling or delay behavior, and JSON error
+envelope consistency. Auth API tests must not expose passwords, password
+hashes, raw session tokens, session hashes, numeric database IDs, or closed bug
+guide metadata through DTOs.
+
+Task `0024` adds DB-backed seed verification for the two enabled demo accounts
+and the empty session table. These tests check stable public IDs, normalized
+emails, roles, enabled state, Argon2id PHC parameter format, and absence of
+plaintext demo passwords. They do not verify login behavior; password
+verification belongs to the backend auth API task that approves the hashing
+dependency.
+
 ## Playwright E2E
 
 Playwright is planned for end-to-end UI workflows:
@@ -107,6 +123,11 @@ Future write workflows need explicit data isolation or reset behavior.
 Authenticated parallel tests should not mutate shared demo-account state
 without an approved isolation strategy.
 
+The first auth Playwright smoke should be added in a separate task after the
+backend and frontend auth shell exist. It should verify localized login/logout
+for user and admin, current shell state, role-aware navigation state, and that
+guest catalog smoke still works without authentication.
+
 ## Jest and Frontend Tests
 
 The NestJS backend uses Jest 29 with ts-jest 29. Backend unit tests are
@@ -126,6 +147,12 @@ series versus standalone presentation, creator roles, genres, comparison prices,
 and the approved stable test IDs. Playwright browser coverage remains a separate
 approved task so the first browser suite can establish fixture isolation and
 responsive checks without adding E2E setup to the UI implementation task.
+
+Future frontend auth unit and component tests should cover login form
+validation, current-user loading, authenticated and unauthenticated shell state,
+logout behavior, localized route behavior, and role-aware navigation state.
+They should use semantic locators first and stable locale-independent test IDs
+only where accessible identity is insufficient.
 
 Current root commands:
 

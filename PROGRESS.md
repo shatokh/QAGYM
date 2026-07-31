@@ -67,6 +67,11 @@ None.
   availability filters, localized filter options, URL state, API coverage,
   component coverage, and Playwright discovery scenarios.
 - Phase 2 auth, roles, and demo scenarios planning completed.
+- Internal auth API contract and architecture planning completed with
+  best-practice session, cookie, password, error, and throttling guidance.
+- Auth database schema and deterministic demo seed completed with `User`,
+  `Session`, `UserRole`, two enabled demo accounts, no seeded sessions, and
+  DB-backed seed verification.
 
 ## Blocked
 
@@ -210,11 +215,23 @@ None.
 - Phase 2 auth planning recommends database-backed opaque sessions with
   HTTP-only SameSite cookies, guest as unauthenticated state, one role per
   account, and two initial enabled demo accounts.
+- Internal auth API contract direction uses `POST /api/v1/auth/login`,
+  `POST /api/v1/auth/logout`, `GET /api/v1/auth/me`, local `qcg_session`
+  and future HTTPS `__Host-qcg_session` cookies, idempotent logout, generic
+  login failure for invalid/disabled/locked accounts, stable auth error codes,
+  throttling or delay for login attempts, and public user IDs for demo
+  accounts.
+- Auth persistence uses `User`, `Session`, and `UserRole` with stable public
+  user IDs, normalized emails, unique session token hashes, session expiration
+  fields, and two enabled demo accounts: `user@qacomics.local` and
+  `admin@qacomics.local`.
 
 ## Decisions Still Pending
 
 - UI kit.
-- Exact auth implementation details.
+- Exact auth implementation details for dependencies, password verification,
+  session-token hashing, cookie parsing, CSRF implementation, login throttling,
+  and frontend route copy.
 - Deployment target.
 - Exact Playwright browser matrix, write-flow fixture isolation, expanded
   contract-test commands, and k6 command structure.

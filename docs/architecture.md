@@ -40,10 +40,16 @@ datasource provider. The datasource URL is read from `DATABASE_URL` through
 The current database layer contains:
 
 - The clean catalog models and relations defined in `docs/product/catalog.md`.
+- The auth persistence models defined in
+  `docs/product/auth-roles-demo-scenarios.md`.
 - One initial `catalog_foundation` migration.
+- One `auth_foundation` migration.
 - One explicit transactional catalog seed configured through Prisma CLI.
+- Deterministic demo auth seed records owned by the same reset command.
 - Explicit snake_case database mappings.
 - PostgreSQL checks for clean catalog data invariants.
+- PostgreSQL checks for clean auth identity, email, password hash, and session
+  timestamp invariants.
 - Prisma ORM 7 `prisma-client` generator with API-owned ignored output.
 - Prisma PostgreSQL driver adapter and API-owned database provider.
 - Zod validation for `DATABASE_URL`.
@@ -87,17 +93,19 @@ The implemented PostgreSQL boundary uses:
   stock, and consistent standalone versus series issues.
 
 The clean fixture contains ten fictional comics, three series, eight creators,
-six localized genres, and complete EN/RU catalog translations. It is replaced
-transactionally through explicit catalog-table truncation without `CASCADE`.
-Stable fixture identity comes from slug and SKU, not generated integer IDs.
+six localized genres, complete EN/RU catalog translations, two enabled demo
+auth accounts, and no preexisting sessions. It is replaced transactionally
+through explicit table truncation without `CASCADE`. Stable catalog fixture
+identity comes from slug and SKU, and stable auth fixture identity comes from
+public user ID and email, not generated integer IDs.
 
 Eight comic cover files and one deterministic fallback are repository-owned
 PNG assets under `apps/web/public/media/comics/`. Clean catalog behavior does
 not depend on third-party media.
 
 The first read slice implements paginated published list plus slug detail.
-Search and filters remain separate Phase 1 Clean Features after list/detail
-behavior is stable.
+Search and filters are implemented as a separate Phase 1 Clean Feature after
+list/detail behavior.
 
 The approved sequence is schema and migration, clean seed and local media,
 backend test foundation, catalog API and internal contract, frontend
@@ -128,6 +136,57 @@ Swagger/OpenAPI remains Phase 5 scope.
 `apps/api/src/database/` owns Prisma Client construction and lifecycle. The
 PostgreSQL adapter reads the validated repository-local `DATABASE_URL` and
 disconnects when Nest closes.
+
+## Auth and Session Direction
+
+Phase 2 auth API implementation is planned but not implemented. The internal
+contract target is `docs/internal/api/auth.md`, and the persistence foundation
+is implemented in Prisma.
+
+The accepted architecture direction is:
+
+- Guest is unauthenticated state, not a database role.
+- Initial account roles are `USER` and `ADMIN`.
+- Each MVP account has exactly one role.
+- Browser auth uses a database-backed opaque session token.
+- Session tokens are generated with a cryptographically secure random number
+  generator and at least `128` bits of entropy.
+- The browser receives the session identifier in an HTTP-only SameSite cookie
+  named `qcg_session`.
+- Future HTTPS deployment should use the host-prefixed cookie name
+  `__Host-qcg_session`.
+- The database stores only a hash of the session token.
+- Raw session tokens, password hashes, and numeric database IDs are not exposed
+  through auth DTOs.
+- `GET /api/v1/auth/me` is the stable current-user endpoint.
+- Login returns the current user DTO and sets the session cookie.
+- Login returns the same `INVALID_CREDENTIALS` response for unknown email,
+  wrong password, disabled account, and locked account states.
+- Login must include a local-friendly throttling or delay strategy before
+  backend implementation is considered complete.
+- Logout is idempotent and clears the session cookie.
+- The recommended initial session lifetime is an `8` hour absolute timeout and
+  a `30` minute idle timeout.
+
+The implemented auth persistence boundary contains:
+
+- `User` with stable public ID, normalized unique email, password hash, display
+  name, role, enabled state, and timestamps.
+- `Session` with user relationship, unique token hash, expiration timestamp,
+  last-seen timestamp, creation timestamp, and optional revoked timestamp.
+- `UserRole` enum with `USER` and `ADMIN`.
+- Constraints for public ID format, normalized email, non-blank hashes and
+  names, session expiration, last-seen, and revoked timestamp consistency.
+
+The first backend auth implementation task must explicitly approve the password
+hashing dependency, session token hashing details, cookie parsing behavior, and
+login throttling strategy before code is added.
+
+The current CSRF posture is intentionally narrow: SameSite `Lax` is required
+for the first local login/logout slice, but SameSite is not treated as the full
+CSRF strategy for future authenticated writes. The first authenticated
+state-changing product API beyond login/logout must revisit CSRF protection in
+its own approved task.
 
 ## Frontend Catalog Foundation
 
