@@ -1,10 +1,14 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import { describe, expect, it } from "vitest";
-import { catalogDetailResponseFixture } from "../../../test/catalog-fixtures";
+import { describe, expect, it, vi } from "vitest";
+import {
+  catalogDetailResponseFixture,
+  catalogFilterOptionsResponseFixture,
+} from "../../../test/catalog-fixtures";
 import { CatalogCover, resolveCoverPath } from "./CatalogCover";
 import { ComicCard } from "./ComicCard";
 import { ComicDetailContent } from "./ComicDetailContent";
+import { CatalogDiscoveryControls } from "./CatalogDiscoveryControls";
 import { formatMoney, PriceDisplay } from "./PriceDisplay";
 
 describe("catalog presentation components", () => {
@@ -98,5 +102,41 @@ describe("catalog presentation components", () => {
     expect(
       screen.getByRole("link", { name: "Back to catalog" }),
     ).toHaveAttribute("href", "/en/comics");
+  });
+
+  it("submits and clears URL-addressable discovery state", () => {
+    const onSubmit = vi.fn();
+    const onClear = vi.fn();
+
+    render(
+      <CatalogDiscoveryControls
+        filters={{
+          q: "neon",
+          genre: "mystery",
+          series: "",
+          availability: "",
+        }}
+        options={catalogFilterOptionsResponseFixture.data}
+        optionsError={false}
+        optionsPending={false}
+        onClear={onClear}
+        onSubmit={onSubmit}
+      />,
+    );
+
+    fireEvent.change(screen.getByRole("searchbox"), {
+      target: { value: "  neon harbor  " },
+    });
+    fireEvent.submit(screen.getByRole("searchbox").closest("form")!);
+
+    expect(onSubmit).toHaveBeenCalledWith({
+      q: "neon harbor",
+      genre: "mystery",
+      series: "",
+      availability: "",
+    });
+
+    fireEvent.click(screen.getByRole("button", { name: "Clear filters" }));
+    expect(onClear).toHaveBeenCalledOnce();
   });
 });

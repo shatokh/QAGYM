@@ -60,3 +60,16 @@ export interface CatalogListResponse {
 export interface CatalogDetailResponse {
   data: CatalogDetailItem;
 }
+
+export interface CatalogFilterOption {
+  slug: string;
+  name: string;
+  contentLocale: CatalogLocale;
+}
+
+export interface CatalogFilterOptionsResponse {
+  data: {
+    genres: CatalogFilterOption[];
+    series: CatalogFilterOption[];
+  };
+}

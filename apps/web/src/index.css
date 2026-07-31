@@ -128,6 +128,99 @@ a:focus-visible {
   max-width: 760px;
 }
 
+.catalog-discovery {
+  display: grid;
+  margin-top: 40px;
+  gap: 18px;
+  border-top: 1px solid #d8ddd7;
+  border-bottom: 1px solid #d8ddd7;
+  padding-block: 24px;
+}
+
+.catalog-discovery__search,
+.catalog-discovery fieldset,
+.catalog-discovery label {
+  display: grid;
+  gap: 8px;
+}
+
+.catalog-discovery__search > label,
+.catalog-discovery legend,
+.catalog-discovery label span {
+  color: #52605a;
+  font-size: 0.82rem;
+  font-weight: 750;
+}
+
+.catalog-discovery__search-row {
+  display: flex;
+  gap: 10px;
+}
+
+.catalog-discovery input,
+.catalog-discovery select {
+  min-height: 44px;
+  border: 1px solid #b8c1ba;
+  border-radius: 4px;
+  background: #ffffff;
+  color: #18201d;
+}
+
+.catalog-discovery input {
+  width: min(100%, 560px);
+  padding: 10px 12px;
+}
+
+.catalog-discovery button {
+  min-height: 44px;
+  border: 1px solid #18201d;
+  border-radius: 4px;
+  padding: 10px 14px;
+  background: #18201d;
+  color: #ffffff;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.catalog-discovery button:disabled {
+  border-color: #c9d0ca;
+  background: #e8ece8;
+  color: #68736d;
+  cursor: not-allowed;
+}
+
+.catalog-discovery fieldset {
+  display: grid;
+  margin: 0;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  border: 0;
+  padding: 0;
+}
+
+.catalog-discovery legend {
+  margin-bottom: 2px;
+  padding: 0;
+}
+
+.catalog-discovery select {
+  width: 100%;
+  padding: 10px 12px;
+}
+
+.catalog-discovery__clear {
+  justify-self: start;
+  border-color: #b8c1ba !important;
+  background: #ffffff !important;
+  color: #0b5cad !important;
+}
+
+.catalog-discovery__notice {
+  margin: 0;
+  color: #a43f37;
+  font-size: 0.88rem;
+}
+
 .catalog-grid {
   display: grid;
   margin: 48px 0 0;
@@ -460,6 +553,19 @@ h1 {
 
   .catalog-grid {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .catalog-discovery fieldset {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .catalog-discovery__search-row {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .catalog-discovery input {
+    width: 100%;
   }
 
   .catalog-pagination {

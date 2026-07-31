@@ -7,6 +7,7 @@ import {
 } from "../generated/prisma/enums";
 import { comicNotFound } from "../http/api-exception";
 import type {
+  CatalogFilterOptionsQuery,
   CatalogDetailQuery,
   CatalogListQuery,
   CatalogLocale,
@@ -15,6 +16,7 @@ import type {
   CatalogCreator,
   CatalogDetailItem,
   CatalogDetailResponse,
+  CatalogFilterOptionsResponse,
   CatalogGenre,
   CatalogListItem,
   CatalogListResponse,
@@ -67,6 +69,60 @@ export class CatalogService {
     const skip = (query.page - 1) * query.pageSize;
     const where = {
       publicationState: PublicationState.PUBLISHED,
+      ...(query.q
+        ? {
+            OR: [
+              {
+                sku: {
+                  contains: query.q,
+                  mode: "insensitive" as const,
+                },
+              },
+              {
+                translations: {
+                  some: {
+                    locale: {
+                      in:
+                        locale === Locale.en
+                          ? [Locale.en]
+                          : [Locale.ru, Locale.en],
+                    },
+                    title: {
+                      contains: query.q,
+                      mode: "insensitive" as const,
+                    },
+                  },
+                },
+              },
+            ],
+          }
+        : {}),
+      ...(query.genre
+        ? {
+            genres: {
+              some: {
+                genre: {
+                  slug: query.genre,
+                },
+              },
+            },
+          }
+        : {}),
+      ...(query.series
+        ? {
+            series: {
+              slug: query.series,
+            },
+          }
+        : {}),
+      ...(query.availability
+        ? {
+            stockQuantity:
+              query.availability === "in-stock"
+                ? { gt: 0 }
+                : { equals: 0 },
+          }
+        : {}),
     };
 
     const totalItems = await this.prisma.comic.count({ where });
@@ -157,6 +213,86 @@ export class CatalogService {
           totalItems === 0
             ? 0
             : Math.ceil(totalItems / query.pageSize),
+      },
+    };
+  }
+
+  async filterOptions(
+    query: CatalogFilterOptionsQuery,
+  ): Promise<CatalogFilterOptionsResponse> {
+    const locale = this.toPrismaLocale(query.locale);
+    const translations = this.translationSelection(locale);
+    const [genres, series] = await Promise.all([
+      this.prisma.genre.findMany({
+        where: {
+          comics: {
+            some: {
+              comic: {
+                publicationState: PublicationState.PUBLISHED,
+              },
+            },
+          },
+        },
+        orderBy: { slug: "asc" },
+        select: {
+          slug: true,
+          translations: {
+            where: translations.where,
+            select: {
+              locale: true,
+              name: true,
+            },
+          },
+        },
+      }),
+      this.prisma.series.findMany({
+        where: {
+          comics: {
+            some: {
+              publicationState: PublicationState.PUBLISHED,
+            },
+          },
+        },
+        orderBy: { slug: "asc" },
+        select: {
+          slug: true,
+          translations: {
+            where: translations.where,
+            select: {
+              locale: true,
+              title: true,
+            },
+          },
+        },
+      }),
+    ]);
+
+    return {
+      data: {
+        genres: genres.map((genre) => {
+          const translation = this.selectTranslation(
+            genre.translations,
+            query.locale,
+          );
+
+          return {
+            slug: genre.slug,
+            name: this.requiredText(translation.name),
+            contentLocale: translation.locale,
+          };
+        }),
+        series: series.map((item) => {
+          const translation = this.selectTranslation(
+            item.translations,
+            query.locale,
+          );
+
+          return {
+            slug: item.slug,
+            name: this.requiredText(translation.title),
+            contentLocale: translation.locale,
+          };
+        }),
       },
     };
   }

@@ -84,6 +84,25 @@ export const catalogDetailResponseSchema = z
   })
   .strict();
 
+export const catalogFilterOptionSchema = z
+  .object({
+    slug: z.string(),
+    name: z.string(),
+    contentLocale: catalogLocaleSchema,
+  })
+  .strict();
+
+export const catalogFilterOptionsResponseSchema = z
+  .object({
+    data: z
+      .object({
+        genres: z.array(catalogFilterOptionSchema),
+        series: z.array(catalogFilterOptionSchema),
+      })
+      .strict(),
+  })
+  .strict();
+
 export const apiErrorEnvelopeSchema = z
   .object({
     error: z
@@ -108,4 +127,7 @@ export type CatalogListItem = z.infer<typeof catalogListItemSchema>;
 export type CatalogDetailItem = z.infer<typeof catalogDetailItemSchema>;
 export type CatalogListResponse = z.infer<typeof catalogListResponseSchema>;
 export type CatalogDetailResponse = z.infer<typeof catalogDetailResponseSchema>;
+export type CatalogFilterOptionsResponse = z.infer<
+  typeof catalogFilterOptionsResponseSchema
+>;
 export type ApiErrorEnvelope = z.infer<typeof apiErrorEnvelopeSchema>;

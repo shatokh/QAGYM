@@ -63,8 +63,10 @@ draft/archived/unknown slugs, invalid and repeated query values, JSON error
 envelopes, and the absence of internal database fields from DTOs.
 
 The first internal contract is `docs/internal/api/catalog.md`. Contract checks
-should continue to be added with each supporting feature. Public Swagger
-publication may follow in Phase 5.
+should continue to be added with each supporting feature. The catalog contract
+now includes title/SKU search, single-value genre/series/availability filters,
+and the localized filter-options response. Public Swagger publication may
+follow in Phase 5.
 
 ## Playwright E2E
 
@@ -94,11 +96,12 @@ fixed delays. EN/RU changes must not change automation identity.
 The first clean catalog smoke suite is implemented in `e2e/` and runs through
 `pnpm test:e2e` against the real frontend, backend, migrated database, and
 deterministic clean seed with planned bugs disabled. It covers EN/RU routes,
-page navigation, detail navigation, invalid-page canonicalization, expected
-catalog request parameters, a 390 px viewport overflow check, and one routed API
-failure state. It uses one Chromium project and no visual snapshots or axe
-dependency. Phase 8 expands browser coverage, fixtures, scenarios, and CI
-maturity.
+page navigation, detail navigation, invalid-page canonicalization, search,
+combined filters, URL-preserving pagination, clear action, no-results behavior,
+expected catalog request parameters, a 390 px viewport overflow check, and one
+routed API failure state. It uses one Chromium project and no visual snapshots
+or axe dependency. Phase 8 expands browser coverage, fixtures, scenarios, and
+CI maturity.
 
 Future write workflows need explicit data isolation or reset behavior.
 Authenticated parallel tests should not mutate shared demo-account state

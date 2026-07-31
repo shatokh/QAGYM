@@ -12,6 +12,7 @@ closed guide information.
 
 - List: `GET /api/v1/comics`
 - Detail: `GET /api/v1/comics/{slug}`
+- Filter options: `GET /api/v1/catalog/filter-options`
 
 The platform health route remains `GET /health` and is not part of this product
 API namespace.
@@ -164,6 +165,16 @@ Supported query parameters:
 | `page` | No | `1` | Decimal positive integer |
 | `pageSize` | No | `12` | Decimal positive integer, maximum `50` |
 | `locale` | No | `en` | `en` or `ru` |
+| `q` | No | omitted | Trimmed, case-insensitive substring of localized title or SKU, maximum 100 characters |
+| `genre` | No | omitted | One lowercase hyphenated genre slug |
+| `series` | No | omitted | One lowercase hyphenated series slug |
+| `availability` | No | omitted | `in-stock` or `out-of-stock` |
+
+Unknown and repeated query parameters are rejected. Empty `q` is treated as
+omitted. Active filters combine with `AND`; search itself matches the selected
+localized title (with EN fallback) or the stable SKU. Search does not inspect
+descriptions, creator names, or localized filter labels. A syntactically valid
+but unknown genre or series slug returns an empty result.
 
 Unknown query parameters are rejected. Repeated values are rejected.
 
@@ -199,6 +210,32 @@ with an empty `data` array while preserving total metadata.
 
 `totalPages` is `0` when `totalItems` is `0`. Otherwise it is
 `ceil(totalItems / pageSize)`.
+
+## Filter Options Endpoint
+
+The read-only filter-options endpoint returns only genres and series attached
+to published comics:
+
+```text
+GET /api/v1/catalog/filter-options?locale=ru
+```
+
+The only supported query parameter is optional `locale=en|ru`. Each option has
+a stable slug, localized display name, and `contentLocale` showing the
+translation actually used. Both arrays are ordered by slug ascending.
+
+```json
+{
+  "data": {
+    "genres": [
+      { "slug": "mystery", "name": "Mystery", "contentLocale": "en" }
+    ],
+    "series": [
+      { "slug": "neon-harbor", "name": "Neon Harbor", "contentLocale": "en" }
+    ]
+  }
+}
+```
 
 ## Detail Endpoint
 
@@ -283,6 +320,10 @@ Canonical field messages:
 | `pageSize` | `Expected an integer from 1 to 50.` |
 | `locale` | `Expected one of: en, ru.` |
 | `slug` | `Expected a valid comic slug.` |
+| `q` | `Expected at most 100 characters.` |
+| `genre` | `Expected a valid catalog slug.` |
+| `series` | `Expected a valid catalog slug.` |
+| `availability` | `Expected one of: in-stock, out-of-stock.` |
 | Unknown query key | `Unknown query parameter.` |
 
 ### Comic Not Found
@@ -327,8 +368,6 @@ details, environment values, or another internal exception message.
 
 This contract does not define:
 
-- Search.
-- Filters.
 - Alternate sorting.
 - Cursor pagination.
 - Catalog writes.

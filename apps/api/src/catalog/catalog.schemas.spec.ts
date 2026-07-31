@@ -28,6 +28,25 @@ describe("catalog request schemas", () => {
     });
   });
 
+  it("parses discovery filters and trims search", () => {
+    expect(
+      parseCatalogListQuery({
+        q: "  NEON  ",
+        genre: "science-fiction",
+        series: "neon-harbor",
+        availability: "in-stock",
+      }),
+    ).toEqual({
+      page: 1,
+      pageSize: 12,
+      locale: "en",
+      q: "NEON",
+      genre: "science-fiction",
+      series: "neon-harbor",
+      availability: "in-stock",
+    });
+  });
+
   it("returns deterministic validation details", () => {
     expect(() =>
       parseCatalogListQuery({

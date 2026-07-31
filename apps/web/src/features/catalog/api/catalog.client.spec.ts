@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import {
+  getCatalogFilterOptions,
   getCatalogList,
   getComicDetail,
   type CatalogListRequest,
@@ -7,6 +8,7 @@ import {
 import { CatalogApiError } from "./catalog.errors";
 import {
   catalogDetailResponseFixture,
+  catalogFilterOptionsResponseFixture,
   catalogListResponseFixture,
 } from "../../../test/catalog-fixtures";
 
@@ -65,6 +67,36 @@ describe("catalog API client", () => {
     ).resolves.toEqual(catalogDetailResponseFixture);
     expect(fetchMock).toHaveBeenCalledWith(
       "/api/v1/comics/neon-harbor-1?locale=en",
+      expect.any(Object),
+    );
+  });
+
+  it("serializes discovery filters and validates filter options", async () => {
+    const fetchMock = vi
+      .fn<typeof fetch>()
+      .mockResolvedValueOnce(jsonResponse(catalogListResponseFixture))
+      .mockResolvedValueOnce(jsonResponse(catalogFilterOptionsResponseFixture));
+    vi.stubGlobal("fetch", fetchMock);
+
+    await getCatalogList({
+      ...listRequest,
+      q: "neon harbor",
+      genre: "mystery",
+      series: "neon-harbor",
+      availability: "in-stock",
+    });
+    await expect(getCatalogFilterOptions("en")).resolves.toEqual(
+      catalogFilterOptionsResponseFixture,
+    );
+
+    expect(fetchMock).toHaveBeenNthCalledWith(
+      1,
+      "/api/v1/comics?page=2&pageSize=12&locale=ru&q=neon+harbor&genre=mystery&series=neon-harbor&availability=in-stock",
+      expect.any(Object),
+    );
+    expect(fetchMock).toHaveBeenNthCalledWith(
+      2,
+      "/api/v1/catalog/filter-options?locale=en",
       expect.any(Object),
     );
   });

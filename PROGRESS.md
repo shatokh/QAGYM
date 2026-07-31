@@ -63,6 +63,9 @@ None.
   detail fields, fallback media, responsive styling, and 33 frontend tests.
 - First clean catalog Playwright smoke completed with 7 browser tests, prepared
   PostgreSQL verification, and expanded Supertest API boundary coverage.
+- Catalog search and filters completed with title/SKU search, genre/series/
+  availability filters, localized filter options, URL state, API coverage,
+  component coverage, and Playwright discovery scenarios.
 
 ## Blocked
 
@@ -201,6 +204,8 @@ None.
 - Root `pnpm test` aggregates frontend and backend unit/component suites.
   Explicit `test:web`, `test:unit:api`, and database-backed `test:api` commands
   are separate CI gates.
+- Catalog discovery uses trimmed case-insensitive title/SKU substring search,
+  single genre/series/availability filters, and published-data filter options.
 
 ## Decisions Still Pending
 
@@ -209,5 +214,4 @@ None.
 - Deployment target.
 - Exact Playwright browser matrix, write-flow fixture isolation, expanded
   contract-test commands, and k6 command structure.
-- Exact search semantics and filter query syntax.
 - Repository visibility and the spoiler threat model for registry content.

@@ -317,8 +317,29 @@ The UI uses project-owned React and CSS only. Stable automation IDs are limited
 to the approved catalog grid, card, pagination, detail, and route-state
 contracts; browser E2E setup is a separate task.
 
-Search and filters for genre, creator, series, price, and availability remain
-Phase 1 Clean Features but follow list/detail in separate tasks.
+Search and filters for creator and price remain Phase 1 Clean Features for
+later tasks. Clean title/SKU search and genre, series, and availability filters
+are implemented by task `0021`.
+
+## Clean Discovery Behavior
+
+Task `0021` adds URL-addressable discovery to the published catalog:
+
+- `q` trims input and performs a case-insensitive substring match over the
+  effective localized title and stable SKU.
+- `genre`, `series`, and `availability` are single-value filters.
+- Active discovery parameters combine with `AND` and preserve the existing
+  merchandising order and six-item frontend page size.
+- Filter options come from published catalog data through a read-only endpoint
+  and are ordered by stable slug.
+- Changing discovery state returns to page one; pagination preserves active
+  parameters; clear returns to the unfiltered first page.
+- An empty filtered result is a distinct clean UI state and does not represent
+  an API failure.
+
+The discovery surface does not search descriptions, creators, or localized
+filter labels, and it does not add fuzzy search, ranking, multi-select, price
+ranges, or saved searches.
 
 ## Minimal Clean Seed
 
@@ -398,13 +419,13 @@ The approved proposed sequence is:
 5. `0016` - Frontend Catalog Foundation.
 6. `0017` - Catalog List and Product Detail UI.
 7. `0020` - First Clean Catalog Playwright Smoke.
-8. Later Phase 1 tasks - catalog search, filters, and expanded automation.
+8. `0021` - Catalog Search and Filters.
+9. Later Phase 1 tasks - expanded catalog automation and Phase 2 preparation.
 
 Each task requires its own document and approval.
 
 ## Deferred Decisions
 
-- Search semantics and filter query syntax.
 - Cache and ETag behavior.
 - Frontend form and UI kit choices.
 - Additional creator roles.

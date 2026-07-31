@@ -10,9 +10,17 @@ export interface CatalogListQuery {
   page: number;
   pageSize: number;
   locale: CatalogLocale;
+  q?: string;
+  genre?: string;
+  series?: string;
+  availability?: "in-stock" | "out-of-stock";
 }
 
 export interface CatalogDetailQuery {
+  locale: CatalogLocale;
+}
+
+export interface CatalogFilterOptionsQuery {
   locale: CatalogLocale;
 }
 
@@ -27,12 +35,22 @@ const pageSizeString = positiveIntegerString.refine(
 );
 
 const localeSchema = z.enum(["en", "ru"]);
+const filterSlugSchema = z
+  .string()
+  .max(120)
+  .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/);
+const searchSchema = z.string().trim().max(100).optional();
+const availabilitySchema = z.enum(["in-stock", "out-of-stock"]);
 
 const catalogListQuerySchema = z
   .object({
     page: positiveIntegerString.optional(),
     pageSize: pageSizeString.optional(),
     locale: localeSchema.optional(),
+    q: searchSchema,
+    genre: filterSlugSchema.optional(),
+    series: filterSlugSchema.optional(),
+    availability: availabilitySchema.optional(),
   })
   .strict();
 
@@ -50,6 +68,10 @@ const comicSlugSchema = z
 const fieldMessages: Record<string, string> = {
   page: "Expected a positive integer.",
   pageSize: "Expected an integer from 1 to 50.",
+  q: "Expected at most 100 characters.",
+  genre: "Expected a valid catalog slug.",
+  series: "Expected a valid catalog slug.",
+  availability: "Expected one of: in-stock, out-of-stock.",
   locale: "Expected one of: en, ru.",
   slug: "Expected a valid comic slug.",
 };
@@ -60,6 +82,20 @@ export function parseCatalogListQuery(input: unknown): CatalogListQuery {
   return {
     page: parsed.page ?? 1,
     pageSize: parsed.pageSize ?? 12,
+    locale: parsed.locale ?? "en",
+    q: parsed.q || undefined,
+    genre: parsed.genre,
+    series: parsed.series,
+    availability: parsed.availability,
+  };
+}
+
+export function parseCatalogFilterOptionsQuery(
+  input: unknown,
+): CatalogFilterOptionsQuery {
+  const parsed = parse(catalogDetailQuerySchema, input);
+
+  return {
     locale: parsed.locale ?? "en",
   };
 }

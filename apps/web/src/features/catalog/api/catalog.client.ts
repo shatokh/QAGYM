@@ -2,8 +2,10 @@ import type { ZodType } from "zod";
 import {
   apiErrorEnvelopeSchema,
   catalogDetailResponseSchema,
+  catalogFilterOptionsResponseSchema,
   catalogListResponseSchema,
   type CatalogDetailResponse,
+  type CatalogFilterOptionsResponse,
   type CatalogListResponse,
   type CatalogLocale,
 } from "./catalog.contract";
@@ -13,6 +15,10 @@ export interface CatalogListRequest {
   locale: CatalogLocale;
   page: number;
   pageSize: number;
+  q?: string;
+  genre?: string;
+  series?: string;
+  availability?: "in-stock" | "out-of-stock";
 }
 
 export interface CatalogDetailRequest {
@@ -112,9 +118,27 @@ export function getCatalogList(
     locale: request.locale,
   });
 
+  if (request.q) query.set("q", request.q);
+  if (request.genre) query.set("genre", request.genre);
+  if (request.series) query.set("series", request.series);
+  if (request.availability) query.set("availability", request.availability);
+
   return requestJson(
     `/api/v1/comics?${query.toString()}`,
     catalogListResponseSchema,
+    signal,
+  );
+}
+
+export function getCatalogFilterOptions(
+  locale: CatalogLocale,
+  signal?: AbortSignal,
+): Promise<CatalogFilterOptionsResponse> {
+  const query = new URLSearchParams({ locale });
+
+  return requestJson(
+    `/api/v1/catalog/filter-options?${query.toString()}`,
+    catalogFilterOptionsResponseSchema,
     signal,
   );
 }

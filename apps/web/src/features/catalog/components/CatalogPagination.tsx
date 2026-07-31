@@ -4,16 +4,22 @@ import { Link } from "react-router-dom";
 interface CatalogPaginationProps {
   locale: "en" | "ru";
   page: number;
+  search: string;
   totalPages: number;
 }
 
-function pageHref(locale: "en" | "ru", page: number): string {
-  return page === 1 ? `/${locale}/comics` : `/${locale}/comics?page=${page}`;
+function pageHref(locale: "en" | "ru", page: number, search: string): string {
+  const params = new URLSearchParams(search);
+  params.delete("page");
+  if (page > 1) params.set("page", String(page));
+  const query = params.toString();
+  return `/${locale}/comics${query ? `?${query}` : ""}`;
 }
 
 export function CatalogPagination({
   locale,
   page,
+  search,
   totalPages,
 }: CatalogPaginationProps) {
   const { t } = useTranslation();
@@ -32,7 +38,7 @@ export function CatalogPagination({
       {previousPage ? (
         <Link
           data-testid="pagination-previous"
-          to={pageHref(locale, previousPage)}
+          to={pageHref(locale, previousPage, search)}
         >
           {t("catalog.previousPage")}
         </Link>
@@ -49,7 +55,10 @@ export function CatalogPagination({
         {t("catalog.pageStatus", { page, totalPages })}
       </span>
       {nextPage ? (
-        <Link data-testid="pagination-next" to={pageHref(locale, nextPage)}>
+        <Link
+          data-testid="pagination-next"
+          to={pageHref(locale, nextPage, search)}
+        >
           {t("catalog.nextPage")}
         </Link>
       ) : (

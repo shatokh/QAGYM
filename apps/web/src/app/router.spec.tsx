@@ -4,7 +4,10 @@ import userEvent from "@testing-library/user-event";
 import { createMemoryRouter } from "react-router-dom";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { App } from "../App";
-import { catalogListResponseFixture } from "../test/catalog-fixtures";
+import {
+  catalogFilterOptionsResponseFixture,
+  catalogListResponseFixture,
+} from "../test/catalog-fixtures";
 import { RouteErrorBoundary } from "../routing/RouteErrorBoundary";
 import { appRoutes } from "./router";
 
@@ -14,6 +17,17 @@ function jsonResponse(body: unknown, status = 200): Response {
     headers: {
       "Content-Type": "application/json",
     },
+  });
+}
+
+function catalogFetchMock() {
+  return vi.fn<typeof fetch>().mockImplementation(async (input) => {
+    const url = String(input);
+    return jsonResponse(
+      url.includes("/filter-options")
+        ? catalogFilterOptionsResponseFixture
+        : catalogListResponseFixture,
+    );
   });
 }
 
@@ -45,9 +59,7 @@ describe("application routing", () => {
   it("redirects the root to the canonical English catalog", async () => {
     vi.stubGlobal(
       "fetch",
-      vi
-        .fn<typeof fetch>()
-        .mockResolvedValue(jsonResponse(catalogListResponseFixture)),
+      catalogFetchMock(),
     );
     const { router } = renderPath("/");
 
@@ -64,9 +76,7 @@ describe("application routing", () => {
   it("synchronizes the Russian route, UI language, and document language", async () => {
     vi.stubGlobal(
       "fetch",
-      vi
-        .fn<typeof fetch>()
-        .mockResolvedValue(jsonResponse(catalogListResponseFixture)),
+      catalogFetchMock(),
     );
     renderPath("/ru/comics");
 
@@ -85,9 +95,7 @@ describe("application routing", () => {
   });
 
   it("preserves the route while switching locale", async () => {
-    const fetchMock = vi
-      .fn<typeof fetch>()
-      .mockResolvedValue(jsonResponse(catalogListResponseFixture));
+    const fetchMock = catalogFetchMock();
     vi.stubGlobal("fetch", fetchMock);
     const user = userEvent.setup();
     const { router } = renderPath("/en/comics");
@@ -126,9 +134,7 @@ describe("application routing", () => {
   it("exposes deterministic loading and populated grid states", async () => {
     vi.stubGlobal(
       "fetch",
-      vi
-        .fn<typeof fetch>()
-        .mockResolvedValue(jsonResponse(catalogListResponseFixture)),
+      catalogFetchMock(),
     );
     renderPath("/en/comics");
 

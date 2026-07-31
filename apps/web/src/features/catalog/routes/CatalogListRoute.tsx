@@ -3,12 +3,18 @@ import { useTranslation } from "react-i18next";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { isAppLocale } from "../../../i18n/locales";
 import { useRouteTitle } from "../../../routing/useRouteTitle";
-import { useCatalogListQuery } from "../api/catalog.queries";
+import {
+  useCatalogFilterOptionsQuery,
+  useCatalogListQuery,
+} from "../api/catalog.queries";
 import {
   CATALOG_PAGE_SIZE,
   canonicalCatalogSearch,
+  hasCatalogFilters,
+  parseCatalogFilters,
   parseCatalogPage,
 } from "../catalog.pagination";
+import { CatalogDiscoveryControls } from "../components/CatalogDiscoveryControls";
 import { CatalogPagination } from "../components/CatalogPagination";
 import { ComicCard } from "../components/ComicCard";
 
@@ -24,27 +30,45 @@ export function CatalogListRoute() {
   }
 
   const pageState = parseCatalogPage(location.search);
+  const filterState = parseCatalogFilters(location.search);
   const catalogQuery = useCatalogListQuery({
     locale,
     page: pageState.page,
     pageSize: CATALOG_PAGE_SIZE,
+    q: filterState.filters.q || undefined,
+    genre: filterState.filters.genre || undefined,
+    series: filterState.filters.series || undefined,
+    availability: filterState.filters.availability || undefined,
   });
+  const filterOptionsQuery = useCatalogFilterOptionsQuery(locale);
 
   useEffect(() => {
-    if (!pageState.shouldCanonicalize) {
+    if (!pageState.shouldCanonicalize && !filterState.shouldCanonicalize) {
       return;
     }
 
-    const canonicalSearch = canonicalCatalogSearch(location.search, 1);
+    const canonicalSearch = canonicalCatalogSearch(
+      location.search,
+      pageState.page,
+      filterState.filters,
+    );
     void navigate(
       {
         search: canonicalSearch ? `?${canonicalSearch}` : "",
       },
       { replace: true },
     );
-  }, [location.search, navigate, pageState.shouldCanonicalize]);
+  }, [
+    filterState.filters,
+    filterState.shouldCanonicalize,
+    location.search,
+    navigate,
+    pageState.page,
+    pageState.shouldCanonicalize,
+  ]);
 
   const isEmptyPage = Boolean(catalogQuery.data && catalogQuery.data.data.length === 0);
+  const hasFilters = hasCatalogFilters(filterState.filters);
 
   return (
     <section
@@ -57,6 +81,28 @@ export function CatalogListRoute() {
         <h1 id="catalog-title">{t("catalog.title")}</h1>
         <p className="intro">{t("catalog.introduction")}</p>
       </div>
+
+      <CatalogDiscoveryControls
+        filters={filterState.filters}
+        options={filterOptionsQuery.data?.data}
+        optionsError={filterOptionsQuery.isError}
+        optionsPending={filterOptionsQuery.isPending}
+        onClear={() =>
+          void navigate({
+            search: canonicalCatalogSearch(location.search, 1, {
+              q: "",
+              genre: "",
+              series: "",
+              availability: "",
+            }),
+          })
+        }
+        onSubmit={(filters) =>
+          void navigate({
+            search: canonicalCatalogSearch(location.search, 1, filters),
+          })
+        }
+      />
 
       {catalogQuery.isPending ? (
         <p className="route-status" data-testid="catalog-loading" role="status">
@@ -84,6 +130,7 @@ export function CatalogListRoute() {
           <CatalogPagination
             locale={locale}
             page={catalogQuery.data.pagination.page}
+            search={location.search}
             totalPages={catalogQuery.data.pagination.totalPages}
           />
         </>
@@ -94,15 +141,22 @@ export function CatalogListRoute() {
           <strong>
             {pageState.page > 1
               ? t("catalog.emptyPageTitle")
-              : t("catalog.emptyTitle")}
+              : hasFilters
+                ? t("catalog.emptyFilterTitle")
+                : t("catalog.emptyTitle")}
           </strong>
           <span>
             {pageState.page > 1
               ? t("catalog.emptyPageMessage")
-              : t("catalog.emptyMessage")}
+              : hasFilters
+                ? t("catalog.emptyFilterMessage")
+                : t("catalog.emptyMessage")}
           </span>
-          {pageState.page > 1 ? (
-            <Link className="text-link" to={`/${locale}/comics`}>
+          {pageState.page > 1 || hasFilters ? (
+            <Link
+              className="text-link"
+              to={`/${locale}/comics${hasFilters ? `?${canonicalCatalogSearch(location.search, 1, { q: "", genre: "", series: "", availability: "" })}` : ""}`}
+            >
               {t("actions.firstCatalogPage")}
             </Link>
           ) : null}

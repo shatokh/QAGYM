@@ -5,6 +5,7 @@ import { AppModule } from "../src/app.module";
 import { CatalogService } from "../src/catalog/catalog.service";
 import type {
   CatalogDetailResponse,
+  CatalogFilterOptionsResponse,
   CatalogListResponse,
 } from "../src/catalog/catalog.types";
 
@@ -117,6 +118,61 @@ describe("Catalog read API", () => {
     ).toBe(true);
   });
 
+  it("supports case-insensitive title and SKU search", async () => {
+    const titleSearch = await request(httpServer())
+      .get("/api/v1/comics?q=VANISHING&pageSize=3")
+      .expect(200);
+    expect((titleSearch.body as CatalogListResponse).data.map((comic) => comic.slug)).toEqual([
+      "neon-harbor-1",
+    ]);
+
+    const skuSearch = await request(httpServer())
+      .get("/api/v1/comics?q=qcg-nh-002")
+      .expect(200);
+    expect((skuSearch.body as CatalogListResponse).data.map((comic) => comic.slug)).toEqual([
+      "neon-harbor-2",
+    ]);
+  });
+
+  it("applies genre, series, availability, and AND semantics", async () => {
+    const response = await request(httpServer())
+      .get(
+        "/api/v1/comics?genre=adventure&series=clockwork-frontier&availability=in-stock",
+      )
+      .expect(200);
+    expect((response.body as CatalogListResponse).data.map((comic) => comic.slug)).toEqual([
+      "clockwork-frontier-2",
+    ]);
+
+    const empty = await request(httpServer())
+      .get("/api/v1/comics?series=unknown-series")
+      .expect(200);
+    expect((empty.body as CatalogListResponse).data).toEqual([]);
+    expect((empty.body as CatalogListResponse).pagination.totalItems).toBe(0);
+  });
+
+  it("returns deterministic localized options for published catalog entities", async () => {
+    const response = await request(httpServer())
+      .get("/api/v1/catalog/filter-options?locale=ru")
+      .expect(200);
+    const body = response.body as CatalogFilterOptionsResponse;
+
+    expect(body.data.genres.map((option) => option.slug)).toEqual([
+      "adventure",
+      "drama",
+      "fantasy",
+      "mystery",
+      "retro-futurism",
+      "science-fiction",
+    ]);
+    expect(body.data.series.map((option) => option.slug)).toEqual([
+      "clockwork-frontier",
+      "neon-harbor",
+    ]);
+    expect(body.data.genres.every((option) => option.contentLocale === "ru")).toBe(true);
+    expect(body.data.series.every((option) => option.contentLocale === "ru")).toBe(true);
+  });
+
   it("returns the detail DTO with deterministic relations", async () => {
     const response = await request(httpServer())
       .get("/api/v1/comics/neon-harbor-2")
@@ -201,7 +257,7 @@ describe("Catalog read API", () => {
   it("returns deterministic validation errors", async () => {
     await request(httpServer())
       .get(
-        "/api/v1/comics?page=0&pageSize=51&locale=fr&extra=value",
+        "/api/v1/comics?page=0&pageSize=51&locale=fr&availability=maybe&extra=value",
       )
       .expect("Content-Type", /json/)
       .expect(400)
@@ -210,6 +266,10 @@ describe("Catalog read API", () => {
           code: "INVALID_REQUEST",
           message: "Request validation failed.",
           details: [
+            {
+              path: "availability",
+              message: "Expected one of: in-stock, out-of-stock.",
+            },
             {
               path: "extra",
               message: "Unknown query parameter.",
@@ -266,6 +326,7 @@ describe("Catalog read API", () => {
     for (const query of [
       "?page=1&page=2",
       "?pageSize=3&pageSize=4",
+      "?q=one&q=two",
     ]) {
       const response = await request(httpServer())
         .get(`/api/v1/comics${query}`)

@@ -89,6 +89,52 @@ test.describe("clean catalog browser smoke", () => {
     ).toBe(true);
   });
 
+  test("searches by SKU and keeps the result in the localized URL", async ({
+    page,
+  }) => {
+    await page.goto("/en/comics");
+    await page.getByLabel("Search comics").fill("QCG-NH-002");
+    await page.getByRole("button", { name: "Search" }).click();
+
+    await expect(page).toHaveURL(/\/en\/comics\?q=QCG-NH-002$/);
+    await expect(page.getByTestId("catalog-grid").locator(":scope > li")).toHaveCount(1);
+    await expect(page.getByTestId("comic-card--neon-harbor-2")).toBeVisible();
+  });
+
+  test("combines genre, series, and availability filters", async ({ page }) => {
+    await page.goto("/en/comics");
+    await page.getByLabel("Genre").selectOption("adventure");
+    await page.getByLabel("Series").selectOption("clockwork-frontier");
+    await page.getByLabel("Availability").selectOption("in-stock");
+    await page.getByRole("button", { name: "Search" }).click();
+
+    await expect(page).toHaveURL(
+      /\/en\/comics\?genre=adventure&series=clockwork-frontier&availability=in-stock$/,
+    );
+    await expect(page.getByTestId("catalog-grid").locator(":scope > li")).toHaveCount(1);
+    await expect(page.getByTestId("comic-card--clockwork-frontier-2")).toBeVisible();
+  });
+
+  test("preserves active filters through pagination and clears them", async ({ page }) => {
+    await page.goto("/en/comics?availability=in-stock");
+    await page.getByTestId("pagination-next").click();
+
+    await expect(page).toHaveURL(/\/en\/comics\?availability=in-stock&page=2$/);
+    await page.getByRole("button", { name: "Clear filters" }).click();
+    await expect(page).toHaveURL(/\/en\/comics$/);
+  });
+
+  test("supports RU search and exposes a distinct no-results state", async ({
+    page,
+  }) => {
+    await page.goto("/ru/comics?q=QCG-NH-002");
+    await expect(page.getByTestId("catalog-grid")).toBeVisible();
+    await expect(page.getByTestId("comic-card--neon-harbor-2")).toBeVisible();
+
+    await page.goto("/ru/comics?q=does-not-exist");
+    await expect(page.getByTestId("catalog-empty")).toBeVisible();
+  });
+
   test("keeps the catalog usable at the supported 390px viewport", async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto("/en/comics");

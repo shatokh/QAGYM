@@ -1,7 +1,21 @@
 import type {
+  CatalogFilterOptionsResponse,
   CatalogDetailResponse,
   CatalogListResponse,
 } from "../features/catalog/api/catalog.contract";
+
+export const catalogFilterOptionsResponseFixture: CatalogFilterOptionsResponse = {
+  data: {
+    genres: [
+      { slug: "adventure", name: "Adventure", contentLocale: "en" },
+      { slug: "mystery", name: "Mystery", contentLocale: "en" },
+    ],
+    series: [
+      { slug: "clockwork-frontier", name: "Clockwork Frontier", contentLocale: "en" },
+      { slug: "neon-harbor", name: "Neon Harbor", contentLocale: "en" },
+    ],
+  },
+};
 
 export const catalogListResponseFixture: CatalogListResponse = {
   data: [
