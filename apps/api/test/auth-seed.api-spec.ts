@@ -47,7 +47,7 @@ describe("Auth seed", () => {
         public_id: "usr_demo_admin",
         email: "admin@qacomics.local",
         password_hash: expect.stringMatching(
-          /^\$argon2id\$v=19\$m=19456,t=2,p=1\$[A-Za-z0-9+/]+\$[A-Za-z0-9+/]+$/,
+          /^\$argon2id\$v=19\$m=19456,(t=2,p=1|p=1,t=2)\$[A-Za-z0-9+/]+\$[A-Za-z0-9+/]+$/,
         ),
         display_name: "Demo Admin",
         role: "ADMIN",
@@ -57,7 +57,7 @@ describe("Auth seed", () => {
         public_id: "usr_demo_user",
         email: "user@qacomics.local",
         password_hash: expect.stringMatching(
-          /^\$argon2id\$v=19\$m=19456,t=2,p=1\$[A-Za-z0-9+/]+\$[A-Za-z0-9+/]+$/,
+          /^\$argon2id\$v=19\$m=19456,(t=2,p=1|p=1,t=2)\$[A-Za-z0-9+/]+\$[A-Za-z0-9+/]+$/,
         ),
         display_name: "Demo User",
         role: "USER",

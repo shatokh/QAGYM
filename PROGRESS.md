@@ -72,6 +72,11 @@ None.
 - Auth database schema and deterministic demo seed completed with `User`,
   `Session`, `UserRole`, two enabled demo accounts, no seeded sessions, and
   DB-backed seed verification.
+- Backend clean auth API completed with `POST /api/v1/auth/login`,
+  `POST /api/v1/auth/logout`, `GET /api/v1/auth/me`, Argon2id verification
+  through `argon2`, database-backed opaque sessions, hashed session tokens,
+  local MVP HTTP-only `qcg_session` cookie behavior, generic invalid credential
+  responses, idempotent logout, process-local throttling, and unit/API tests.
 
 ## Blocked
 
@@ -225,13 +230,17 @@ None.
   user IDs, normalized emails, unique session token hashes, session expiration
   fields, and two enabled demo accounts: `user@qacomics.local` and
   `admin@qacomics.local`.
+- Backend auth API uses `argon2` for Argon2id password verification,
+  database-backed opaque sessions, hashed session tokens, the local
+  `qcg_session` HTTP-only SameSite cookie, 8 hour absolute timeout, 30 minute
+  idle timeout, idempotent logout, and process-local login throttling.
 
 ## Decisions Still Pending
 
 - UI kit.
-- Exact auth implementation details for dependencies, password verification,
-  session-token hashing, cookie parsing, CSRF implementation, login throttling,
-  and frontend route copy.
+- Exact frontend auth route copy.
+- CSRF implementation for future authenticated write APIs beyond
+  login/logout.
 - Deployment target.
 - Exact Playwright browser matrix, write-flow fixture isolation, expanded
   contract-test commands, and k6 command structure.

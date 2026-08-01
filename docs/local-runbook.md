@@ -62,8 +62,7 @@ The seed creates these public local demo accounts without preexisting sessions:
 | User | `user@qacomics.local` | `DemoUserPassphrase2026!` | `USER` |
 | Admin | `admin@qacomics.local` | `DemoAdminPassphrase2026!` | `ADMIN` |
 
-Auth API and login UI are not implemented yet; these accounts are persistence
-fixtures for the upcoming Phase 2 tasks.
+The backend auth API is implemented. Frontend login UI remains later scope.
 
 ## 3. Start the Application
 
@@ -114,6 +113,31 @@ Useful direct API checks:
 ```powershell
 Invoke-RestMethod "http://localhost:3000/api/v1/comics?page=1&pageSize=6&locale=en"
 Invoke-RestMethod "http://localhost:3000/api/v1/comics/neon-harbor-1?locale=en"
+```
+
+Useful backend auth checks:
+
+```powershell
+$body = @{
+  email = "user@qacomics.local"
+  password = "DemoUserPassphrase2026!"
+} | ConvertTo-Json
+
+$login = Invoke-WebRequest `
+  -Method Post `
+  -Uri "http://localhost:3000/api/v1/auth/login" `
+  -ContentType "application/json" `
+  -Body $body `
+  -SessionVariable qcgSession
+
+$login.Content
+Invoke-RestMethod "http://localhost:3000/api/v1/auth/me" -WebSession $qcgSession
+Invoke-WebRequest `
+  -Method Post `
+  -Uri "http://localhost:3000/api/v1/auth/logout" `
+  -ContentType "application/json" `
+  -Body "{}" `
+  -WebSession $qcgSession
 ```
 
 ## 4. Run Verification
@@ -179,7 +203,7 @@ corepack pnpm infra:status
 Do not run the database-backed API suite or browser E2E until PostgreSQL is
 healthy and the clean seed has been loaded.
 
-### Port 5432 is already in use
+### The PostgreSQL port is unavailable
 
 Change `POSTGRES_PORT` and the matching port in `DATABASE_URL` in the ignored
 `.env` file, then recreate the Compose container:

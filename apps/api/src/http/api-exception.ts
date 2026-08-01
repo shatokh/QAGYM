@@ -51,3 +51,27 @@ export function comicNotFound(): ApiException {
     "Comic not found.",
   );
 }
+
+export function invalidCredentials(): ApiException {
+  return new ApiException(
+    HttpStatus.UNAUTHORIZED,
+    "INVALID_CREDENTIALS",
+    "Invalid email or password.",
+  );
+}
+
+export function unauthenticated(): ApiException {
+  return new ApiException(
+    HttpStatus.UNAUTHORIZED,
+    "UNAUTHENTICATED",
+    "Authentication required.",
+  );
+}
+
+export function authRateLimited(): ApiException {
+  return new ApiException(
+    HttpStatus.TOO_MANY_REQUESTS,
+    "AUTH_RATE_LIMITED",
+    "Too many authentication attempts.",
+  );
+}

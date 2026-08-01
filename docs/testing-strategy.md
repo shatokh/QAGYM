@@ -68,21 +68,21 @@ now includes title/SKU search, single-value genre/series/availability filters,
 and the localized filter-options response. Public Swagger publication may
 follow in Phase 5.
 
-The planned auth internal contract is `docs/internal/api/auth.md`. Future auth
-contract tests should cover login, logout, current-user state, invalid
-credentials parity across unknown email, wrong password, disabled account, and
-locked account states, unauthenticated state, forbidden role access, cookie
-behavior, session timeout behavior, throttling or delay behavior, and JSON error
-envelope consistency. Auth API tests must not expose passwords, password
-hashes, raw session tokens, session hashes, numeric database IDs, or closed bug
-guide metadata through DTOs.
+The auth internal contract is `docs/internal/api/auth.md`. The backend auth API
+suite covers login, logout, current-user state, invalid credentials parity
+across unknown email, wrong password, and disabled account states,
+unauthenticated state for missing/malformed/unknown/expired/idle-expired/
+revoked sessions, cookie behavior, session timeout behavior, local throttling,
+and JSON error envelope consistency. Auth API tests verify that DTOs do not
+expose passwords, password hashes, raw session tokens, session hashes, numeric
+database IDs, or closed bug guide metadata.
 
 Task `0024` adds DB-backed seed verification for the two enabled demo accounts
 and the empty session table. These tests check stable public IDs, normalized
 emails, roles, enabled state, Argon2id PHC parameter format, and absence of
 plaintext demo passwords. They do not verify login behavior; password
-verification belongs to the backend auth API task that approves the hashing
-dependency.
+verification is covered by the backend auth API task that approved the
+`argon2` dependency.
 
 ## Playwright E2E
 

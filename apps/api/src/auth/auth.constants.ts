@@ -1,0 +1,8 @@
+export const SESSION_COOKIE_NAME = "qcg_session";
+export const SESSION_ABSOLUTE_TIMEOUT_SECONDS = 8 * 60 * 60;
+export const SESSION_IDLE_TIMEOUT_SECONDS = 30 * 60;
+
+export const LOGIN_EMAIL_ATTEMPT_LIMIT = 10;
+export const LOGIN_SOURCE_ATTEMPT_LIMIT = 100;
+export const LOGIN_THROTTLE_WINDOW_SECONDS = 10 * 60;
+export const INVALID_CREDENTIALS_DELAY_MS = 25;

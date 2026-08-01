@@ -27,7 +27,7 @@ VALUES
     (
         'usr_demo_user',
         'user@qacomics.local',
-        '$argon2id$v=19$m=19456,t=2,p=1$cWNnX3VzZXJfc2VlZF91c2Vy$26EK5qJtWDuSdeFbkxsheZAULJxDkPBH3fsgwAIpDLY',
+        '$argon2id$v=19$m=19456,p=1,t=2$Rx6AnLXXe1IF8sI4Jfx4nw$/SBXVPHny78b3Wp2Y3azgPAPkEwTJeygtUmJXRR0/E4',
         'Demo User',
         'USER',
         TRUE,
@@ -36,7 +36,7 @@ VALUES
     (
         'usr_demo_admin',
         'admin@qacomics.local',
-        '$argon2id$v=19$m=19456,t=2,p=1$cWNnX2FkbWluX3NlZWRfYWRtaW4$SO2qXp3eUbNjn69DHKsX8mtYIRw/xQRlhYL9xVvFAIc',
+        '$argon2id$v=19$m=19456,p=1,t=2$3g+2kwXCSAXK42z7rajxTw$opIqXbe6kcbWe5W0cxoGznNmwXx+uFCNCzVoFGJUoyo',
         'Demo Admin',
         'ADMIN',
         TRUE,
@@ -522,7 +522,7 @@ BEGIN
     IF EXISTS (
         SELECT 1
         FROM "users"
-        WHERE "password_hash" !~ '^\$argon2id\$v=19\$m=19456,t=2,p=1\$[A-Za-z0-9+/]+\$[A-Za-z0-9+/]+$'
+        WHERE "password_hash" !~ '^\$argon2id\$v=19\$m=19456,(t=2,p=1|p=1,t=2)\$[A-Za-z0-9+/]+\$[A-Za-z0-9+/]+$'
     ) THEN
         RAISE EXCEPTION 'Demo account password hashes must use the approved Argon2id PHC parameters';
     END IF;

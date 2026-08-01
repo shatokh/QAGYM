@@ -137,11 +137,11 @@ Swagger/OpenAPI remains Phase 5 scope.
 PostgreSQL adapter reads the validated repository-local `DATABASE_URL` and
 disconnects when Nest closes.
 
-## Auth and Session Direction
+## Auth API and Session Boundary
 
-Phase 2 auth API implementation is planned but not implemented. The internal
-contract target is `docs/internal/api/auth.md`, and the persistence foundation
-is implemented in Prisma.
+The Phase 2 backend auth API is implemented in `apps/api/src/auth/`. The
+internal contract is `docs/internal/api/auth.md`, and the persistence
+foundation is implemented in Prisma.
 
 The accepted architecture direction is:
 
@@ -162,11 +162,14 @@ The accepted architecture direction is:
 - Login returns the current user DTO and sets the session cookie.
 - Login returns the same `INVALID_CREDENTIALS` response for unknown email,
   wrong password, disabled account, and locked account states.
-- Login must include a local-friendly throttling or delay strategy before
-  backend implementation is considered complete.
+- Login includes process-local throttling for the first local MVP backend
+  slice: `10` failed attempts per normalized email per `10` minutes and `100`
+  failed attempts per source per `10` minutes.
 - Logout is idempotent and clears the session cookie.
 - The recommended initial session lifetime is an `8` hour absolute timeout and
   a `30` minute idle timeout.
+- Password verification uses the npm package `argon2` with Argon2id hashes.
+- Multiple active sessions per account are allowed in the first backend slice.
 
 The implemented auth persistence boundary contains:
 
@@ -177,6 +180,16 @@ The implemented auth persistence boundary contains:
 - `UserRole` enum with `USER` and `ADMIN`.
 - Constraints for public ID format, normalized email, non-blank hashes and
   names, session expiration, last-seen, and revoked timestamp consistency.
+
+The implemented auth API boundary contains:
+
+- `POST /api/v1/auth/login`
+- `POST /api/v1/auth/logout`
+- `GET /api/v1/auth/me`
+- Zod validation for JSON login/logout request bodies.
+- Manual cookie parsing/serialization without an additional cookie dependency.
+- Shared JSON error envelopes for invalid request, invalid credentials,
+  unauthenticated state, and auth throttling.
 
 The first backend auth implementation task must explicitly approve the password
 hashing dependency, session token hashing details, cookie parsing behavior, and

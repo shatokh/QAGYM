@@ -5,9 +5,9 @@
 This document defines the Phase 2 planning baseline for authentication, roles,
 and deterministic demo accounts in QA Comics Gym.
 
-It is not an implementation contract yet. Future approved tasks must turn the
-accepted parts into database schema, seed data, internal API contracts,
-frontend behavior, and tests.
+It records the accepted auth direction and the implementation status of the
+first Phase 2 slices. Future approved tasks still need to add frontend auth
+behavior, browser auth coverage, and later protected product surfaces.
 
 ## Current Planning Status
 
@@ -24,10 +24,17 @@ Accepted for planning now:
 
 Still requiring implementation-task approval:
 
-- Exact auth dependency choices.
 - Exact frontend route names and UI copy.
 - Exact Playwright and API test cases.
 - Any protected in-app bug guide route.
+
+Implemented by task `0025`:
+
+- Backend login, logout, and current-user API.
+- Argon2id password verification through the npm package `argon2`.
+- Database-backed opaque sessions with hashed server-side tokens.
+- Local MVP `qcg_session` HTTP-only SameSite cookie.
+- Process-local login throttling for the first MVP backend slice.
 
 ## MVP Goals
 
@@ -179,12 +186,11 @@ Accepted internal contract direction from task `0023`:
 
 ## Password Storage Direction
 
-Implementation tasks must choose and approve the hashing dependency explicitly.
+Task `0025` selected and implemented the npm package `argon2`.
 
 Recommended direction:
 
-- Prefer Argon2id if the dependency behaves reliably on the supported local
-  Windows setup.
+- Use Argon2id through `argon2` for the clean MVP auth API.
 - Use Argon2id with at least `19 MiB` memory, `2` iterations, and parallelism
   `1`, unless implementation benchmarking justifies stronger parameters.
 - Use bcrypt as the fallback recommendation if Argon2 native installation adds
@@ -195,18 +201,18 @@ Recommended direction:
 - Do not store plaintext passwords in the database.
 - Do not treat seeded demo passwords as secrets.
 
-The implementation task should document the selected algorithm, parameters,
-and why those parameters are appropriate for local MVP training.
+The selected parameters are at least `19 MiB` memory, `2` iterations, and
+parallelism `1`, matching the internal contract target.
 
 ## Backend Surface Planning
 
-Planned internal API routes:
+Implemented backend API routes:
 
 - `POST /api/v1/auth/login`
 - `POST /api/v1/auth/logout`
 - `GET /api/v1/auth/me`
 
-Planned clean behavior:
+Implemented clean backend behavior:
 
 - Login accepts email and password.
 - Successful login creates a session and returns the current user DTO.
@@ -219,6 +225,9 @@ Planned clean behavior:
 - `GET /me` returns the authenticated user when a valid session exists.
 - `GET /me` returns a stable unauthenticated error when there is no valid
   session.
+
+Task `0025` allows multiple active sessions for the same account. Session
+management UI, device lists, and revoking all sessions are later scope.
 
 Accepted internal API direction from task `0023`:
 

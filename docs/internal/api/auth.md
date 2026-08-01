@@ -2,13 +2,13 @@
 
 ## Status and Audience
 
-Status: Planned contract target for Phase 2 implementation tasks.
+Status: Implemented backend contract for task `0025`.
 
 This is an internal developer contract for clean authentication, session, and
 role behavior. It is not the public training Swagger/OpenAPI document and
 contains no planned bug or closed guide information.
 
-No auth route is implemented yet. Future approved implementation tasks must
+The backend routes in this document are implemented. Future auth changes must
 match this contract or amend it first.
 
 ## Base Routes
@@ -53,12 +53,11 @@ The planned MVP session strategy is a database-backed opaque session token:
 
 ## Password Hashing Direction
 
-The exact password hashing dependency remains future implementation-task scope,
-but the approved direction is:
+The implemented backend password verifier uses the npm package `argon2`.
 
-- Prefer Argon2id.
-- Use Argon2id with at least `19 MiB` memory, `2` iterations, and parallelism
-  `1`, unless implementation benchmarking justifies stronger parameters.
+- Argon2id is used for demo account hashes.
+- The committed seed uses at least `19 MiB` memory, `2` iterations, and
+  parallelism `1`.
 - Use bcrypt only as a fallback if Argon2id is not practical in the supported
   local Windows setup.
 - If bcrypt is selected, use a work factor of at least `10` and account for the
@@ -202,9 +201,9 @@ The response sets the `qcg_session` cookie and returns:
 }
 ```
 
-Login creates a new session. The implementation may revoke existing sessions
-for the same account or allow multiple sessions, but the chosen behavior must
-be documented before backend implementation.
+Login creates a new session. The first backend implementation allows multiple
+sessions for the same account. Later session-management behavior requires a
+separate approved task.
 
 ### Invalid Credentials
 
@@ -263,10 +262,15 @@ Status: HTTP `429`.
 }
 ```
 
-The first backend auth implementation must include a local-friendly throttling
-or delay strategy for login attempts. The response must not reveal which
-counter, bucket, account, or source triggered the limit. Exact thresholds remain
-implementation-task scope.
+The first backend auth implementation uses process-local throttling:
+
+- Email bucket: `10` failed attempts per `10` minutes.
+- Source bucket: `100` failed attempts per `10` minutes.
+- Invalid credential responses also use a small fixed local delay.
+
+The response does not reveal which counter, bucket, account, or source
+triggered the limit. This is local MVP behavior, not a distributed production
+rate limiter.
 
 ## Logout Endpoint
 
