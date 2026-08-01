@@ -62,7 +62,8 @@ The seed creates these public local demo accounts without preexisting sessions:
 | User | `user@qacomics.local` | `DemoUserPassphrase2026!` | `USER` |
 | Admin | `admin@qacomics.local` | `DemoAdminPassphrase2026!` | `ADMIN` |
 
-The backend auth API is implemented. Frontend login UI remains later scope.
+The backend auth API and frontend login UI are implemented. Browser auth smoke
+coverage is planned as a later task.
 
 ## 3. Start the Application
 
@@ -106,6 +107,8 @@ Open the clean application:
 ```text
 http://localhost:5173/en/comics
 http://localhost:5173/ru/comics
+http://localhost:5173/en/login
+http://localhost:5173/ru/login
 ```
 
 Useful direct API checks:

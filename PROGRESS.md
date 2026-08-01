@@ -77,6 +77,11 @@ None.
   through `argon2`, database-backed opaque sessions, hashed session tokens,
   local MVP HTTP-only `qcg_session` cookie behavior, generic invalid credential
   responses, idempotent logout, process-local throttling, and unit/API tests.
+- Frontend auth shell and localized login completed with `/en/login` and
+  `/ru/login`, frontend auth contract validation, current-user state through
+  HTTP-only cookie sessions, guest/authenticated shell state, display name and
+  role labels, logout action, localized UI copy, and frontend unit/component
+  tests.
 
 ## Blocked
 
@@ -238,7 +243,6 @@ None.
 ## Decisions Still Pending
 
 - UI kit.
-- Exact frontend auth route copy.
 - CSRF implementation for future authenticated write APIs beyond
   login/logout.
 - Deployment target.

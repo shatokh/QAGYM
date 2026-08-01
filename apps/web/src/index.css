@@ -73,6 +73,12 @@ a:focus-visible {
   border-bottom: 1px solid #d8ddd7;
 }
 
+.app-header__tools {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
 .brand {
   display: inline-flex;
   align-items: center;
@@ -118,6 +124,59 @@ a:focus-visible {
   color: #ffffff;
 }
 
+.auth-shell {
+  display: flex;
+  min-height: 40px;
+  align-items: center;
+  gap: 10px;
+  color: #52605a;
+  font-size: 0.86rem;
+}
+
+.auth-shell a,
+.auth-shell button {
+  min-height: 38px;
+  border: 1px solid #b8c1ba;
+  border-radius: 4px;
+  padding: 8px 12px;
+  background: #ffffff;
+  color: #0b5cad;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.auth-shell button {
+  cursor: pointer;
+}
+
+.auth-shell button:disabled {
+  color: #68736d;
+  cursor: not-allowed;
+}
+
+.auth-shell--authenticated {
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.auth-shell__role {
+  border: 1px solid #d8ddd7;
+  padding: 4px 7px;
+  background: #f6f7f4;
+  color: #18201d;
+  font-size: 0.76rem;
+  font-weight: 800;
+}
+
+.auth-shell__muted,
+.auth-shell__error {
+  font-size: 0.82rem;
+}
+
+.auth-shell__error {
+  color: #a43f37;
+}
+
 .app-main {
   width: min(100% - 48px, 1120px);
   margin-inline: auto;
@@ -126,6 +185,73 @@ a:focus-visible {
 
 .catalog-page__header {
   max-width: 760px;
+}
+
+.auth-page {
+  width: min(100%, 560px);
+}
+
+.auth-form {
+  display: grid;
+  margin-top: 36px;
+  gap: 10px;
+}
+
+.auth-form label {
+  display: grid;
+  gap: 8px;
+  color: #52605a;
+  font-size: 0.86rem;
+  font-weight: 750;
+}
+
+.auth-form input {
+  min-height: 46px;
+  border: 1px solid #b8c1ba;
+  border-radius: 4px;
+  padding: 10px 12px;
+  background: #ffffff;
+  color: #18201d;
+  font: inherit;
+}
+
+.auth-form input[aria-invalid="true"] {
+  border-color: #a43f37;
+}
+
+.auth-form button {
+  min-height: 46px;
+  margin-top: 10px;
+  border: 1px solid #18201d;
+  border-radius: 4px;
+  padding: 10px 14px;
+  background: #18201d;
+  color: #ffffff;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.auth-form button:disabled {
+  border-color: #c9d0ca;
+  background: #e8ece8;
+  color: #68736d;
+  cursor: not-allowed;
+}
+
+.auth-form__field-error,
+.auth-demo-note {
+  margin: 0;
+  font-size: 0.88rem;
+}
+
+.auth-form__field-error {
+  color: #a43f37;
+}
+
+.auth-demo-note {
+  margin-top: 18px;
+  color: #68736d;
+  line-height: 1.5;
 }
 
 .catalog-discovery {
@@ -597,6 +723,26 @@ h1 {
     flex-direction: column;
     justify-content: center;
     gap: 4px;
+  }
+
+  .app-header {
+    align-items: flex-start;
+    flex-direction: column;
+    justify-content: center;
+    gap: 12px;
+    padding-block: 16px;
+  }
+
+  .app-header__tools {
+    width: 100%;
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .auth-shell {
+    width: 100%;
+    align-items: flex-start;
+    flex-direction: column;
   }
 }
 

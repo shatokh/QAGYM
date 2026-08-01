@@ -23,6 +23,19 @@ function jsonResponse(body: unknown, status = 200): Response {
 function catalogFetchMock() {
   return vi.fn<typeof fetch>().mockImplementation(async (input) => {
     const url = String(input);
+    if (url === "/api/v1/auth/me") {
+      return jsonResponse(
+        {
+          error: {
+            code: "UNAUTHENTICATED",
+            message: "Authentication required.",
+            details: [],
+          },
+        },
+        401,
+      );
+    }
+
     return jsonResponse(
       url.includes("/filter-options")
         ? catalogFilterOptionsResponseFixture

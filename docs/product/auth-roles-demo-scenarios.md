@@ -6,8 +6,8 @@ This document defines the Phase 2 planning baseline for authentication, roles,
 and deterministic demo accounts in QA Comics Gym.
 
 It records the accepted auth direction and the implementation status of the
-first Phase 2 slices. Future approved tasks still need to add frontend auth
-behavior, browser auth coverage, and later protected product surfaces.
+first Phase 2 slices. Future approved tasks still need to add browser auth
+coverage and later protected product surfaces.
 
 ## Current Planning Status
 
@@ -35,6 +35,16 @@ Implemented by task `0025`:
 - Database-backed opaque sessions with hashed server-side tokens.
 - Local MVP `qcg_session` HTTP-only SameSite cookie.
 - Process-local login throttling for the first MVP backend slice.
+
+Implemented by task `0026`:
+
+- Localized frontend login routes at `/en/login` and `/ru/login`.
+- Frontend auth API client and Zod DTO validation.
+- Current-user state backed by the HTTP-only cookie session.
+- Guest/authenticated app shell state with display name, role label, and
+  logout action.
+- Frontend unit/component coverage for auth client, login form, shell state,
+  invalid credentials, admin/user role display, and logout.
 
 ## MVP Goals
 
@@ -256,26 +266,31 @@ User DTO should not expose:
 - Session token.
 - Internal database-only fields unless explicitly needed for QA training.
 
-## Frontend Surface Planning
+## Frontend Surface
 
-Likely localized routes:
+Implemented localized routes:
 
 - `/en/login`
 - `/ru/login`
 
-Likely app behavior:
+Implemented clean app behavior:
 
 - Guest catalog routes remain public.
 - Header or app shell shows clear authenticated/guest state.
 - Login form is localized and accessible.
 - Logout is available for authenticated users.
-- Admin navigation is visible only for admin users once admin surfaces exist.
-- Protected routes redirect or display an access-denied state consistently.
+- The app shell shows `USER` or `ADMIN` role state without adding admin routes.
 
-Recommendation:
+Deferred app behavior:
 
-- Keep the first frontend auth task small: login, logout, current-user state,
-  and role-aware shell only.
+- Admin navigation is visible only after admin surfaces exist.
+- Protected routes redirect or display an access-denied state consistently once
+  protected routes exist.
+
+Implementation boundary:
+
+- The first frontend auth task stays limited to login, logout, current-user
+  state, and role-aware shell.
 - Do not build profile editing in Phase 2.
 - Do not build the admin area in the auth task.
 
@@ -375,8 +390,8 @@ Contract tests:
 
 Playwright E2E:
 
-- User can log in and log out through localized UI.
-- Admin can log in and sees role-aware shell state.
+- Future task `0027` should verify user login/logout through localized UI.
+- Future task `0027` should verify admin login and role-aware shell state.
 - Guest catalog smoke still passes.
 - Locale prefixes remain stable through login redirects.
 

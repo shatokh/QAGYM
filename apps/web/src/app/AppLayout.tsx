@@ -1,5 +1,6 @@
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { AuthShellStatus } from "../features/auth/components/AuthShellStatus";
 import type { AppLocale } from "../i18n/locales";
 
 interface AppLayoutProps {
@@ -37,26 +38,30 @@ export function AppLayout({ locale }: AppLayoutProps) {
           <span>{t("app.brand")}</span>
         </Link>
 
-        <nav
-          className="locale-switcher"
-          aria-label={t("locale.navigationLabel")}
-          data-testid="locale-switcher"
-        >
-          <Link
-            to={localeHref("en")}
-            lang="en"
-            aria-current={locale === "en" ? "page" : undefined}
+        <div className="app-header__tools">
+          <AuthShellStatus locale={locale} />
+
+          <nav
+            className="locale-switcher"
+            aria-label={t("locale.navigationLabel")}
+            data-testid="locale-switcher"
           >
-            EN
-          </Link>
-          <Link
-            to={localeHref("ru")}
-            lang="ru"
-            aria-current={locale === "ru" ? "page" : undefined}
-          >
-            RU
-          </Link>
-        </nav>
+            <Link
+              to={localeHref("en")}
+              lang="en"
+              aria-current={locale === "en" ? "page" : undefined}
+            >
+              EN
+            </Link>
+            <Link
+              to={localeHref("ru")}
+              lang="ru"
+              aria-current={locale === "ru" ? "page" : undefined}
+            >
+              RU
+            </Link>
+          </nav>
+        </div>
       </header>
 
       <main className="app-main" id="main-content" tabIndex={-1}>

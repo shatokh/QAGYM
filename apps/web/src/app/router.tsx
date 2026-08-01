@@ -4,6 +4,7 @@ import {
   type RouteObject,
   useParams,
 } from "react-router-dom";
+import { LoginRoute } from "../features/auth/routes/LoginRoute";
 import { CatalogListRoute } from "../features/catalog/routes/CatalogListRoute";
 import { ComicDetailRoute } from "../features/catalog/routes/ComicDetailRoute";
 import { LocaleRoute } from "../routing/LocaleRoute";
@@ -24,6 +25,11 @@ export const appRoutes: RouteObject[] = [
       {
         index: true,
         element: <LocaleCatalogRedirect />,
+      },
+      {
+        path: "login",
+        element: <LoginRoute />,
+        errorElement: <RouteErrorBoundary />,
       },
       {
         path: "comics",

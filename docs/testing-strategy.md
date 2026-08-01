@@ -123,7 +123,7 @@ Future write workflows need explicit data isolation or reset behavior.
 Authenticated parallel tests should not mutate shared demo-account state
 without an approved isolation strategy.
 
-The first auth Playwright smoke should be added in a separate task after the
+The first auth Playwright smoke should be added in a separate task now that the
 backend and frontend auth shell exist. It should verify localized login/logout
 for user and admin, current shell state, role-aware navigation state, and that
 guest catalog smoke still works without authentication.
@@ -144,15 +144,15 @@ boundary and do not replace the production data path with a second client.
 
 The clean catalog UI tests also verify stable slug links, EN/RU route behavior,
 series versus standalone presentation, creator roles, genres, comparison prices,
-and the approved stable test IDs. Playwright browser coverage remains a separate
-approved task so the first browser suite can establish fixture isolation and
-responsive checks without adding E2E setup to the UI implementation task.
+and the approved stable test IDs.
 
-Future frontend auth unit and component tests should cover login form
-validation, current-user loading, authenticated and unauthenticated shell state,
-logout behavior, localized route behavior, and role-aware navigation state.
-They should use semantic locators first and stable locale-independent test IDs
-only where accessible identity is insufficient.
+Frontend auth unit and component tests cover auth client request construction,
+same-origin cookie credentials, current-user guest handling, login form
+validation, successful user and admin login, authenticated and unauthenticated
+shell state, invalid credentials, logout behavior, and localized route
+behavior. They use semantic locators first and stable locale-independent test
+IDs only where accessible identity is insufficient. Playwright auth coverage
+remains a separate approved task.
 
 Current root commands:
 
