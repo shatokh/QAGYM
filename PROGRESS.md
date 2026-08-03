@@ -94,6 +94,13 @@ None.
 - Cart and order database schema and seed fixtures completed with `OrderStatus`,
   `Cart`, `CartLine`, `Order`, `OrderLine`, committed migration, deterministic
   empty cart/order reset state, and DB-backed persistence verification.
+- Backend clean CSRF and cart API completed with `GET /api/v1/csrf-token`,
+  `GET /api/v1/cart`, `POST /api/v1/cart/lines`,
+  `PATCH /api/v1/cart/lines/{comicSlug}`,
+  `DELETE /api/v1/cart/lines/{comicSlug}`, process-local CSRF tokens bound to
+  session token hashes, `USER`-only buyer access, current-catalog cart DTOs,
+  duplicate-line merging, quantity/stock validation, idempotent removal, and
+  DB-backed API tests.
 - `0029` - Session Advisor artifact implementation completed with the Playwright E2E
   shell fallback rule, `$clean-chat-handoff` skill, read-only task closeout
   helper, and dependency-free closeout tests.
@@ -263,12 +270,15 @@ None.
 - Cart and order persistence uses `OrderStatus`, `Cart`, `CartLine`, `Order`,
   and `OrderLine`, with deterministic reset starting with empty cart/order
   tables and preserving existing catalog/auth fixtures.
+- Cart write APIs use same-origin CSRF tokens via `X-QCG-CSRF-Token`; the
+  current local MVP stores hashed CSRF tokens in process memory bound to
+  session token hashes.
 
 ## Decisions Still Pending
 
 - UI kit.
-- CSRF implementation for future authenticated write APIs beyond
-  login/logout.
+- CSRF implementation for future checkout, order, admin, and closed-guide
+  authenticated write APIs beyond the implemented cart slice.
 - Deployment target.
 - Exact Playwright browser matrix, write-flow fixture isolation, expanded
   contract-test commands, and k6 command structure.

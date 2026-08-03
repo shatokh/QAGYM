@@ -21,14 +21,23 @@ import {
   unauthenticated,
 } from "../http/api-exception";
 
-interface AuthUserRecord {
+export interface AuthenticatedUserRecord {
   id: number;
   publicId: string;
   email: string;
-  passwordHash: string;
   displayName: string;
   role: UserRole;
   enabled: boolean;
+}
+
+interface AuthUserRecord extends AuthenticatedUserRecord {
+  passwordHash: string;
+}
+
+export interface AuthenticatedSession {
+  id: number;
+  tokenHash: string;
+  user: AuthenticatedUserRecord;
 }
 
 @Injectable()
@@ -95,6 +104,14 @@ export class AuthService {
   }
 
   async currentUser(sessionToken: string | undefined): Promise<AuthUserDto> {
+    const session = await this.requireSession(sessionToken);
+
+    return this.toUserDto(session.user);
+  }
+
+  async requireSession(
+    sessionToken: string | undefined,
+  ): Promise<AuthenticatedSession> {
     const session = await this.findValidSession(sessionToken);
 
     await this.prisma.session.update({
@@ -102,7 +119,7 @@ export class AuthService {
       data: { lastSeenAt: new Date() },
     });
 
-    return this.toUserDto(session.user);
+    return session;
   }
 
   async logout(sessionToken: string | undefined): Promise<void> {
@@ -131,6 +148,7 @@ export class AuthService {
       where: { tokenHash: hashSessionToken(sessionToken) },
       select: {
         id: true,
+        tokenHash: true,
         expiresAt: true,
         lastSeenAt: true,
         revokedAt: true,
@@ -139,7 +157,6 @@ export class AuthService {
             id: true,
             publicId: true,
             email: true,
-            passwordHash: true,
             displayName: true,
             role: true,
             enabled: true,
@@ -179,7 +196,7 @@ export class AuthService {
     );
   }
 
-  private toUserDto(user: AuthUserRecord): AuthUserDto {
+  private toUserDto(user: AuthenticatedUserRecord): AuthUserDto {
     return {
       id: user.publicId,
       email: user.email,

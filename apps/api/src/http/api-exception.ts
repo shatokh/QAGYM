@@ -68,6 +68,38 @@ export function unauthenticated(): ApiException {
   );
 }
 
+export function forbidden(): ApiException {
+  return new ApiException(
+    HttpStatus.FORBIDDEN,
+    "FORBIDDEN",
+    "Permission denied.",
+  );
+}
+
+export function csrfTokenInvalid(): ApiException {
+  return new ApiException(
+    HttpStatus.FORBIDDEN,
+    "CSRF_TOKEN_INVALID",
+    "Invalid CSRF token.",
+  );
+}
+
+export function cartLineNotFound(): ApiException {
+  return new ApiException(
+    HttpStatus.NOT_FOUND,
+    "CART_LINE_NOT_FOUND",
+    "Cart line not found.",
+  );
+}
+
+export function insufficientStock(): ApiException {
+  return new ApiException(
+    HttpStatus.CONFLICT,
+    "INSUFFICIENT_STOCK",
+    "Insufficient stock.",
+  );
+}
+
 export function authRateLimited(): ApiException {
   return new ApiException(
     HttpStatus.TOO_MANY_REQUESTS,

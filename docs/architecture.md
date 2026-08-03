@@ -210,9 +210,9 @@ its own approved task.
 
 ## Cart, Checkout and Order Boundary
 
-The Phase 3 cart, checkout, and order contract is planned in
-`docs/internal/api/cart-checkout-orders.md`. The backend implementation is not
-created yet.
+The Phase 3 cart, checkout, and order contract is documented in
+`docs/internal/api/cart-checkout-orders.md`. CSRF token issuance and cart routes
+are implemented; checkout and order-history routes remain planned.
 
 The accepted contract direction is:
 
@@ -240,10 +240,23 @@ The accepted contract direction is:
 
 Phase 3 introduces the first authenticated product write APIs beyond
 login/logout, so it uses an explicit same-origin CSRF token contract. A
-`USER` session can request `GET /api/v1/csrf-token`, and authenticated cart and
-checkout writes must include `X-QCG-CSRF-Token`. The exact storage and helper
-implementation remain future approved implementation scope, but the observable
-route/header/error behavior is now part of the internal contract.
+`USER` session can request `GET /api/v1/csrf-token`, and authenticated cart
+writes must include `X-QCG-CSRF-Token`; checkout writes will use the same
+header when checkout is implemented. The current local MVP stores hashed CSRF
+tokens in process memory keyed by the hashed session token. This keeps the
+sandbox dependency-free and is not a distributed deployment design.
+
+The implemented backend cart boundary contains a NestJS cart module with:
+
+- `GET /api/v1/cart` reading the authenticated user's cart without creating one
+  as a read side effect.
+- `POST /api/v1/cart/lines` creating the cart on first add and merging
+  duplicate comic lines.
+- `PATCH /api/v1/cart/lines/{comicSlug}` updating an existing line to an exact
+  quantity.
+- `DELETE /api/v1/cart/lines/{comicSlug}` removing lines idempotently.
+- Current catalog price/title/stock data in cart DTOs and no numeric database
+  IDs in API responses.
 
 The implemented cart and order persistence boundary contains:
 

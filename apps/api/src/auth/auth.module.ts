@@ -8,5 +8,6 @@ import { LoginThrottleService } from "./login-throttle.service";
   imports: [DatabaseModule],
   controllers: [AuthController],
   providers: [AuthService, LoginThrottleService],
+  exports: [AuthService],
 })
 export class AuthModule {}

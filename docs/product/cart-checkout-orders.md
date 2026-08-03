@@ -60,6 +60,22 @@ Implemented by task `0031`:
 - Empty initial cart/order fixture state.
 - DB-backed seed and persistence constraint verification.
 
+Implemented by task `0032`:
+
+- Backend `GET /api/v1/csrf-token` for authenticated `USER` sessions.
+- Dependency-free local MVP CSRF token storage bound to the hashed session
+  token, with `X-QCG-CSRF-Token` required for cart writes.
+- Backend `GET /api/v1/cart`, `POST /api/v1/cart/lines`,
+  `PATCH /api/v1/cart/lines/{comicSlug}`, and
+  `DELETE /api/v1/cart/lines/{comicSlug}`.
+- `USER`-only cart route boundary with guest `UNAUTHENTICATED` and admin
+  `FORBIDDEN` responses.
+- Clean cart add, duplicate-line merge, exact quantity update, idempotent
+  removal, stock checks, publication-state checks, localized read DTOs, and
+  integer minor-unit totals.
+- Backend API tests for CSRF/cart route behavior, validation, access control,
+  DTO secrecy, and existing health/catalog/auth regression coverage.
+
 ## MVP Goals
 
 Phase 3 should make these scenarios possible:

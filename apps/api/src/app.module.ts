@@ -1,12 +1,13 @@
 import { Module } from "@nestjs/common";
 import { APP_FILTER } from "@nestjs/core";
 import { AuthModule } from "./auth/auth.module";
+import { CartModule } from "./cart/cart.module";
 import { CatalogModule } from "./catalog/catalog.module";
 import { HealthController } from "./health/health.controller";
 import { ApiErrorFilter } from "./http/api-error.filter";
 
 @Module({
-  imports: [AuthModule, CatalogModule],
+  imports: [AuthModule, CartModule, CatalogModule],
   controllers: [HealthController],
   providers: [
     {

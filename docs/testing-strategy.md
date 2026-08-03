@@ -91,15 +91,21 @@ cart lines, orders, or order lines; that `OrderStatus` contains `PLACED` and
 clean cart/order contract. They do not verify cart, checkout, CSRF route, or
 order-history API behavior; that belongs to later backend implementation tasks.
 
-The planned cart, checkout, and orders internal contract is
-`docs/internal/api/cart-checkout-orders.md`. Future backend API tests should
-cover the CSRF token route, authenticated `USER` access, `ADMIN` forbidden
-behavior for buyer routes, cart add/update/remove behavior, duplicate-line
-merging, quantity bounds, product publication and stock checks, checkout
+Task `0032` adds DB-backed API coverage for the implemented CSRF and cart
+routes. These tests cover CSRF token issuance, authenticated `USER` access,
+`ADMIN` forbidden behavior for buyer routes, guest unauthenticated behavior,
+missing/invalid CSRF rejection, empty cart reads without read-side cart
+creation, cart add/update/remove behavior, duplicate-line merging, quantity
+bounds, product publication and stock checks, localized read DTOs, idempotent
+removal, stable JSON error envelopes, and DTO secrecy for password/session
+secrets and internal state.
+
+Checkout and order-history API tests remain future work under
+`docs/internal/api/cart-checkout-orders.md`. They should cover checkout
 transaction behavior, stock decrement, order-line snapshots, order history
-ownership, pagination, and JSON error envelope consistency. These tests should
-verify that DTOs do not expose numeric database IDs, password/session secrets,
-CSRF token storage data, payment credentials, or closed bug guide metadata.
+ownership, pagination, and JSON error envelope consistency. They should verify
+that DTOs do not expose numeric database IDs, password/session secrets, CSRF
+token storage data, payment credentials, or closed bug guide metadata.
 
 ## Playwright E2E
 

@@ -144,6 +144,44 @@ Invoke-WebRequest `
   -WebSession $qcgSession
 ```
 
+Useful backend cart checks. Run these after login and before logout, or repeat
+the login block above to create a fresh `$qcgSession`.
+
+```powershell
+$csrf = Invoke-RestMethod `
+  -Uri "http://localhost:3000/api/v1/csrf-token" `
+  -WebSession $qcgSession
+
+$cartHeaders = @{
+  "X-QCG-CSRF-Token" = $csrf.data.csrfToken
+}
+
+Invoke-RestMethod "http://localhost:3000/api/v1/cart?locale=en" `
+  -WebSession $qcgSession
+
+Invoke-RestMethod `
+  -Method Post `
+  -Uri "http://localhost:3000/api/v1/cart/lines" `
+  -ContentType "application/json" `
+  -Headers $cartHeaders `
+  -Body (@{ comicSlug = "neon-harbor-1"; quantity = 1 } | ConvertTo-Json) `
+  -WebSession $qcgSession
+
+Invoke-RestMethod `
+  -Method Patch `
+  -Uri "http://localhost:3000/api/v1/cart/lines/neon-harbor-1" `
+  -ContentType "application/json" `
+  -Headers $cartHeaders `
+  -Body (@{ quantity = 2 } | ConvertTo-Json) `
+  -WebSession $qcgSession
+
+Invoke-WebRequest `
+  -Method Delete `
+  -Uri "http://localhost:3000/api/v1/cart/lines/neon-harbor-1" `
+  -Headers $cartHeaders `
+  -WebSession $qcgSession
+```
+
 ## 4. Run Verification
 
 Run these commands from a repository-root console. Unit and component tests do

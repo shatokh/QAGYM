@@ -2,14 +2,14 @@
 
 ## Status and Audience
 
-Status: Planned contract target for Phase 3 implementation tasks.
+Status: Partially implemented Phase 3 internal contract.
 
 This is an internal developer contract for clean cart, checkout, and order
 behavior. It is not the public training Swagger/OpenAPI document and contains
 no planned bug or closed guide information.
 
-The routes in this document are not implemented yet. Future cart, checkout,
-and order implementation tasks must match this contract or amend it first.
+Task `0032` implements the CSRF token and cart routes. Checkout and order
+history routes remain planned and must match this contract or amend it first.
 
 ## Base Routes
 
@@ -92,6 +92,12 @@ Rules:
 - The token is not a password or session token.
 - CSRF tokens must not be stored as plaintext if persisted.
 - Logout invalidates or makes the token unusable with the logged-out session.
+
+Task `0032` uses a dependency-free local MVP implementation: process-local
+CSRF token storage keyed by the hashed authenticated session token, hashed
+stored CSRF values, and an eight-hour token TTL. This is sufficient for the
+local single-process sandbox and may be replaced by a later approved task if
+the runtime becomes distributed.
 
 ### Required Header
 
@@ -885,7 +891,10 @@ or another internal exception message.
 - Prisma Client uses the repository schema and PostgreSQL adapter.
 - API startup requires a valid `DATABASE_URL`.
 - Database connections close when the Nest application closes.
-- Cart writes and checkout require a valid authenticated session.
+- Cart reads, cart writes, and CSRF token issuance require a valid
+  authenticated `USER` session.
+- Cart writes require `X-QCG-CSRF-Token`; checkout will require it when
+  implemented.
 - Cart reads and writes do not mutate order history.
 - Checkout mutates cart, order, and comic stock state only inside the checkout
   transaction.
