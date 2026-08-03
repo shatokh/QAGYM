@@ -109,6 +109,21 @@ cart lines, user-owned order list/detail behavior, pagination, `ORDER_NOT_FOUND`
 privacy, stable JSON error envelopes, and DTO secrecy for password/session
 secrets and internal state.
 
+Task `0034` adds frontend Vitest coverage for the localized cart UI. These
+tests cover frontend cart DTO/client validation, CSRF header use for cart
+mutations, guest and admin route boundaries, empty and populated cart states,
+add-to-cart from catalog navigation, quantity update, line removal, RU copy,
+out-of-stock disabled controls, and rendered secrecy checks for user IDs and
+CSRF tokens.
+
+Task `0035` adds frontend Vitest coverage for localized checkout and
+order-history UI. These tests cover frontend checkout/order DTO/client
+validation, CSRF header use for checkout submission, checkout guest/admin
+boundaries, minimum address validation, checkout success navigation to order
+detail, empty-cart blocking, order list populated and empty states, order
+detail and not-found states, localized order routes, and rendered secrecy
+checks for user IDs and CSRF tokens.
+
 Frontend cart, checkout, and order-history E2E tests remain future work. They
 should focus on the browser workflow and avoid duplicating backend API
 permutation coverage already owned by Supertest.
@@ -207,6 +222,18 @@ shell state, invalid credentials, logout behavior, and localized route
 behavior. They use semantic locators first and stable locale-independent test
 IDs only where accessible identity is insufficient. Playwright auth coverage
 remains a separate approved task.
+
+Frontend cart unit and component tests cover the same-origin cart client,
+frontend-owned Zod cart DTOs, CSRF-protected cart mutations, localized cart
+route states, add-to-cart controls on catalog cards and product detail pages,
+quantity update and remove behavior, and secrecy expectations for internal
+auth/CSRF data.
+
+Frontend checkout and order unit/component tests cover the same-origin
+checkout/order client, frontend-owned Zod checkout and order DTOs,
+CSRF-protected checkout mutation, localized checkout form states, minimum
+address validation, order list and detail states, public order-number routing,
+and secrecy expectations for internal auth/CSRF data.
 
 Current root commands:
 

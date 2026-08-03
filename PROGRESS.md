@@ -2,7 +2,7 @@
 
 ## Current Phase
 
-Phase 3 - Cart, Checkout and Orders planning.
+Phase 3 - Cart, Checkout and Orders implementation.
 
 ## Active Tasks
 
@@ -107,6 +107,14 @@ None.
   checkout-address validation, atomic order creation, order-line snapshots,
   stock decrement, cart clearing, public order numbers, user-owned order
   history/detail, and DB-backed API tests.
+- Frontend localized cart UI completed with `/en/cart` and `/ru/cart`,
+  catalog/detail add-to-cart controls, CSRF-backed cart mutations, guest/admin
+  cart boundaries, localized cart states, and frontend Vitest coverage.
+- Frontend localized checkout and order-history UI completed with
+  `/en/checkout`, `/ru/checkout`, `/en/orders`, `/ru/orders`,
+  localized order detail routes, minimum checkout address capture,
+  CSRF-backed checkout submission, buyer-route boundaries, order snapshot
+  rendering, and frontend Vitest coverage.
 - `0029` - Session Advisor artifact implementation completed with the Playwright E2E
   shell fallback rule, `$clean-chat-handoff` skill, read-only task closeout
   helper, and dependency-free closeout tests.

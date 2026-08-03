@@ -1,3 +1,4 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { describe, expect, it, vi } from "vitest";
@@ -12,6 +13,20 @@ import { CatalogDiscoveryControls } from "./CatalogDiscoveryControls";
 import { formatMoney, PriceDisplay } from "./PriceDisplay";
 
 describe("catalog presentation components", () => {
+  function renderWithProviders(ui: React.ReactElement) {
+    const queryClient = new QueryClient({
+      defaultOptions: {
+        queries: {
+          retry: false,
+        },
+      },
+    });
+
+    return render(
+      <QueryClientProvider client={queryClient}>{ui}</QueryClientProvider>,
+    );
+  }
+
   it("resolves a null cover to the deterministic local fallback", () => {
     expect(resolveCoverPath(null)).toBe("/media/comics/cover-fallback.png");
     expect(resolveCoverPath("/media/comics/example.png")).toBe(
@@ -69,7 +84,7 @@ describe("catalog presentation components", () => {
       ],
     };
 
-    render(
+    renderWithProviders(
       <MemoryRouter initialEntries={["/en/comics"]}>
         <ul>
           <ComicCard comic={comic} locale="en" />
@@ -87,7 +102,7 @@ describe("catalog presentation components", () => {
   });
 
   it("renders all approved detail sections and creator roles", () => {
-    render(
+    renderWithProviders(
       <MemoryRouter initialEntries={["/en/comics/neon-harbor-1"]}>
         <ComicDetailContent comic={catalogDetailResponseFixture.data} locale="en" />
       </MemoryRouter>,

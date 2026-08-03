@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import type { CatalogListItem } from "../api/catalog.contract";
+import { AddToCartButton } from "../../cart/components/AddToCartButton";
 import { CatalogCover } from "./CatalogCover";
 import { PriceDisplay } from "./PriceDisplay";
 import { StockStatus } from "./StockStatus";
@@ -49,6 +50,9 @@ export function ComicCard({ comic, locale }: ComicCardProps) {
             />
           </div>
         </Link>
+        <div className="comic-card__actions">
+          <AddToCartButton comic={comic} />
+        </div>
       </article>
     </li>
   );

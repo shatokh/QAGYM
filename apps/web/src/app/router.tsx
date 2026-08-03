@@ -5,6 +5,10 @@ import {
   useParams,
 } from "react-router-dom";
 import { LoginRoute } from "../features/auth/routes/LoginRoute";
+import { CartRoute } from "../features/cart/routes/CartRoute";
+import { CheckoutRoute } from "../features/checkout/routes/CheckoutRoute";
+import { OrderDetailRoute } from "../features/checkout/routes/OrderDetailRoute";
+import { OrderListRoute } from "../features/checkout/routes/OrderListRoute";
 import { CatalogListRoute } from "../features/catalog/routes/CatalogListRoute";
 import { ComicDetailRoute } from "../features/catalog/routes/ComicDetailRoute";
 import { LocaleRoute } from "../routing/LocaleRoute";
@@ -37,8 +41,28 @@ export const appRoutes: RouteObject[] = [
         errorElement: <RouteErrorBoundary />,
       },
       {
+        path: "cart",
+        element: <CartRoute />,
+        errorElement: <RouteErrorBoundary />,
+      },
+      {
+        path: "checkout",
+        element: <CheckoutRoute />,
+        errorElement: <RouteErrorBoundary />,
+      },
+      {
         path: "comics/:slug",
         element: <ComicDetailRoute />,
+        errorElement: <RouteErrorBoundary />,
+      },
+      {
+        path: "orders",
+        element: <OrderListRoute />,
+        errorElement: <RouteErrorBoundary />,
+      },
+      {
+        path: "orders/:orderNumber",
+        element: <OrderDetailRoute />,
         errorElement: <RouteErrorBoundary />,
       },
       {

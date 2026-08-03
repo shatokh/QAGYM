@@ -110,7 +110,42 @@ http://localhost:5173/en/comics
 http://localhost:5173/ru/comics
 http://localhost:5173/en/login
 http://localhost:5173/ru/login
+http://localhost:5173/en/cart
+http://localhost:5173/ru/cart
+http://localhost:5173/en/checkout
+http://localhost:5173/ru/checkout
+http://localhost:5173/en/orders
+http://localhost:5173/ru/orders
 ```
+
+Useful frontend cart checks:
+
+1. Open `/en/cart` as a guest and confirm the sign-in-required state links to
+   `/en/login`.
+2. Log in as `user@qacomics.local`, open `/en/comics`, add an in-stock comic
+   to the cart, then open `/en/cart`.
+3. Confirm the cart shows the comic title, SKU, cover/fallback, quantity,
+   unit price, line total, item count, and subtotal.
+4. Change the quantity, remove the line, and confirm the empty cart state.
+5. Repeat the navigation on `/ru/comics` and `/ru/cart` to confirm localized
+   copy and route prefixes.
+6. Log in as `admin@qacomics.local`, open `/en/cart`, and confirm the buyer
+   cart is unavailable for the admin role.
+
+Useful frontend checkout and order checks:
+
+1. Log in as `user@qacomics.local`, add an in-stock comic to the cart, and open
+   `/en/checkout`.
+2. Submit the checkout form empty and confirm required field validation.
+3. Fill recipient name, address line 1, city, postal code, and one of `US`,
+   `PL`, or `GB`, then place the order.
+4. Confirm the browser navigates to `/en/orders/<orderNumber>` and renders the
+   public order number, status, address snapshot, order lines, and total.
+5. Open `/en/orders` and confirm the new order appears in order history.
+6. Repeat the route checks under `/ru/checkout` and `/ru/orders` when a
+   localized manual pass is needed.
+7. Log in as `admin@qacomics.local`, open `/en/checkout` and `/en/orders`, and
+   confirm buyer checkout/order routes are unavailable for the admin role.
 
 Useful direct API checks:
 

@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import type { CatalogDetailItem } from "../api/catalog.contract";
+import { AddToCartButton } from "../../cart/components/AddToCartButton";
 import { CatalogCover } from "./CatalogCover";
 import { PriceDisplay } from "./PriceDisplay";
 import { StockStatus } from "./StockStatus";
@@ -49,6 +50,7 @@ export function ComicDetailContent({ comic, locale }: ComicDetailContentProps) {
             inStock={comic.stock.inStock}
             quantity={comic.stock.quantity}
           />
+          <AddToCartButton comic={comic} variant="detail" />
           <p className="comic-detail__sku">
             <span>{t("catalog.skuLabel")}</span> {comic.sku}
           </p>

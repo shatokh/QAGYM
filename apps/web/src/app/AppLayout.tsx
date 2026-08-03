@@ -39,6 +39,13 @@ export function AppLayout({ locale }: AppLayoutProps) {
         </Link>
 
         <div className="app-header__tools">
+          <Link className="cart-link" to={`/${locale}/cart`}>
+            {t("cart.nav")}
+          </Link>
+          <Link className="cart-link" to={`/${locale}/orders`}>
+            {t("orders.nav")}
+          </Link>
+
           <AuthShellStatus locale={locale} />
 
           <nav

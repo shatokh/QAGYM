@@ -89,6 +89,38 @@ Implemented by task `0033`:
   boundaries, validation, rollback on stock/publication failures, order
   ownership, and DTO secrecy.
 
+Implemented by task `0034`:
+
+- Frontend localized `/en/cart` and `/ru/cart` routes.
+- Catalog card and product detail add-to-cart controls for published in-stock
+  comics.
+- Cart read, quantity update, and line removal through the implemented cart
+  API.
+- Frontend CSRF token retrieval and `X-QCG-CSRF-Token` header use for cart
+  writes.
+- Guest sign-in-required and admin forbidden cart route states.
+- Localized EN/RU cart copy, accessible route states, stable cart test IDs,
+  and frontend Vitest coverage.
+- Checkout and order-history UI remain a separate follow-up frontend task.
+
+Implemented by task `0035`:
+
+- Frontend localized `/en/checkout` and `/ru/checkout` routes.
+- Minimum checkout address form for recipient name, address lines, city,
+  region, postal code, and `US`/`PL`/`GB` country code.
+- Checkout submission through `POST /api/v1/checkout?locale=<route-locale>`
+  with frontend CSRF token retrieval and `X-QCG-CSRF-Token`.
+- Frontend localized `/en/orders`, `/ru/orders`,
+  `/en/orders/:orderNumber`, and `/ru/orders/:orderNumber` routes.
+- Order list pagination and order detail rendering from immutable order
+  snapshot DTOs.
+- Guest sign-in-required and admin forbidden states for checkout and order
+  routes.
+- Localized EN/RU checkout/order copy, accessible route states, stable public
+  order-number test IDs, and frontend Vitest coverage.
+- Browser-level Playwright write-flow smoke remains a separate follow-up task
+  because data isolation needs explicit approval.
+
 ## MVP Goals
 
 Phase 3 should make these scenarios possible:
@@ -411,6 +443,11 @@ Frontend clean states should be observable and accessible:
 The UI should use semantic locators first and stable `data-testid` values only
 where accessible identity is insufficient, following
 `docs/conventions/frontend-testability.md`.
+
+Implemented frontend cart UI from task `0034` covers the cart subset of these
+states. Implemented frontend checkout and order-history UI from task `0035`
+covers the checkout, order list, and order detail subset. Browser-level
+write-flow smoke remains future work.
 
 ## Backend and API Planning
 
