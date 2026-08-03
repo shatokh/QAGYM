@@ -42,14 +42,21 @@ The current database layer contains:
 - The clean catalog models and relations defined in `docs/product/catalog.md`.
 - The auth persistence models defined in
   `docs/product/auth-roles-demo-scenarios.md`.
+- The cart and order persistence models defined in
+  `docs/product/cart-checkout-orders.md`.
 - One initial `catalog_foundation` migration.
 - One `auth_foundation` migration.
+- One `cart_order_foundation` migration.
 - One explicit transactional catalog seed configured through Prisma CLI.
 - Deterministic demo auth seed records owned by the same reset command.
+- Empty deterministic cart and order fixture tables owned by the same reset
+  command.
 - Explicit snake_case database mappings.
 - PostgreSQL checks for clean catalog data invariants.
 - PostgreSQL checks for clean auth identity, email, password hash, and session
   timestamp invariants.
+- PostgreSQL checks for clean cart quantity and order number, address, money,
+  country-code, and snapshot invariants.
 - Prisma ORM 7 `prisma-client` generator with API-owned ignored output.
 - Prisma PostgreSQL driver adapter and API-owned database provider.
 - Zod validation for `DATABASE_URL`.
@@ -200,6 +207,60 @@ for the first local login/logout slice, but SameSite is not treated as the full
 CSRF strategy for future authenticated writes. The first authenticated
 state-changing product API beyond login/logout must revisit CSRF protection in
 its own approved task.
+
+## Cart, Checkout and Order Boundary
+
+The Phase 3 cart, checkout, and order contract is planned in
+`docs/internal/api/cart-checkout-orders.md`. The backend implementation is not
+created yet.
+
+The accepted contract direction is:
+
+- The first cart and checkout slice is authenticated `USER` behavior.
+- Guest remains unauthenticated state and has no anonymous cart.
+- `ADMIN` remains available for later Phase 4 admin order management, but the
+  Phase 3 buyer routes are `USER`-only.
+- One active server-side cart belongs to one authenticated user.
+- A cart line is unique per cart and comic.
+- Adding the same comic again increases the existing line quantity.
+- Quantity `0` is invalid; line removal uses an explicit delete route.
+- Cart totals use current catalog prices until checkout.
+- Checkout validates current publication state and stock, creates an order,
+  decrements stock, and clears purchased cart lines in one database
+  transaction.
+- Clean checkout must not oversell stock under concurrent requests.
+- Orders use stable public order numbers rather than numeric database IDs in
+  API and UI surfaces.
+- Order lines snapshot comic SKU, slug, localized title, content locale, unit
+  price, currency, quantity, and line total at checkout.
+- The checkout address is an order snapshot, not a saved profile address.
+- No real payment, payment credentials, shipping integration, invoice,
+  inventory reservation, promotion, or planned bug behavior is part of Phase 3
+  clean core.
+
+Phase 3 introduces the first authenticated product write APIs beyond
+login/logout, so it uses an explicit same-origin CSRF token contract. A
+`USER` session can request `GET /api/v1/csrf-token`, and authenticated cart and
+checkout writes must include `X-QCG-CSRF-Token`. The exact storage and helper
+implementation remain future approved implementation scope, but the observable
+route/header/error behavior is now part of the internal contract.
+
+The implemented cart and order persistence boundary contains:
+
+- `Cart` with one active cart per user.
+- `CartLine` with one line per cart and comic, quantity range `1` to `99`,
+  creation timestamp for future display ordering, and update timestamp.
+- `OrderStatus` with `PLACED` and `CANCELLED`.
+- `Order` with stable public order number, user ownership, status, checkout
+  address snapshot, total item count, total minor-unit amount, currency, and
+  timestamps.
+- `OrderLine` with order relationship, optional comic relationship for
+  traceability, comic slug/SKU/title/content-locale snapshots, quantity, unit
+  price, line total, currency, and creation timestamp.
+
+The deterministic seed reset truncates cart and order tables before auth and
+catalog tables. It creates no carts, cart lines, orders, or order lines in the
+initial Phase 3 persistence foundation.
 
 ## Frontend Catalog Foundation
 

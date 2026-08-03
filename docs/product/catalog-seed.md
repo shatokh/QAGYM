@@ -17,10 +17,11 @@ Run the explicit seed after migrations:
 corepack pnpm db:seed
 ```
 
-The command replaces only the nine catalog tables in one transaction, restarts
-their identity sequences, and does not use `CASCADE`. It must fail when a future
-domain introduces a referencing table that is not part of the reviewed reset
-boundary.
+The command replaces the reviewed local fixture boundary in one transaction,
+restarts identity sequences, and does not use `CASCADE`. The current reset
+boundary includes catalog tables, auth demo account tables, and the empty
+cart/order scenario tables. It must fail when a future domain introduces a
+referencing table that is not part of the reviewed reset boundary.
 
 Prisma ORM 7 does not run this seed automatically during migration commands.
 
@@ -37,6 +38,18 @@ Prisma ORM 7 does not run this seed automatically during migration commands.
 
 Every comic, series, and genre has both `en` and `ru` content. Every price uses
 integer minor units and `USD`.
+
+## Empty Scenario Tables
+
+The same deterministic reset owns the Phase 2 auth and Phase 3 cart/order
+fixture boundary:
+
+- 2 enabled demo users.
+- 0 sessions.
+- 0 carts.
+- 0 cart lines.
+- 0 orders.
+- 0 order lines.
 
 ## Series
 

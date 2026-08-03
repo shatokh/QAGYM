@@ -84,6 +84,23 @@ plaintext demo passwords. They do not verify login behavior; password
 verification is covered by the backend auth API task that approved the
 `argon2` dependency.
 
+Task `0031` adds DB-backed seed and persistence verification for cart/order
+tables. These checks confirm that deterministic reset starts with no carts,
+cart lines, orders, or order lines; that `OrderStatus` contains `PLACED` and
+`CANCELLED`; and that the schema installs the key constraints needed by the
+clean cart/order contract. They do not verify cart, checkout, CSRF route, or
+order-history API behavior; that belongs to later backend implementation tasks.
+
+The planned cart, checkout, and orders internal contract is
+`docs/internal/api/cart-checkout-orders.md`. Future backend API tests should
+cover the CSRF token route, authenticated `USER` access, `ADMIN` forbidden
+behavior for buyer routes, cart add/update/remove behavior, duplicate-line
+merging, quantity bounds, product publication and stock checks, checkout
+transaction behavior, stock decrement, order-line snapshots, order history
+ownership, pagination, and JSON error envelope consistency. These tests should
+verify that DTOs do not expose numeric database IDs, password/session secrets,
+CSRF token storage data, payment credentials, or closed bug guide metadata.
+
 ## Playwright E2E
 
 Playwright is planned for end-to-end runtime workflows:
@@ -144,6 +161,14 @@ matrix. Phase 8 expands browser coverage, fixtures, scenarios, and CI maturity.
 Future write workflows need explicit data isolation or reset behavior.
 Authenticated parallel tests should not mutate shared demo-account state
 without an approved isolation strategy.
+
+Future cart and checkout Playwright smoke should stay focused on runtime user
+journeys: login as the demo user, obtain browser-visible cart state through the
+frontend, add a published in-stock comic, change quantity, remove or re-add an
+item, complete checkout without payment, and verify the created order appears
+in order history. It should not duplicate the detailed Supertest matrix for
+CSRF failures, validation permutations, stock conflict branches, DTO field
+exclusion, or checkout transaction edge cases.
 
 ## Jest and Frontend Tests
 

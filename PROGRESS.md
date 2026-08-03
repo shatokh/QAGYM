@@ -2,7 +2,7 @@
 
 ## Current Phase
 
-Phase 2 - Auth, Roles and Seeded Demo Scenarios planning.
+Phase 3 - Cart, Checkout and Orders planning.
 
 ## Active Tasks
 
@@ -85,6 +85,15 @@ None.
 - Auth Playwright API and UI E2E smoke completed with focused runtime coverage
   for login, current user state, logout, invalid credentials, user/admin shell
   state, and localized RU login navigation.
+- Phase 3 cart, checkout, and orders planning completed with authenticated
+  user-only cart direction, checkout without real payment, order snapshot,
+  minimum address, CSRF decision, seed, API, and test boundaries.
+- Internal cart, checkout, and order API contract and architecture planning
+  completed with CSRF token, cart, checkout, order history, DTO, error,
+  transaction, stock, order-number, and snapshot semantics.
+- Cart and order database schema and seed fixtures completed with `OrderStatus`,
+  `Cart`, `CartLine`, `Order`, `OrderLine`, committed migration, deterministic
+  empty cart/order reset state, and DB-backed persistence verification.
 - `0029` - Session Advisor artifact implementation completed with the Playwright E2E
   shell fallback rule, `$clean-chat-handoff` skill, read-only task closeout
   helper, and dependency-free closeout tests.
@@ -245,6 +254,15 @@ None.
   database-backed opaque sessions, hashed session tokens, the local
   `qcg_session` HTTP-only SameSite cookie, 8 hour absolute timeout, 30 minute
   idle timeout, idempotent logout, and process-local login throttling.
+- Phase 3 cart, checkout, and order contract direction uses authenticated
+  `USER`-only buyer routes, one active server-side cart per user, one line per
+  comic, explicit line deletion, quantity range `1` to `99`, transactional
+  checkout with stock decrement, order-line snapshots, public order numbers,
+  no real payment, checkout-address snapshots, and same-origin CSRF tokens for
+  cart and checkout writes.
+- Cart and order persistence uses `OrderStatus`, `Cart`, `CartLine`, `Order`,
+  and `OrderLine`, with deterministic reset starting with empty cart/order
+  tables and preserving existing catalog/auth fixtures.
 
 ## Decisions Still Pending
 

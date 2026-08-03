@@ -1,6 +1,10 @@
 BEGIN;
 
 TRUNCATE TABLE
+    "order_lines",
+    "orders",
+    "cart_lines",
+    "carts",
     "sessions",
     "users",
     "comic_genres",
@@ -482,6 +486,14 @@ BEGIN
 
     IF (SELECT COUNT(*) FROM "sessions") <> 0 THEN
         RAISE EXCEPTION 'Auth seed must not create sessions';
+    END IF;
+
+    IF (SELECT COUNT(*) FROM "carts") <> 0
+        OR (SELECT COUNT(*) FROM "cart_lines") <> 0
+        OR (SELECT COUNT(*) FROM "orders") <> 0
+        OR (SELECT COUNT(*) FROM "order_lines") <> 0
+    THEN
+        RAISE EXCEPTION 'Cart and order seed tables must start empty';
     END IF;
 
     IF NOT EXISTS (

@@ -52,8 +52,8 @@ corepack pnpm db:seed
 ```
 
 Verify the database container is healthy before starting the API. The seed is
-repeatable and replaces the catalog/auth fixture; do not run it against data
-that must be preserved.
+repeatable and replaces the catalog/auth/cart/order fixture boundary; do not
+run it against data that must be preserved.
 
 The seed creates these public local demo accounts without preexisting sessions:
 
