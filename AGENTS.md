@@ -54,6 +54,15 @@ Implementation must follow the approved task scope. If the implementation needs 
 - The skill must stop for human approval and may not implement, install
   dependencies, stage, commit, or push.
 
+## Clean Chat Handoff
+
+- Run `$clean-chat-handoff` only when the human explicitly asks to move to a
+  new chat or create a handoff prompt.
+- The skill may read bounded repository context, current Git status, latest
+  task files, and recent commits to produce one copy-ready startup prompt.
+- The skill must not implement, edit files, install dependencies, stage,
+  commit, push, or mark tasks complete.
+
 ## Session Artifact Advisor
 
 - Run the repository `$session-artifact-advisor` skill only when the human
@@ -63,6 +72,17 @@ Implementation must follow the approved task scope. If the implementation needs 
   `docs/ai/session-advisor/proposals/` without a separate task.
 - The advisor may propose artifacts but must not implement them without the
   normal approved-task workflow.
+
+## Playwright E2E Verification
+
+- Prefer bounded Codex tool runs for Playwright syntax checks, runner failure
+  paths, and ordinary E2E verification.
+- If a Playwright command repeatedly hangs in the Codex shell/tool pipe while
+  the human can run the same command successfully in a local console, stop
+  retrying the same E2E command through Codex.
+- Record the exact human-run command, result, and limitation in the task
+  verification notes.
+- Do not describe a human-console Playwright result as Codex-verified.
 
 ## Required Task Lifecycle
 
@@ -155,13 +175,17 @@ Available test commands:
   governance metadata without modifying files.
 - `node --test tests/task-governance/*.test.mjs`: run governance validator
   fixture tests.
+- `node scripts/check-task-closeout.mjs --task <ID>`: run read-only task
+  closeout consistency checks before commit or push.
+- `node --test tests/task-closeout/*.test.mjs`: run closeout helper fixture
+  tests.
 - `pnpm test`: run all workspace unit and component tests.
 - `pnpm test:web`: run frontend Vitest unit and component tests.
 - `pnpm test:unit:api`: run backend Jest unit tests.
 - `pnpm test:api`: run backend Jest and Supertest API tests against a migrated,
   deterministically seeded PostgreSQL database.
-- `pnpm test:e2e`: run the read-only clean catalog Playwright smoke suite against
-  the prepared local runtime.
+- `pnpm test:e2e`: run the read-only clean catalog and focused auth Playwright
+  smoke suite against the prepared local runtime.
 
 Prepare PostgreSQL with the committed migrations and clean seed before running
 `pnpm test:api`. API tests are read-only after preparation.

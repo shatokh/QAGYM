@@ -85,6 +85,9 @@ None.
 - Auth Playwright API and UI E2E smoke completed with focused runtime coverage
   for login, current user state, logout, invalid credentials, user/admin shell
   state, and localized RU login navigation.
+- `0029` - Session Advisor artifact implementation completed with the Playwright E2E
+  shell fallback rule, `$clean-chat-handoff` skill, read-only task closeout
+  helper, and dependency-free closeout tests.
 
 ## Blocked
 
