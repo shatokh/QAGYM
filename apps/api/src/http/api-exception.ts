@@ -100,6 +100,30 @@ export function insufficientStock(): ApiException {
   );
 }
 
+export function cartEmpty(): ApiException {
+  return new ApiException(
+    HttpStatus.CONFLICT,
+    "CART_EMPTY",
+    "Cart is empty.",
+  );
+}
+
+export function checkoutConflict(): ApiException {
+  return new ApiException(
+    HttpStatus.CONFLICT,
+    "CHECKOUT_CONFLICT",
+    "Checkout could not be completed.",
+  );
+}
+
+export function orderNotFound(): ApiException {
+  return new ApiException(
+    HttpStatus.NOT_FOUND,
+    "ORDER_NOT_FOUND",
+    "Order not found.",
+  );
+}
+
 export function authRateLimited(): ApiException {
   return new ApiException(
     HttpStatus.TOO_MANY_REQUESTS,

@@ -100,12 +100,18 @@ bounds, product publication and stock checks, localized read DTOs, idempotent
 removal, stable JSON error envelopes, and DTO secrecy for password/session
 secrets and internal state.
 
-Checkout and order-history API tests remain future work under
-`docs/internal/api/cart-checkout-orders.md`. They should cover checkout
-transaction behavior, stock decrement, order-line snapshots, order history
-ownership, pagination, and JSON error envelope consistency. They should verify
-that DTOs do not expose numeric database IDs, password/session secrets, CSRF
-token storage data, payment credentials, or closed bug guide metadata.
+Task `0033` adds DB-backed API coverage for the implemented checkout and
+order-history routes. These tests cover checkout success through the clean cart
+API, CSRF/auth/role boundaries, empty-cart rejection, address and query
+validation, localized order-line snapshots, order number format, stock
+decrement, cart clearing, rollback on insufficient stock and non-purchasable
+cart lines, user-owned order list/detail behavior, pagination, `ORDER_NOT_FOUND`
+privacy, stable JSON error envelopes, and DTO secrecy for password/session
+secrets and internal state.
+
+Frontend cart, checkout, and order-history E2E tests remain future work. They
+should focus on the browser workflow and avoid duplicating backend API
+permutation coverage already owned by Supertest.
 
 ## Playwright E2E
 

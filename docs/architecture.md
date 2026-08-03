@@ -211,8 +211,9 @@ its own approved task.
 ## Cart, Checkout and Order Boundary
 
 The Phase 3 cart, checkout, and order contract is documented in
-`docs/internal/api/cart-checkout-orders.md`. CSRF token issuance and cart routes
-are implemented; checkout and order-history routes remain planned.
+`docs/internal/api/cart-checkout-orders.md`. CSRF token issuance, cart routes,
+checkout, and order-history backend routes are implemented; frontend routes and
+browser write-flow smoke remain planned.
 
 The accepted contract direction is:
 
@@ -241,10 +242,10 @@ The accepted contract direction is:
 Phase 3 introduces the first authenticated product write APIs beyond
 login/logout, so it uses an explicit same-origin CSRF token contract. A
 `USER` session can request `GET /api/v1/csrf-token`, and authenticated cart
-writes must include `X-QCG-CSRF-Token`; checkout writes will use the same
-header when checkout is implemented. The current local MVP stores hashed CSRF
-tokens in process memory keyed by the hashed session token. This keeps the
-sandbox dependency-free and is not a distributed deployment design.
+writes and checkout writes must include `X-QCG-CSRF-Token`. The current local
+MVP stores hashed CSRF tokens in process memory keyed by the hashed session
+token. This keeps the sandbox dependency-free and is not a distributed
+deployment design.
 
 The implemented backend cart boundary contains a NestJS cart module with:
 
@@ -257,6 +258,21 @@ The implemented backend cart boundary contains a NestJS cart module with:
 - `DELETE /api/v1/cart/lines/{comicSlug}` removing lines idempotently.
 - Current catalog price/title/stock data in cart DTOs and no numeric database
   IDs in API responses.
+
+The implemented backend checkout and order-history boundary contains:
+
+- `POST /api/v1/checkout` validating the authenticated user's cart, checkout
+  address, current publication state, and current stock.
+- Atomic checkout transaction behavior: create the order, create order lines,
+  decrement stock, and clear purchased cart lines together.
+- Conditional stock updates to prevent clean oversell behavior under concurrent
+  checkout attempts.
+- Public order number generation using `QCG-YYYYMMDD-NNNN` with retry on
+  unique-order-number conflicts.
+- `GET /api/v1/orders` returning only the authenticated user's paginated order
+  summaries.
+- `GET /api/v1/orders/{orderNumber}` returning only the authenticated user's
+  order snapshot detail.
 
 The implemented cart and order persistence boundary contains:
 

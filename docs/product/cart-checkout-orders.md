@@ -32,13 +32,11 @@ Accepted for planning now:
 
 Still requiring implementation-task approval:
 
-- Exact database schema and migration.
-- Backend implementation for the accepted internal contract.
 - Exact frontend route names and localized UI copy.
 - Exact seed fixture records.
 - Exact Playwright and API test cases.
 - Any stock decrement, order status, or order-history edge-case behavior that
-  goes beyond this planning direction.
+  goes beyond the accepted backend contract.
 
 Implemented by task `0030` at the documentation level:
 
@@ -75,6 +73,21 @@ Implemented by task `0032`:
   integer minor-unit totals.
 - Backend API tests for CSRF/cart route behavior, validation, access control,
   DTO secrecy, and existing health/catalog/auth regression coverage.
+
+Implemented by task `0033`:
+
+- Backend `POST /api/v1/checkout`, `GET /api/v1/orders`, and
+  `GET /api/v1/orders/{orderNumber}`.
+- Checkout without payment for authenticated `USER` sessions with
+  `X-QCG-CSRF-Token`.
+- Minimum checkout address validation using `US`, `PL`, and `GB` country
+  codes.
+- Atomic order creation with `PLACED` status, public order numbers,
+  order-line snapshots, stock decrement, and cart clearing.
+- User-owned paginated order history and order detail APIs.
+- Backend API tests for checkout success, empty cart, CSRF/auth/role
+  boundaries, validation, rollback on stock/publication failures, order
+  ownership, and DTO secrecy.
 
 ## MVP Goals
 

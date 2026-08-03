@@ -182,6 +182,45 @@ Invoke-WebRequest `
   -WebSession $qcgSession
 ```
 
+Useful backend checkout and order checks. These mutate local stock/order/cart
+state; rerun the deterministic seed when you want to reset the scenario.
+
+```powershell
+Invoke-RestMethod `
+  -Method Post `
+  -Uri "http://localhost:3000/api/v1/cart/lines" `
+  -ContentType "application/json" `
+  -Headers $cartHeaders `
+  -Body (@{ comicSlug = "neon-harbor-1"; quantity = 1 } | ConvertTo-Json) `
+  -WebSession $qcgSession
+
+$checkoutBody = @{
+  address = @{
+    recipientName = "Demo User"
+    addressLine1 = "101 Test Loop"
+    addressLine2 = "Suite QA"
+    city = "Testville"
+    region = "CA"
+    postalCode = "90001"
+    countryCode = "US"
+  }
+} | ConvertTo-Json -Depth 3
+
+$checkout = Invoke-RestMethod `
+  -Method Post `
+  -Uri "http://localhost:3000/api/v1/checkout?locale=en" `
+  -ContentType "application/json" `
+  -Headers $cartHeaders `
+  -Body $checkoutBody `
+  -WebSession $qcgSession
+
+$checkout.data.order
+Invoke-RestMethod "http://localhost:3000/api/v1/orders?page=1&pageSize=12" `
+  -WebSession $qcgSession
+Invoke-RestMethod "http://localhost:3000/api/v1/orders/$($checkout.data.order.orderNumber)" `
+  -WebSession $qcgSession
+```
+
 ## 4. Run Verification
 
 Run these commands from a repository-root console. Unit and component tests do

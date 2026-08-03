@@ -8,8 +8,9 @@ This is an internal developer contract for clean cart, checkout, and order
 behavior. It is not the public training Swagger/OpenAPI document and contains
 no planned bug or closed guide information.
 
-Task `0032` implements the CSRF token and cart routes. Checkout and order
-history routes remain planned and must match this contract or amend it first.
+Task `0032` implements the CSRF token and cart routes. Task `0033` implements
+the checkout and order-history routes. Later frontend, Playwright, public docs,
+and planned-bug tasks must match this contract or amend it first.
 
 ## Base Routes
 
@@ -896,8 +897,12 @@ or another internal exception message.
 - Cart writes require `X-QCG-CSRF-Token`; checkout will require it when
   implemented.
 - Cart reads and writes do not mutate order history.
-- Checkout mutates cart, order, and comic stock state only inside the checkout
-  transaction.
+- Checkout mutates cart, order, order-line, and comic stock state only inside
+  the checkout transaction.
+- Task `0033` uses conditional stock updates inside the checkout transaction
+  so clean checkout cannot decrement below available stock. Order number
+  generation uses the initial UTC date prefix and retries unique-order-number
+  conflicts without exposing database errors.
 - Seed reset must restore deterministic catalog and auth fixtures and any
   later approved cart/order fixtures.
 

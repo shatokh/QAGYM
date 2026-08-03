@@ -101,6 +101,12 @@ None.
   session token hashes, `USER`-only buyer access, current-catalog cart DTOs,
   duplicate-line merging, quantity/stock validation, idempotent removal, and
   DB-backed API tests.
+- Backend clean checkout and order-history API completed with
+  `POST /api/v1/checkout`, `GET /api/v1/orders`,
+  `GET /api/v1/orders/{orderNumber}`, CSRF-protected checkout,
+  checkout-address validation, atomic order creation, order-line snapshots,
+  stock decrement, cart clearing, public order numbers, user-owned order
+  history/detail, and DB-backed API tests.
 - `0029` - Session Advisor artifact implementation completed with the Playwright E2E
   shell fallback rule, `$clean-chat-handoff` skill, read-only task closeout
   helper, and dependency-free closeout tests.
