@@ -86,7 +86,7 @@ verification is covered by the backend auth API task that approved the
 
 ## Playwright E2E
 
-Playwright is planned for end-to-end UI workflows:
+Playwright is planned for end-to-end runtime workflows:
 
 - Guest catalog browsing.
 - User login.
@@ -94,6 +94,20 @@ Playwright is planned for end-to-end UI workflows:
 - Order history.
 - Admin scenarios.
 - Selected planned bug discovery paths.
+
+Playwright has two accepted E2E lanes:
+
+- API E2E: use Playwright `request` against the running API server to verify
+  that the deployed runtime, cookies, database, and HTTP boundary work together
+  for a small number of high-signal paths.
+- UI E2E: use Playwright `page` against the running frontend and real API to
+  verify user-visible workflows, navigation, accessibility-facing locators, and
+  browser session behavior.
+
+Playwright must not duplicate detailed developer-test matrices. Keep schema
+edge cases, exhaustive error envelopes, DTO permutations, and service-level
+logic in Jest/Supertest/Vitest. Use Playwright for runtime integration and user
+journeys that those tests cannot prove.
 
 Frontend testability rules are defined in
 `docs/conventions/frontend-testability.md`.
@@ -109,24 +123,27 @@ The locator strategy is semantic-first:
 Loading, empty, error, disabled, and not-found states must be observable without
 fixed delays. EN/RU changes must not change automation identity.
 
-The first clean catalog smoke suite is implemented in `e2e/` and runs through
+The clean Playwright smoke suite is implemented in `e2e/` and runs through
 `pnpm test:e2e` against the real frontend, backend, migrated database, and
-deterministic clean seed with planned bugs disabled. It covers EN/RU routes,
-page navigation, detail navigation, invalid-page canonicalization, search,
-combined filters, URL-preserving pagination, clear action, no-results behavior,
-expected catalog request parameters, a 390 px viewport overflow check, and one
-routed API failure state. It uses one Chromium project and no visual snapshots
-or axe dependency. Phase 8 expands browser coverage, fixtures, scenarios, and
-CI maturity.
+deterministic clean seed with planned bugs disabled. It uses one Chromium
+project and no visual snapshots or axe dependency.
+
+Current catalog smoke coverage includes EN/RU routes, page navigation, detail
+navigation, invalid-page canonicalization, search, combined filters,
+URL-preserving pagination, clear action, no-results behavior, expected catalog
+request parameters, a 390 px viewport overflow check, and one routed API
+failure state.
+
+Current auth smoke coverage includes a small Playwright API E2E check for real
+login, `/me`, logout, and one invalid-login path, plus UI E2E coverage for
+guest catalog access, user login/logout, admin shell role state, generic
+invalid-login copy, and localized RU login navigation. It intentionally does
+not duplicate the backend Supertest auth matrix or frontend Vitest component
+matrix. Phase 8 expands browser coverage, fixtures, scenarios, and CI maturity.
 
 Future write workflows need explicit data isolation or reset behavior.
 Authenticated parallel tests should not mutate shared demo-account state
 without an approved isolation strategy.
-
-The first auth Playwright smoke should be added in a separate task now that the
-backend and frontend auth shell exist. It should verify localized login/logout
-for user and admin, current shell state, role-aware navigation state, and that
-guest catalog smoke still works without authentication.
 
 ## Jest and Frontend Tests
 
@@ -160,7 +177,7 @@ Current root commands:
 - `pnpm test:web`: frontend unit and component tests.
 - `pnpm test:unit:api`: backend unit tests.
 - `pnpm test:api`: backend API tests against prepared PostgreSQL.
-- `pnpm test:e2e`: first clean catalog Playwright browser smoke suite.
+- `pnpm test:e2e`: clean catalog plus focused auth Playwright smoke suite.
 
 The explicit commands are separate CI gates. CI does not also run aggregate
 `pnpm test`, avoiding duplicate frontend/backend unit execution.

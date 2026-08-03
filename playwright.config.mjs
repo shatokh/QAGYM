@@ -4,6 +4,7 @@ import { fileURLToPath } from "node:url";
 const apiDirectory = fileURLToPath(new URL("./apps/api/", import.meta.url));
 const webDirectory = fileURLToPath(new URL("./apps/web/", import.meta.url));
 const isCi = Boolean(process.env.CI);
+const useManagedServers = process.env.QCG_PLAYWRIGHT_MANAGED_SERVERS !== "0";
 
 export default defineConfig({
   testDir: "./e2e",
@@ -19,25 +20,34 @@ export default defineConfig({
     screenshot: "only-on-failure",
     video: "retain-on-failure",
   },
-  webServer: [
-    {
-      command: "node node_modules/@nestjs/cli/bin/nest.js start --watch",
-      cwd: apiDirectory,
-      url: "http://127.0.0.1:3000/health",
-      reuseExistingServer: !isCi,
-      timeout: 120_000,
-    },
-    {
-      command: "node node_modules/vite/bin/vite.js --host 127.0.0.1 --port 4173",
-      cwd: webDirectory,
-      url: "http://127.0.0.1:4173/en/comics",
-      reuseExistingServer: !isCi,
-      timeout: 120_000,
-      env: {
-        VITE_API_PROXY_TARGET: "http://127.0.0.1:3000",
-      },
-    },
-  ],
+  webServer: useManagedServers
+    ? [
+        {
+          command: "node node_modules/@nestjs/cli/bin/nest.js start",
+          cwd: apiDirectory,
+          url: "http://127.0.0.1:3000/health",
+          reuseExistingServer: !isCi,
+          timeout: 120_000,
+          gracefulShutdown: { signal: "SIGINT", timeout: 500 },
+          stdout: "ignore",
+          stderr: "ignore",
+        },
+        {
+          command:
+            "node node_modules/vite/bin/vite.js --host 127.0.0.1 --port 4173",
+          cwd: webDirectory,
+          url: "http://127.0.0.1:4173/en/comics",
+          reuseExistingServer: !isCi,
+          timeout: 120_000,
+          gracefulShutdown: { signal: "SIGINT", timeout: 500 },
+          stdout: "ignore",
+          stderr: "ignore",
+          env: {
+            VITE_API_PROXY_TARGET: "http://127.0.0.1:3000",
+          },
+        },
+      ]
+    : undefined,
   projects: [
     {
       name: "chromium",

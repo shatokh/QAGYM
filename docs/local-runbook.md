@@ -62,8 +62,9 @@ The seed creates these public local demo accounts without preexisting sessions:
 | User | `user@qacomics.local` | `DemoUserPassphrase2026!` | `USER` |
 | Admin | `admin@qacomics.local` | `DemoAdminPassphrase2026!` | `ADMIN` |
 
-The backend auth API and frontend login UI are implemented. Browser auth smoke
-coverage is planned as a later task.
+The backend auth API, frontend login UI, and focused browser auth smoke
+coverage are implemented. The Playwright auth smoke uses these same
+deterministic demo accounts.
 
 ## 3. Start the Application
 
@@ -161,7 +162,8 @@ corepack pnpm test
 ```
 
 Run the browser smoke suite separately. It starts managed API and Vite servers
-on its configured ports, reusing an existing API outside CI when possible:
+on its configured ports, reusing existing ready servers outside CI when
+possible:
 
 ```powershell
 corepack pnpm exec playwright install chromium
@@ -169,7 +171,16 @@ corepack pnpm test:e2e
 ```
 
 The Playwright suite is read-only and expects the clean PostgreSQL seed. It
-writes reports to ignored `playwright-report/` and `test-results/` directories.
+currently covers clean catalog browser smoke plus focused auth API/UI smoke for
+login, current user state, logout, invalid credentials, user/admin shell state,
+and EN/RU login navigation. It writes reports to ignored `playwright-report/`
+and `test-results/` directories.
+
+Target only the auth smoke while iterating:
+
+```powershell
+corepack pnpm test:e2e -- e2e/auth-api-smoke.spec.ts e2e/auth-ui-smoke.spec.ts
+```
 
 Validate repository governance after documentation or task changes:
 

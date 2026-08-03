@@ -82,6 +82,9 @@ None.
   HTTP-only cookie sessions, guest/authenticated shell state, display name and
   role labels, logout action, localized UI copy, and frontend unit/component
   tests.
+- Auth Playwright API and UI E2E smoke completed with focused runtime coverage
+  for login, current user state, logout, invalid credentials, user/admin shell
+  state, and localized RU login navigation.
 
 ## Blocked
 
