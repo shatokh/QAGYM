@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "templateVersion": "0.6.0",
+  "files": {
+    ".agent-template.json": "926543afbc565191e853318b7322365c08ae183682fd7407d6b0e281109f5531",
+    ".agents/skills/feature-planner/SKILL.md": "3a653d499c12f6049f914d3bb52061e872f54831e07be4ef208b38b4b4dfd823",
+    ".agents/skills/triumvirate/agents/openai.yaml": "a1499d95abd8447558c535fe5554adcc3c9b988a0a39264a6283d430effe1e94",
+    ".agents/skills/triumvirate/references/evidence.md": "a11f6a8bf41f7d68e58c59abeea8b13091b679d16b6329db63957e4bd3a2d57a",
+    ".agents/skills/triumvirate/references/operating-contract.md": "da4c2e51bf844e87f27f19b10532638860cfedb0885087bb1a2d198f43944102",
+    ".agents/skills/triumvirate/scripts/check-evidence.mjs": "b4d73bb1e32654d6b1bdcbfb0ce4d3efeb723d60c4c6a1cb761cc64b901ef6bc",
+    ".agents/skills/triumvirate/SKILL.md": "d73fa45596183ce05e9abecafbd2597861265ee25e58c55df01dd3665d903e1d",
+    ".agents/skills/verify-change/agents/openai.yaml": "63e42a2908d5bbca28d256b0a0ed7aa9fe7ba6cfb62703d8c05f1f0f2e7534b7",
+    ".agents/skills/verify-change/SKILL.md": "322604dcc1ba1e299d7bed1d1b95a4ca11fdd7c416f97a5f7712fa7c53b5900c",
+    ".agents/skills/review-agent/SKILL.md": "975c090b4ac942b713ce19ed6350caaff38cee45ed9274e1df439542d26fe7d0"
+  }
+}

@@ -19,6 +19,7 @@ None.
 
 ## Done
 
+- `0037` - Native Triumvirate Pilot Setup: Done.
 - Documentation and governance foundation established.
 - High-level product plan stored as a strategic reference.
 - Initial planning questions resolved and recorded.

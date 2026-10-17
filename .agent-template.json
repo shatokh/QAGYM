@@ -1,0 +1,24 @@
+{
+  "template": "codex-agent-template",
+  "version": "0.6.0",
+  "schemaVersion": 1,
+  "agent": "codex",
+  "workflow": "task-first",
+  "teamMode": "triumvirate",
+  "projectKind": "code",
+  "packs": [],
+  "skills": [
+    "feature-planner",
+    "triumvirate",
+    "verify-change",
+    "review-agent"
+  ],
+  "roles": [
+    "change-implementer",
+    "change-auditor"
+  ],
+  "recordTemplates": [],
+  "contextAdvisor": false,
+  "approvalPolicy": "conservative",
+  "generatedAt": "2026-10-17"
+}

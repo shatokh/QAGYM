@@ -14,3 +14,15 @@ playwright-report/
 *.log
 .DS_Store
 Thumbs.db
+
+# Task 0037: reviewed local agent overrides and diagnostics
+AGENTS.local.md
+AGENTS.override.md
+CLAUDE.local.md
+.agent-local/
+.codex-local/
+.claude-local/
+.claude/settings.local.json
+.agent-template-backups/
+.agent-template.lock
+.local/

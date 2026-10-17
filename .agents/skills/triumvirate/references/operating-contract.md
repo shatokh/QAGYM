@@ -1,0 +1,25 @@
+# Operating contract
+
+## Assignment and capabilities
+
+Give each delegate the original goal, relevant requirements/criteria, effectiveTeamMode and override reason, role/phase, task ID/revision, plan ID/revision/hash, candidate ID/input digest when available, cwd, environment, authorized commands/resources, product ownership, permitted scratch/report paths, and expected report. Instruct delegates not to spawn a coordinator or revert another contributor's edits. Installation of a role is not delegation authorization.
+
+Review and verification use separate fresh auditor invocations. Do not supply the implementer's entire dialogue or self-assessment as ground truth. Verification chooses checks from requirements before comparing author claims; supplied code-review findings guide reproduction without proving the failure. Inspect runtime history controls rather than assuming a new thread excludes inherited conversation. Record reduced independence if history exclusion cannot be established; a claimed clean-context acceptance is then incomplete.
+
+Check discovery, role instructions, file reads, permitted writes, subprocess/test execution, history controls, slot availability and optional close separately. Requested flags, role TOML, and an exit code do not establish effective permissions. Probe only disposable sentinel files if a technical restriction is claimed. Disabling a tool is not a filesystem sandbox. A review phase must not execute project code even when its inherited shell could do so. A verification phase cannot grant itself access, dependencies, network, or services.
+
+## Baseline, candidate, and transfer
+
+Record original baseline separately from task delta and final candidate. Include staged and unstaged edits, selected untracked files, and deletions; HEAD is insufficient. Existing dirty edits remain the user's property. Agree on overlapping edits before making them. Without Git, enumerate paths and hashes. Include required base sources and manifests/lockfiles/test configuration; copying changed files alone may produce an invalid test tree. Do not copy secrets or the whole repository without need.
+
+The primary chooses a suitable environment and assigns its bounded preparation to the implementer. The verifier validates suitability rather than inventing missing infrastructure. Record runtime/tool versions, dependency identities, allowed caches/build outputs/services/network and actual constraints. A worktree or separate directory alone does not isolate executable side effects. If an adequate environment is unavailable, verification is blocked. Writes to approved scratch/build outputs are allowed; changes to product inputs require a disposable run copy or a new candidate and review. Treat symlinks, submodules, LFS, executable bits or platform transformations explicitly when relevant; the supplied byte checker does not package those semantics.
+
+Freeze the candidate during review and verification. Check original/copy input hashes before and after checks; hash-then-copy is not atomic. Include tests, dependencies, commands and material configuration in input identity even when main source hashes are unchanged. Pin procedure/role versions for the task; editing instructions cannot silently expand powers or weaken acceptance. Hashes detect discrepancies; they are not signatures against an actor who can rewrite evidence.
+
+On transfer, compare the target with baseline first, preserve new user edits, and let only the implementer reconcile product changes. Do not commit, merge, reset, or delete user changes. Check target and candidate correspondence again after transfer. A conflict, missing dependency or behavioral difference requires a new candidate and affected checks.
+
+## Findings and recovery
+
+Each finding has an ID, severity, location/trigger, consequence, evidence, plan/candidate identity, owner and state: open, fixed-awaiting-check, resolved, or disputed. The implementer changes code; the auditor confirms resolution against the new candidate. The primary can reject a mistaken finding only with a recorded reason and verifiable counterexample; unresolved material disputes block completion. Style preferences without a violated criterion do not block. Never remove coverage or weaken a criterion merely to obtain pass; review changes to tests against the original request.
+
+Keep a compact manual checkpoint in the project's existing task record: task/plan/candidate identities, last confirmed phase, open findings, evidence paths, delegate status, remaining budget and next action. Timeout/cancellation/tool failures are not check passes. After interruption, verify actual file state and authorization before resuming; retain valid evidence only when its complete inputs are unchanged and the reason is recorded. Avoid duplicate edits and unexplained reuse of stale results. After two correction cycles without new progress, describe the impasse and next experiment. Insufficient budget or slots means incomplete with checkpoint. A finished response does not establish slot release; close only when supported and do not describe interrupt as close.
